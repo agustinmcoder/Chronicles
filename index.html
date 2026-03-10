@@ -944,13 +944,13 @@ const ROUTE_EVENTS=[
   {id:'battle_remains',type:'exploration',title:'Battle Remains',desc:'You find the remains of an epic battle, bodies and equipment scattered around. Blood covers the road you are passing by. You can feel the battle was vicious. There are no signs of any survivors.',icon:'⚔️',
     options:[
       {label:'I) Investigate if there are reusable items',stat:'int',CD:12,labelSuccess:'Found!',labelFail:'Raiders!',
-        success:()=>showOutcomeReward('Found!','You find an item lying under some ragged cloths.','🃏',()=>drawCardReward(1)),
-        fail:()=>{GS._battleRemains=true;initCombat({name:'Raider Gang',icon:'🥷',sprite:'🥷',hp:50,maxHp:50,mp:15,maxMp:15,str:5,int:2,dex:4,armorClass:12,skills:[{name:'Strike',cost:0,dmg:0.6,type:'physical',desc:'Quick strike.'}]})},
+        success:()=>{showOutcomeReward('Found!','You find an item lying under some ragged cloths.','🃏',()=>drawCardReward(1));},
+        fail:()=>{GS._battleRemains=true;initCombat({name:'Raider Gang',icon:'🥷',sprite:'🥷',hp:50,maxHp:50,mp:15,maxMp:15,str:5,int:2,dex:4,armorClass:12,skills:[{name:'Strike',cost:0,dmg:0.6,type:'physical',desc:'Quick strike.'}]});}},
       {label:'II) You lift the corpses in search of items',stat:'str',CD:12,labelSuccess:'Found!',labelFail:'Raiders!',
-        success:()=>showOutcomeReward('Found!','Under the body of a tall, big warrior, you find an item.','🃏',()=>drawCardReward(1)),
-        fail:()=>{GS._battleRemains=true;initCombat({name:'Raider Gang',icon:'🥷',sprite:'🥷',hp:50,maxHp:50,mp:15,maxMp:15,str:5,int:2,dex:4,armorClass:12,skills:[{name:'Strike',cost:0,dmg:0.6,type:'physical',desc:'Quick strike.'}]})},
+        success:()=>{showOutcomeReward('Found!','Under the body of a tall, big warrior, you find an item.','🃏',()=>drawCardReward(1));},
+        fail:()=>{GS._battleRemains=true;initCombat({name:'Raider Gang',icon:'🥷',sprite:'🥷',hp:50,maxHp:50,mp:15,maxMp:15,str:5,int:2,dex:4,armorClass:12,skills:[{name:'Strike',cost:0,dmg:0.6,type:'physical',desc:'Quick strike.'}]});}},
       {label:'III) Flee the scene',stat:null,CD:null,labelSuccess:'Fled',labelFail:null,
-        success:()=>showOutcomeReward('Fled','Before raiders come into the scene, you decide its better to leave this field behind. There is nothing worth the trouble at sight.','🏃',()=>closeEndTurn()),fail:null},
+        success:()=>{showOutcomeReward('Fled','Before raiders come into the scene, you decide its better to leave this field behind. There is nothing worth the trouble at sight.','🏃',()=>closeEndTurn());},fail:null},
     ]
   },
 
@@ -2853,8 +2853,6 @@ function rollDice(){
       if(reach.length===0){toast(`No valid tiles (all visited recently). Skipped.`,'bad');endTurn();return;}
       renderActs();
     }
-  },80);
-}
   },80);
 }
 
