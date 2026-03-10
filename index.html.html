@@ -25,6 +25,8 @@ canvas{display:block}
 #charCreation{background:linear-gradient(rgba(4,6,4,0.7),rgba(4,6,4,0.7)),url('assets/fondo/fondo.gif');background-size:cover;background-position:center}
 #rulesScreen{background:linear-gradient(rgba(4,6,4,0.7),rgba(4,6,4,0.7)),url('assets/fondo/fondo.gif');background-size:cover;background-position:center}
 #creditsScreen{background:linear-gradient(rgba(4,6,4,0.7),rgba(4,6,4,0.7)),url('assets/fondo/fondo.gif');background-size:cover;background-position:center}
+#testAreaScreen{background:linear-gradient(rgba(4,6,4,0.7),rgba(4,6,4,0.7)),url('assets/fondo/fondo.gif');background-size:cover;background-position:center}
+#battleTestScreen{background:linear-gradient(rgba(4,6,4,0.7),rgba(4,6,4,0.7)),url('assets/fondo/fondo.gif');background-size:cover;background-position:center}
 #gameScreen{background:url('assets/fondo/fondo.gif');background-size:cover;background-position:center}
 .title{font-family:'Cinzel Decorative',serif;font-size:clamp(52px,4.5vw,65px);font-weight:900;color:var(--gold);
   text-shadow:0 0 14px rgba(440,194,96,.9),0 0 35px rgba(440,194,96,.4),4px 4px 0 #5a3800;
@@ -70,7 +72,8 @@ canvas{display:block}
 .panel{background:var(--panel);border:4px solid var(--gold-dark);box-shadow:0 0 50px rgba(0,0,0,.95),inset 0 0 0 1px rgba(440,194,96,.06);max-height:90vh;overflow-y:auto;scroll-behavior:smooth}
 .pi-card{min-width:156px;max-width:234px;flex:1;padding:10px 13px;border-right:1px solid var(--border);transition:background .4s;display:flex;flex-direction:column;justify-content:center;gap:3px}
 .pi-card:hover{background:rgba(40,34,40,.8)}
-.pi-card.cur{background:rgba(240,192,96,.15);border-top:4px solid var(--gold);box-shadow:0 0 13px rgba(240,192,96,0.3)}
+.pi-card.cur{background:rgba(240,192,96,.25);border-top:4px solid var(--gold);box-shadow:0 0 20px rgba(240,192,96,0.5),inset 0 0 30px rgba(240,192,96,0.1);animation:pulseHighlight 1.5s ease-in-out infinite}
+@keyframes pulseHighlight{0%,100%{box-shadow:0 0 15px rgba(240,192,96,0.4)}50%{box-shadow:0 0 30px rgba(240,192,96,0.7)}}
 .pi-btns{display:flex;gap:4px;margin-bottom:4px;justify-content:center;flex-wrap:wrap}
 .pi-btn{background:linear-gradient(135deg,#4a3a4a,#1a4a1a);border:1px solid #4a6a4a;border-radius:4px;padding:4px 8px;font-size:12px;cursor:pointer;transition:all .15s;color:#8fbf8f;font-weight:bold;text-shadow:0 1px 2px rgba(0,0,0,0.5);white-space:nowrap}
 .pi-btn:hover{background:linear-gradient(135deg,#3a5a3a,#4a4a4a);border-color:#7acd7a;transform:scale(1.05);box-shadow:0 0 8px rgba(144,205,144,0.4)}
@@ -125,9 +128,9 @@ canvas{display:block}
 .ld{width:8px;height:8px;border-radius:50%}
 #turnBanner{width:100%;padding:8px 12px;text-align:center;font-family:'Cinzel Decorative',serif;font-size:16px;color:var(--gold);background:rgba(3,5,3,.93);border-bottom:1px solid var(--gold-dark);z-index:50;letter-spacing:3px;flex-shrink:0}
 /* MODAL */
-.mo{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:100;display:none;align-items:center;justify-content:center;backdrop-filter:blur(5px)}
+.mo{position:fixed;inset:0;background:transparent;z-index:100;display:none;align-items:center;justify-content:center}
 .mo.on{display:flex}
-.mb{background:rgba(5,8,5,.98);border:4px solid var(--gold-dark);box-shadow:0 0 70px rgba(0,0,0,.95),0 0 40px rgba(440,194,96,.07);padding:30px;max-width:900px;width:96%;max-height:90vh;overflow-y:auto;animation:mbIn .45s ease}
+.mb{background:rgba(5,8,5,.95);border:4px solid var(--gold-dark);box-shadow:0 0 70px rgba(0,0,0,.95),0 0 40px rgba(440,194,96,.07);padding:30px;max-width:500px;width:90%;max-height:85vh;overflow-y:auto;animation:mbIn .45s ease;border-radius:8px}
 @keyframes mbIn{from{transform:scale(.9) translateY(-14px);opacity:0}to{transform:none;opacity:1}}
 .mo-title{font-family:'Cinzel Decorative',serif;font-size:clamp(18px,2.3vw,23px);color:var(--gold);text-align:center;margin-bottom:14px;text-shadow:0 0 10px rgba(440,194,96,.35)}
 .mo-text{font-family:'IM Fell English',serif;font-size:18px;line-height:1.75;color:var(--text);text-align:center;margin-bottom:16px}
@@ -299,6 +302,10 @@ document.addEventListener('click', function() {
   <div class="menu-sep"></div>
   <button class="menu-btn" id="loadGameBtn">📂 Load Game</button>
   <div class="menu-sep"></div>
+  <button class="menu-btn" onclick="showS('testAreaScreen')">🧪 Test Area</button>
+  <div class="menu-sep"></div>
+  <button class="menu-btn" onclick="showS('battleTestScreen')">⚔️ Battle Test</button>
+  <div class="menu-sep"></div>
   <button class="menu-btn" onclick="showS('rulesScreen')">📜 Rules</button>
   <div class="menu-sep"></div>
   <button class="menu-btn" onclick="showS('creditsScreen')">✦ Credits</button>
@@ -323,9 +330,10 @@ document.addEventListener('click', function() {
 <!-- GAME SCREEN -->
 <div id="gameScreen" class="screen">
   <div id="turnBanner">Loading...</div>
-  <div id="boardContainer" style="flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:0">
+  <div id="boardContainer" style="flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:0;z-index:1">
     <canvas id="boardCanvas" style="width:100%;height:100%"></canvas>
   </div>
+  <div id="eventBg" style="position:absolute;inset:0;background-size:cover;background-position:center;z-index:50;display:none"></div>
   <div id="bottomHud">
     <div class="hud-players" id="playersList"></div>
     <div class="hud-action">
@@ -378,6 +386,38 @@ document.addEventListener('click', function() {
   </div>
 </div>
 
+<!-- TEST AREA -->
+<div id="testAreaScreen" class="screen">
+  <button class="back-btn" onclick="showS('menuScreen')">← Back</button>
+  <div class="panel" style="padding:30px;max-width:600px">
+    <div class="panel-title">🧪 Test Area</div>
+    <p style="color:var(--dim);margin-bottom:20px;text-align:center">Test any event with a Human Male Warrior</p>
+    <div id="testEventList" style="display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto">
+    </div>
+  </div>
+</div>
+
+<!-- BATTLE TEST AREA -->
+<div id="battleTestScreen" class="screen">
+  <button class="back-btn" onclick="showS('menuScreen')">← Back</button>
+  <div class="panel" style="padding:30px;max-width:800px">
+    <div class="panel-title">⚔️ Battle Test</div>
+    <p style="color:var(--dim);margin-bottom:20px;text-align:center">Create a character and fight any boss</p>
+    <div id="btCharForm" style="margin-bottom:25px"></div>
+    <div style="color:var(--gold);font-size:12px;margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:5px">SELECT BOSS</div>
+    <div style="display:flex;gap:20px">
+      <div style="flex:1">
+        <div style="color:var(--dim);font-size:11px;margin-bottom:8px">MINI BOSSES</div>
+        <div id="btMiniBossList" style="display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto"></div>
+      </div>
+      <div style="flex:1">
+        <div style="color:var(--dim);font-size:11px;margin-bottom:8px">FINAL BOSSES</div>
+        <div id="btFinalBossList" style="display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="mo" id="modal"><div class="mb" id="modalBox"></div></div>
 <div class="mo" id="invModal"><div class="mb" id="invBox"></div></div>
 
@@ -385,25 +425,88 @@ document.addEventListener('click', function() {
 // ══════════════════════════════════════════════════════
 //  DATA
 // ══════════════════════════════════════════════════════
+
+// Helper to render icon (image or fallback emoji)
+function renderIcon(iconPath, fallback, size = 20) {
+  return `<img src="${iconPath}" alt="" style="width:${size}px;height:${size}px;vertical-align:middle" onerror="this.outerHTML='${fallback}'">`;
+}
+
 const CLASSES = {
-  mage:    {icon:'🧙',name:'Mage',   str:3,int:8,dex:4,mp:60,hp:80, color:'#7a3a9a',weaponTypes:['staff','wand','orb']},
-  warrior: {icon:'⚔️',name:'Warrior',str:8,int:3,dex:4,mp:30,hp:100,color:'#9a3a3a',weaponTypes:['twohander','sword_shield','dual']},
-  ranger:  {icon:'🏹',name:'Ranger', str:4,int:4,dex:8,mp:40,hp:75, color:'#3a8a3a',weaponTypes:['bow']},
-  monk:    {icon:'🥊',name:'Monk',   str:5,int:4,dex:7,mp:50,hp:85, color:'#9a7a3a',weaponTypes:['knuckles','monk_staff']},
-  rogue:   {icon:'🗡️',name:'Rogue',  str:5,int:4,dex:8,mp:45,hp:85, color:'#2a2a2a',weaponTypes:['dagger','dual','bow']},
+  mage:    {icon:'assets/stickers/mage.png',fallback:'🧙',name:'Mage',   str:3,int:8,dex:4,con:3,mp:60,hp:80, color:'#7a3a9a',weaponTypes:['staff','wand','orb']},
+  warrior: {icon:'assets/stickers/warrior.png',fallback:'⚔️',name:'Warrior',str:8,int:3,dex:4,con:8,mp:30,hp:100,color:'#9a3a3a',weaponTypes:['twohander','sword_shield','dual']},
+  ranger:  {icon:'assets/stickers/ranger.png',fallback:'🏹',name:'Ranger', str:4,int:4,dex:8,con:4,mp:40,hp:75, color:'#3a8a3a',weaponTypes:['bow']},
+  monk:    {icon:'assets/stickers/monk.png',fallback:'🥊',name:'Monk',   str:5,int:4,dex:7,con:6,mp:50,hp:85, color:'#9a7a3a',weaponTypes:['knuckles','monk_staff']},
+  rogue:   {icon:'assets/stickers/rogue.png',fallback:'🗡️',name:'Rogue',  str:5,int:4,dex:8,con:5,mp:45,hp:85, color:'#2a2a2a',weaponTypes:['dagger','dual','bow']},
 };
 
 const RACES = {
-  dwarf: {icon:'🧔',name:'Dwarf'},
-  elf: {icon:'🧝',name:'Elf'},
-  human: {icon:'🧑',name:'Human'},
-  orc: {icon:'👹',name:'Orc'},
+  dwarf: {icon:'assets/stickers/dwarf.png',fallback:'🧔',name:'Dwarf'},
+  elf: {icon:'assets/stickers/elf.png',fallback:'🧝',name:'Elf'},
+  human: {icon:'assets/stickers/human.png',fallback:'🧑',name:'Human'},
+  orc: {icon:'assets/stickers/orc.png',fallback:'👹',name:'Orc'},
 };
 
 const GENDERS = {
   male: {icon:'♂️',name:'Male'},
   female: {icon:'♀️',name:'Female'},
 };
+
+// Buffs and Debuffs definitions
+const BUFFS = {
+  swiftness:   {name:'Swiftness',   icon:'💨',desc:'2x movement (after D6 roll)',duration:3},
+  unflinching: {name:'Unflinching', icon:'🛡️',desc:'+2 CA',duration:3},
+  scorch:      {name:'Scorch',      icon:'🔥',desc:'+1 scorch damage each turn',duration:5},
+  son_of_sun:  {name:'Son of the Sun',icon:'☀️',desc:'Immune to fire',duration:4},
+  raiden:      {name:'Raiden',      icon:'⚡',desc:'Immune to lightning',duration:4},
+  steel_body:  {name:'SteelBody',   icon:'🛡️',desc:'Resist slashing and piercing (50% damage)',duration:4},
+};
+
+const DEBUFFS = {
+  wither:      {name:'Wither',      icon:'🍂',desc:'50% movement',duration:5},
+  oil_body:    {name:'Oil Body',    icon:'🛢️',desc:'Weak to fire (200% damage)',duration:4},
+  wet:         {name:'Wet',         icon:'💧',desc:'Weak to lightning (200% damage)',duration:4},
+  burn:        {name:'Burn',        icon:'🔥',desc:'Take 3 damage after each turn',duration:3},
+  poisoned:    {name:'Poisoned',    icon:'☠️',desc:'Take 2 damage after each turn',duration:5},
+  paralyze:    {name:'Paralyze',    icon:'⚡',desc:'50% chance to lose turn (roll 1-10 lose, 11-20 act)',duration:3},
+};
+
+// Helper to add buff/debuff (no stacking - refreshes duration if already applied)
+function addStatus(target, type, statusKey){
+  const statusData = (type === 'buff' ? BUFFS : DEBUFFS)[statusKey];
+  if(!statusData) return;
+  
+  if(!target.status) target.status = {};
+  
+  // Same status doesn't stack - just refresh duration
+  target.status[statusKey] = {
+    ...statusData,
+    turns: statusData.duration,
+    type: type
+  };
+  
+  toast(`${type === 'buff' ? '🟢' : '🔴'} ${statusData.name} applied!`,'good');
+}
+
+// Helper to reduce status duration at end of turn
+function tickStatus(target){
+  if(!target.status) return;
+  
+  for(const key in target.status){
+    const status = target.status[key];
+    if(status.turns > 0){
+      status.turns--;
+    }
+    if(status.turns <= 0){
+      toast(`${status.name} wore off!`,'imp');
+      delete target.status[key];
+    }
+  }
+}
+
+// Helper to check if target has a specific status
+function hasStatus(target, statusKey){
+  return target.status && target.status[statusKey] !== undefined;
+}
 
 // ── CLASS SKILL DEFINITIONS ──
 const CLASS_SKILLS = {
@@ -622,13 +725,14 @@ const TOWN_EV=[{w:45,t:'heal'},{w:40,t:'goblin'},{w:40,t:'loot'},{w:45,t:'gold'}
 //  ROUTE EVENTS - New system with multiple choices
 // ══════════════════════════════════════════════════════
 
-// Helper: Get best combat stat for a class (Mage=INT, Monk=50%STR+50%DEX, Warrior=STR, Ranger=DEX)
+// Helper: Get combat stat for players based on class (uses base stats only, no equipment)
 function getCombatStat(p){
-  const s = calcStats(p);
+  const s = getBaseStats(p);
   const cls = p.class;
   if(cls === 'mage') return s.int;
   if(cls === 'warrior') return s.str;
   if(cls === 'ranger') return s.dex;
+  if(cls === 'rogue') return s.dex;
   if(cls === 'monk') return Math.floor((s.str + s.dex) / 2);
   return s.str;
 }
@@ -657,99 +761,107 @@ function showOutcomeReward(title, message, icon, callback){
 
 // NEW ROUTE EVENTS - Full replacement
 const ROUTE_EVENTS=[
-  // 1. Goblin Ambush
-  {id:'goblin_ambush',type:'combat',title:'Goblin Ambush',desc:'A group of Goblins jumps out from the bushes.',icon:'👺',
+  // 1. Goblin Ambush (Complex)
+  {id:'goblin_ambush',type:'combat',title:'Goblin Ambush',desc:'A party of 4 goblins jumps from the bushes - it\'s a trap!',icon:'👺',
     options:[
-      {label:'I) Attack head-on',stat:'combat',diff:12,labelSuccess:'You defeated them!',labelFail:'They overpowered you!',
-        success:()=>{const p=cp();const g=20+Math.floor(Math.random()*30);p.gold+=g;showOutcomeReward('Victory!','+'+g+' gold','💰',()=>closeEndTurn());},
-        fail:()=>{const p=cp();const dmg=pctDamage(p,0.10);p.hp=Math.max(1,p.hp-dmg);loseRandomItem(p,()=>showOutcomeReward('Defeat!','-'+dmg+' HP and lost an item','💔',()=>closeEndTurn()));}},
-      {label:'II) Hide',stat:'dex',diff:12,labelSuccess:'Hidden!',labelFail:'They found you!',
-        success:()=>showOutcomeReward('Success!','You hid safely and continued.','🌿',()=>closeEndTurn()),
-        fail:()=>{const p=cp();const dmg=pctDamage(p,0.10);p.hp=Math.max(1,p.hp-dmg);loseRandomItem(p,()=>showOutcomeReward('Discovered!','-'+dmg+' HP and lost an item','💔',()=>closeEndTurn()));}},
-      {label:'III) Intimidate',stat:'int',diff:14,labelSuccess:'They fled!',labelFail:'They attacked!',
-        success:()=>{const p=cp();const g=20+Math.floor(Math.random()*30);p.gold+=g;showOutcomeReward('Intimidated!','Goblins fled! +'+g+' gold','💰',()=>closeEndTurn());},
-        fail:()=>{const p=cp();const dmg=pctDamage(p,0.10);p.hp=Math.max(1,p.hp-dmg);loseRandomItem(p,()=>showOutcomeReward('Failed!','-'+dmg+' HP and lost an item','💔',()=>closeEndTurn()));}},
-      {label:'IV) Run away',stat:'dex',diff:10,labelSuccess:'Got away!',labelFail:'Trapped!',
-        success:()=>showOutcomeReward('Escaped!','You got away safely.','🏃',()=>closeEndTurn()),
-        fail:()=>{loseRandomItem(p,()=>{const p=cp();if(p.inventory.length===0){p.skipTurns=(p.skipTurns||0)+1;showOutcomeReward('Trapped!','No items. Lose 1 turn.','💔',()=>closeEndTurn());}else{showOutcomeReward('Trapped!','Lost an item!','💔',()=>closeEndTurn());}});}},
+      {label:'I) Attack!',stat:'combat',CD:11,labelSuccess:'You exterminated them!',labelFail:'Goblins overpowered you!',
+        success:()=>{showOutcomeReward('Victory!','You exterminated the goblins!','🗡️',()=>drawCardReward(1));},
+        fail:()=>{const p=cp();loseEquipmentCards(p,2,()=>{const dmg=pctDamage(p,0.11);p.hp=Math.max(1,p.hp-dmg);showOutcomeReward('Defeated!','-'+dmg+' HP and lost 2 items','💔',()=>closeEndTurn());});}},
+      {label:'II) Hide in bushes',stat:'dex',CD:11,labelSuccess:'You hid successfully!',labelFail:'Goblins smelled you!',
+        success:()=>showOutcomeReward('Hidden!','Goblins couldn\'t find you and left.','🌿',()=>closeEndTurn()),
+        fail:()=>{GS._combatMod=-2;showOutcomeReward('Discovered!','Goblins found you! (-2 roll modifier)','👀',()=>resolveGoblinCombat());}},
+      {label:'III) Intimidate',stat:'avg_dex_str',CD:11,labelSuccess:'Goblins fled!',labelFail:'They weren\'t scared!',
+        success:()=>{const p=cp();const g=10+Math.floor(Math.random()*16);p.gold+=g;showOutcomeReward('Intimidated!','+'+g+' gold','💰',()=>drawCardReward(1));},
+        fail:()=>{GS._combatMod=-2;showOutcomeReward('Failed!','Goblins aren\'t afraid! (-2 roll modifier)','😈',()=>resolveGoblinCombat());}},
+      {label:'IV) Analyze behavior',stat:'combat',CD:11,labelSuccess:'You found a weakness!',labelFail:'Your analysis failed!',
+        success:()=>{GS._combatMod=2;showOutcomeReward('Analyzed!','You know their movements! (+2 roll modifier)','🔍',()=>resolveGoblinCombat());},
+        fail:()=>{GS._combatMod=-2;showOutcomeReward('Missed!','Couldn\'t analyze them! (-2 roll modifier)','❌',()=>resolveGoblinCombat());}},
+      {label:'V) Flee',stat:null,CD:null,labelSuccess:'Ran away!',labelFail:'Trapped!',
+        success:()=>{const p=cp();const allItems=[...(p.inventory||[]),p.equipped?.weapon,p.equipped?.head,p.equipped?.body,p.equipped?.feet,p.equipped?.shield,p.equipped?.accessory].filter(i=>i);if(allItems.length>0){const lostItem=allItems[Math.floor(Math.random()*allItems.length)];const itemName=ITEMS[lostItem]?.name||lostItem;showOutcomeReward('Lost an item!','You start running away from the goblins, but in the haste an item fell from your bag.','🎒',()=>{openModal('🎒 Item Lost',`You lost: <strong style="color:var(--gold)">${itemName}</strong>`,[{label:'OK',fn:()=>{closeModal();closeEndTurn();}}]);});}else{const p=cp();p.skipTurns=(p.skipTurns||0)+1;showOutcomeReward('Escaped!','You run away from the goblins, but took a detour to loose them. Loose 1 turn.','🏃',()=>closeEndTurn());}},fail:null},
     ]
   },
+
 
   // 2. Hanging Bridge
   {id:'hanging_bridge',type:'exploration',title:'Hanging Bridge',desc:'An old hanging bridge blocks your path.',icon:'🌉',
     options:[
-      {label:'I) Cross quickly (DEX)',stat:'dex',diff:12,labelSuccess:'Crossed safely!',labelFail:'You fell!',
+      {label:'I) Cross quickly (DEX)',stat:'dex',CD:12,labelSuccess:'Crossed safely!',labelFail:'You fell!',
         success:()=>showOutcomeReward('Success!','You crossed the bridge safely.','🌉',()=>closeEndTurn()),
         fail:()=>{const p=cp();const dmg=pctDamage(p,0.10);p.hp=Math.max(1,p.hp-dmg);p.skipTurns=(p.skipTurns||0)+1;showOutcomeReward('Fall!','-'+dmg+' HP and lose 1 turn.','💔',()=>closeEndTurn());}},
-      {label:'II) Analyze (INT)',stat:'int',diff:12,labelSuccess:'Found safe path!',labelFail:'Misjudged!',
+      {label:'II) Analyze (INT)',stat:'int',CD:12,labelSuccess:'Found safe path!',labelFail:'Misjudged!',
         success:()=>showOutcomeReward('Success!','You found a safe path across.','🌉',()=>closeEndTurn()),
         fail:()=>{const p=cp();const dmg=pctDamage(p,0.10);p.hp=Math.max(1,p.hp-dmg);p.skipTurns=(p.skipTurns||0)+1;showOutcomeReward('Fall!','-'+dmg+' HP and lose 1 turn.','💔',()=>closeEndTurn());}},
-      {label:'III) Go around',stat:null,diff:null,labelSuccess:'Went around',labelFail:null,
-        success:()=>{const p=cp();p.skipTurns=(p.skipTurns||0)+1;showOutcomeReward('Detour...','You take a detour to go around the bridge, it took you too long. Lose a turn.','💔',()=>closeEndTurn());},fail:null},
+      {label:'III) Go around',stat:null,CD:null,labelSuccess:'Detour...',labelFail:null,
+        success:()=>{const p=cp();p.skipTurns=(p.skipTurns||0)+1;showOutcomeReward('Detour...','You take a detour to go around the bridge. You loose your next turn.','💔',()=>closeEndTurn());},fail:null},
     ]
   },
 
   // 3. Wounded Wolf
-  {id:'wounded_wolf',type:'combat',title:'Wounded Wolf',desc:'A wounded wolf blocks the path.',icon:'🐺',
+  {id:'wounded_wolf',type:'combat',title:'Wounded Wolf',desc:'In the middle of the path, there is a gray wolf injured in its hind leg. It growls, baring its teeth, and blocks your way.',icon:'🐺',
     options:[
-      {label:'I) Attack it',stat:'combat',diff:10,labelSuccess:'Killed it!',labelFail:'It bit you!',
-        success:()=>showOutcomeReward('Victory!','Wolf defeated! Draw a card...','🃏',()=>drawCardReward(1)),
-        fail:()=>{const p=cp();const dmg=pctDamage(p,0.12);p.hp=Math.max(1,p.hp-dmg);showOutcomeReward('Bitten!','-'+dmg+' HP','💔',()=>closeEndTurn());}},
-      {label:'II) Calm it (INT)',stat:'int',diff:12,labelSuccess:'Tamed!',labelFail:'It attacked!',
-        success:()=>{const p=cp();p.inventory.push({id:'wolf_card',name:'Wolf Companion',icon:'🐺',rarity:'rare',type:'buff_card',desc:'Next combat: automatic success',effect:'auto_win'});showOutcomeReward('Tamed!','Wolf Companion card added!','🐺',()=>closeEndTurn());},
-        fail:()=>{const p=cp();const dmg=pctDamage(p,0.12);p.hp=Math.max(1,p.hp-dmg);showOutcomeReward('Attacked!','-'+dmg+' HP','💔',()=>closeEndTurn());}},
-      {label:'III) Sneak around (DEX)',stat:'dex',diff:10,labelSuccess:'Snuck past!',labelFail:'It saw you!',
-        success:()=>showOutcomeReward('Success!','You snuck past safely.','🌿',()=>closeEndTurn()),
-        fail:()=>{const p=cp();const dmg=pctDamage(p,0.12);p.hp=Math.max(1,p.hp-dmg);showOutcomeReward('Spotted!','-'+dmg+' HP','💔',()=>closeEndTurn());}},
+      {label:'I) Try to scare it away',stat:'str',CD:11,labelSuccess:'Retreated!',labelFail:'Scratched!',
+        success:()=>showOutcomeReward('Retreated!','The wolf retreats and disappears among the trees.','🐺',()=>closeEndTurn()),
+        fail:()=>{const p=cp();const dmg=pctDamage(p,0.10);p.hp=Math.max(1,p.hp-dmg);showOutcomeReward('Scratched!','Still wounded, the wolf lunges at you and manages to scratch you with its claws. -'+dmg+' HP','💔',()=>closeEndTurn());}},
+      {label:'II) Move slowly to circle around it',stat:'dex',CD:11,labelSuccess:'Circled!',labelFail:'Bitten!',
+        success:()=>showOutcomeReward('Circled!','You manage to circle around it without provoking an attack.','🌿',()=>closeEndTurn()),
+        fail:()=>{const p=cp();const dmg=pctDamage(p,0.10);p.hp=Math.max(1,p.hp-dmg);showOutcomeReward('Bitten!','The wolf takes this action as an attack and sinks its fangs into you. -'+dmg+' HP','💔',()=>closeEndTurn());}},
+      {label:'III) Observe its behavior',stat:'int',CD:12,labelSuccess:'Tamed!',labelFail:'Angry!',
+        success:()=>{const p=cp();p.inventory.push({id:'wolf_inspiration',name:'Wolf Insight',icon:'🐺',rarity:'rare',type:'inspiration',desc:'+2 to your next roll',effect:2});showOutcomeReward('Discovered!','You discover that it is afraid to move because of its injury. Wolf Insight card added!','💡',()=>closeEndTurn());},
+        fail:()=>{GS._combatMod=-3;showOutcomeReward('Angry!','Wolf gets angrier and attacks, trying to protect its territory.','😠',()=>resolveGoblinCombat());}},
     ]
   },
 
   // 4. Hidden Trap
   {id:'hidden_trap',type:'punishment',title:'Hidden Trap',desc:'You step on a trap, projectiles fly toward you!',icon:'🪤',
     options:[
-      {label:'I) Dodge (DEX)',stat:'dex',diff:12,labelSuccess:'Dodged!',labelFail:'Hit!',
-        success:()=>showOutcomeReward('Dodged!','You evaded the trap safely.','💨',()=>closeEndTurn()),
-        fail:()=>{const p=cp();const dmg=pctDamage(p,0.07);p.hp=Math.max(1,p.hp-dmg);showOutcomeReward('Hit!','-'+dmg+' HP from trap','💔',()=>closeEndTurn());}},
-      {label:'II) Endure (CON)',stat:'con',diff:12,labelSuccess:'Blocked!',labelFail:'Too strong!',
-        success:()=>showOutcomeReward('Blocked!','You blocked the projectiles.','🛡️',()=>closeEndTurn()),
-        fail:()=>{const p=cp();const dmg=pctDamage(p,0.07);p.hp=Math.max(1,p.hp-dmg);showOutcomeReward('Hit!','-'+dmg+' HP from trap','💔',()=>closeEndTurn());}},
+      {label:'I) Use your reflexes to dodge the arrows',stat:'dex',CD:12,labelSuccess:'Dodged!',labelFail:'Hit!',
+        success:()=>showOutcomeReward('Dodged!','You dodge every single arrow with gracious movements.','💨',()=>closeEndTurn()),
+        fail:()=>{const p=cp();const dmg=pctDamage(p,0.10);p.hp=Math.max(1,p.hp-dmg);showOutcomeReward('Badly injured!','You start dodging arrows, but they are too many, you are badly injured. -'+dmg+' HP','💔',()=>closeEndTurn());}},
+      {label:'II) Brace your body for the impact',stat:'con',CD:12,labelSuccess:'Endured!',labelFail:'Failed!',
+        success:()=>{const p=cp();const dmg=pctDamage(p,0.05);p.hp=Math.max(1,p.hp-dmg);showOutcomeReward('Endured!','The arrows hit you, but as you are enduring, they don\'t go deep in your skin. It does hurt, but nothing you can\'t handle. -'+dmg+' HP','🛡️',()=>closeEndTurn());},
+        fail:()=>{const p=cp();const dmg=pctDamage(p,0.13);p.hp=Math.max(1,p.hp-dmg);showOutcomeReward('Pierced!','The arrows are sharper than you expected, you try to hold your ground but feel every arrow pierce your skin and reach your bones. -'+dmg+' HP','💔',()=>closeEndTurn());}},
+      {label:'III) Shield yourself',stat:'combat',CD:10,labelSuccess:'Blocked!',labelFail:'Partial hit!',
+        condition:()=>{const p=cp();return !!p.equipped?.shield;},
+        success:()=>showOutcomeReward('Blocked!','Your shield blocks all the arrows, letting you unharmed. You look at your shield and see all the arrows stuck in it. You breathe with relief.','🛡️',()=>closeEndTurn()),
+        fail:()=>{const p=cp();const dmg=pctDamage(p,0.08);p.hp=Math.max(1,p.hp-dmg);showOutcomeReward('Partial hit!','You try to shield yourself behind your shield, but the arrows are far too many. Your shield can\'t block them all, you take some hits, but manage to save your vitals. -'+dmg+' HP','💔',()=>closeEndTurn());}},
     ]
   },
 
   // 5. Ancient Runes
   {id:'ancient_runes',type:'exploration',title:'Ancient Runes',desc:'You find ancient runes carved into a stone wall.',icon:'🪨',
     options:[
-      {label:'A) Do not enter',stat:null,diff:null,labelSuccess:'Continued on',labelFail:null,
+      {label:'A) Do not enter',stat:null,CD:null,labelSuccess:'Continued on',labelFail:null,
         success:()=>showOutcomeReward('Continued','You left the runes alone.','🛤️',()=>closeEndTurn()),fail:null},
-      {label:'B) Enter the maze',stat:null,diff:null,labelSuccess:'Enter labyrinth',labelFail:null,
+      {label:'B) Enter the maze',stat:null,CD:null,labelSuccess:'Enter labyrinth',labelFail:null,
         success:()=>{showRunesLabyrinth();},fail:null},
     ]
   },
 
   // 6. Thick Fog
-  {id:'thick_fog',type:'punishment',title:'Thick Fog',desc:'Visibility drops drastically.',icon:'🌫️',
+  {id:'thick_fog',type:'punishment',title:'Thick Fog',desc:'An extremely dense fog covers the path. You can barely see a few steps ahead.',icon:'🌫️',
     options:[
-      {label:'I) Advance cautiously (INT)',stat:'int',diff:14,labelSuccess:'Navigated!',labelFail:'Fell in pit!',
-        success:()=>showOutcomeReward('Success!','You navigated through the fog.','🌫️',()=>closeEndTurn()),
-        fail:()=>{const p=cp();const dmg=pctDamage(p,0.09);p.hp=Math.max(1,p.hp-dmg);showOutcomeReward('Pit!','-'+dmg+' HP from falling in pit','💔',()=>closeEndTurn());}},
-      {label:'II) Be precise in every movement (DEX)',stat:'dex',diff:14,labelSuccess:'Navigated!',labelFail:'Fell in pit!',
-        success:()=>showOutcomeReward('Success!','You navigated through the fog.','🌫️',()=>closeEndTurn()),
-        fail:()=>{const p=cp();const dmg=pctDamage(p,0.09);p.hp=Math.max(1,p.hp-dmg);showOutcomeReward('Pit!','-'+dmg+' HP from falling in pit','💔',()=>closeEndTurn());}},
-      {label:'III) Wait',stat:null,diff:null,labelSuccess:'Waited',labelFail:null,
-        success:()=>{const p=cp();p.skipTurns=(p.skipTurns||0)+1;showOutcomeReward('Napped...','You sit under a tree waiting the fog to disappear. You took a nap while waiting. Lose a turn.','💔',()=>closeEndTurn());},fail:null},
+      {label:'I) Proceed cautiously through the fog',stat:'dex',CD:12,labelSuccess:'Navigated!',labelFail:'Lost!',
+        success:()=>showOutcomeReward('Success!','You manage to move forward without straying from the path.','🌫️',()=>closeEndTurn()),
+        fail:()=>{const p=cp();p.skipTurns=(p.skipTurns||0)+1;showOutcomeReward('Lost!','You get lost in the fog. You lose 1 turn trying to find your way back.','💔',()=>closeEndTurn());}},
+      {label:'II) Guide yourself by the terrain',stat:'int',CD:14,labelSuccess:'Navigated!',labelFail:'Wrong path!',
+        success:()=>showOutcomeReward('Success!','You recognize the correct direction and continue without losing any time. The fog begins to thin as you advance, and the path ahead feels clearer and safer.','🌫️',()=>closeEndTurn()),
+        fail:()=>{const p=cp();p.skipTurns=(p.skipTurns||0)+1;showOutcomeReward('Wrong path!','You take the wrong path in the fog and lose 1 turn. The dense mist swallows your steps, forcing you to backtrack before you can continue forward.','💔',()=>closeEndTurn());}},
+      {label:'III) Wait for the fog to lift',stat:'con',CD:12,labelSuccess:'Waited!',labelFail:'Weakened!',
+        success:()=>showOutcomeReward('Cleared!','Resisting the cold and damp, you wait patiently. When the fog finally settles and clears, the path ahead opens once more. You continue forward with renewed clarity, unhindered and steady in your progress.','🌫️',()=>closeEndTurn()),
+        fail:()=>{const p=cp();const dmg=pctDamage(p,0.09);p.hp=Math.max(1,p.hp-dmg);showOutcomeReward('Weakened!','The cold and damp seep into your bones, your teeth chattering uncontrollably. Your endurance is weakened, and you lose health, becoming debilitated as you advance through this hostile environment. -'+dmg+' HP','💔',()=>closeEndTurn());}},
     ]
   },
 
   // 7. Caravan Attack
   {id:'caravan_attack',type:'encounter',title:'Caravan Attacked',desc:'A caravan has been attacked.',icon:'🛒',
     options:[
-      {label:'I) Help (STR/DEX/INT)',stat:'str',diff:12,labelSuccess:'Helped!',labelFail:'Couldn\'t help!',
+      {label:'I) Help (STR/DEX/INT)',stat:'str',CD:12,labelSuccess:'Helped!',labelFail:'Couldn\'t help!',
         success:()=>showOutcomeReward('Helped!','You helped the caravan. Draw a card...','🃏',()=>drawCardReward(1)),
         fail:()=>showOutcomeReward('Failed','You couldn\'t help them.','💔',()=>closeEndTurn())},
-      {label:'II) Loot remains',stat:'combat',diff:10,labelSuccess:'Found loot!',labelFail:'Nothing!',
+      {label:'II) Loot remains',stat:'combat',CD:10,labelSuccess:'Found loot!',labelFail:'Nothing!',
         success:()=>showOutcomeReward('Looted!','Found something useful. Draw a card...','🃏',()=>drawCardReward(1)),
         fail:()=>showOutcomeReward('Nothing','Found nothing of value.','💔',()=>closeEndTurn())},
-      {label:'III) Ignore',stat:null,diff:null,labelSuccess:'Ignored',labelFail:null,
+      {label:'III) Ignore',stat:null,CD:null,labelSuccess:'Ignored',labelFail:null,
         success:()=>showOutcomeReward('Ignored','You continued on your way.','🛤️',()=>closeEndTurn()),fail:null},
     ]
   },
@@ -757,9 +869,10 @@ const ROUTE_EVENTS=[
   // 8. Territorial Creature
   {id:'territorial_creature',type:'combat',title:'Territorial Creature',desc:'A beast defends its territory.',icon:'🦖',
     options:[
-      {label:'I) Fight',stat:null,diff:null,labelSuccess:'Fight!',labelFail:null,
-        success:()=>{closeModal();initCombat({name:'Territorial Beast',icon:'🦖',sprite:'🦖',hp:45,maxHp:45,mp:15,maxMp:15,str:5,int:2,dex:4,armorClass:12,skills:[{name:'Bite',cost:0,dmg:0.6,type:'physical',desc:'Bite attack.'},{name:'Roar',cost:5,dmg:0.3,type:'physical',desc:'Roar that deals minor damage.'}]})},fail:null},
-      {label:'II) Run (DEX)',stat:'dex',diff:10,labelSuccess:'Escaped!',labelFail:'Trapped!',
+      {label:'I) Attack (Combat)',stat:'combat',CD:15,labelSuccess:'Defeated!',labelFail:'Retreated!',
+        success:()=>showOutcomeReward('Victory!','The creature is defeated! Draw a card...','🃏',()=>drawCardReward(1)),
+        fail:()=>{const p=cp();const dmg=pctDamage(p,0.14);p.hp=Math.max(1,p.hp-dmg);showOutcomeReward('Wounded!','The creature stands its ground, wounding you deeply. -'+dmg+' HP','💔',()=>closeEndTurn());}},
+      {label:'II) Run (DEX)',stat:'dex',CD:10,labelSuccess:'Escaped!',labelFail:'Trapped!',
         success:()=>showOutcomeReward('Escaped!','You got away safely.','🏃',()=>closeEndTurn()),
         fail:()=>{const p=cp();const dmg=pctDamage(p,0.15);p.hp=Math.max(1,p.hp-dmg);showOutcomeReward('Trapped!','-'+dmg+' HP','💔',()=>closeEndTurn());}},
     ]
@@ -768,10 +881,10 @@ const ROUTE_EVENTS=[
   // 9. Helpless Maiden
   {id:'helpless_maiden',type:'encounter',title:'Helpless Maiden',desc:'A woman by the road asks for help.',icon:'👩',
     options:[
-      {label:'I) Help',stat:'str',diff:12,labelSuccess:'It was a trick!',labelFail:'Saved her?',
+      {label:'I) Help',stat:'str',CD:12,labelSuccess:'It was a trick!',labelFail:'Saved her?',
         success:()=>{GS._maidenTrap=true;initCombat({name:'Maiden Trap',icon:'👹',sprite:'👹',hp:40,maxHp:40,mp:10,maxMp:10,str:4,int:3,dex:4,armorClass:10,skills:[{name:'Backstab',cost:0,dmg:0.8,type:'physical',desc:'Treacherous blow.'}]})},
         fail:()=>{GS._maidenTrap=true;initCombat({name:'Maiden Trap',icon:'👹',sprite:'👹',hp:40,maxHp:40,mp:10,maxMp:10,str:4,int:3,dex:4,armorClass:10,skills:[{name:'Backstab',cost:0,dmg:0.8,type:'physical',desc:'Treacherous blow.'}]})}},
-      {label:'II) Continue journey',stat:null,diff:null,labelSuccess:'Ignored her',labelFail:null,
+      {label:'II) Continue journey',stat:null,CD:null,labelSuccess:'Ignored her',labelFail:null,
         success:()=>showOutcomeReward('Ignored','You continued on your way.','🛤️',()=>closeEndTurn()),fail:null},
     ]
   },
@@ -779,35 +892,38 @@ const ROUTE_EVENTS=[
   // 10. Rare Herbs
   {id:'rare_herbs',type:'exploration',title:'Rare Herbs',desc:'You find a strange plant by the road.',icon:'🌿',
     options:[
-      {label:'I) Cut it (DEX)',stat:'dex',diff:12,labelSuccess:'Got plant!',labelFail:'Pricked!',
+      {label:'I) Cut it (DEX)',stat:'dex',CD:12,labelSuccess:'Got plant!',labelFail:'Pricked!',
         success:()=>{const p=cp();p.inventory.push({id:'rare_herb',name:'Rare Herb',icon:'🌿',type:'consumable',rarity:'rare',desc:'Sellable for 60 gold',sellPrice:60});showOutcomeReward('Collected!','Rare Herb added to inventory!','🌿',()=>closeEndTurn());},
         fail:()=>{const p=cp();p.skipTurns=(p.skipTurns||0)+1;showOutcomeReward('Poison!','Pricked! Lose 1 turn.','💔',()=>closeEndTurn());}},
-      {label:'II) Analyze (INT)',stat:'int',diff:14,labelSuccess:'Identified!',labelFail:'Nothing unusual',
+      {label:'II) Analyze (INT)',stat:'int',CD:14,labelSuccess:'Identified!',labelFail:'Nothing unusual',
         success:()=>showOutcomeReward('Identified!','Valuable but highly poisonous plant!','🌿',()=>closeEndTurn()),
         fail:()=>showOutcomeReward('Nothing','Cannot identify anything unusual.','💔',()=>closeEndTurn())},
-      {label:'III) Continue',stat:null,diff:null,labelSuccess:'Ignored',labelFail:null,
+      {label:'III) Continue',stat:null,CD:null,labelSuccess:'Ignored',labelFail:null,
         success:()=>showOutcomeReward('Ignored','You continued on your way.','🛤️',()=>closeEndTurn()),fail:null},
     ]
   },
 
   // 11. Blocked Path
-  {id:'blocked_path',type:'exploration',title:'Blocked Path',desc:'A fallen tree blocks the way.',icon:'🪵',
+  {id:'blocked_path',type:'exploration',title:'Blocked Path',desc:'A huge fallen tree completely blocks the path. Its branches stretch across the trail, and it looks far too heavy to move easily.',icon:'🪵',
     options:[
-      {label:'I) Cut tree (STR/DEX)',stat:'str',diff:12,labelSuccess:'Cleared!',labelFail:'Too tough!',
-        success:()=>showOutcomeReward('Cleared!','You cleared the path.','🪵',()=>closeEndTurn()),
-        fail:()=>{const p=cp();p.skipTurns=(p.skipTurns||0)+1;showOutcomeReward('Failed','Find another path. Lose 1 turn.','💔',()=>closeEndTurn());}},
-      {label:'II) Find another path',stat:null,diff:null,labelSuccess:'Went around',labelFail:null,
-        success:()=>{const p=cp();p.skipTurns=(p.skipTurns||0)+1;showOutcomeReward('Around','Lost 1 turn going around.','💔',()=>closeEndTurn());},fail:null},
+      {label:'I) You cut or push aside the tree',stat:'str',CD:12,labelSuccess:'Cleared!',labelFail:'Too tough!',
+        success:()=>showOutcomeReward('Cleared!','You manage to move part of the trunk and clear a passage. You continue on your way.','🪵',()=>closeEndTurn()),
+        fail:()=>{const p=cp();p.skipTurns=(p.skipTurns||0)+1;showOutcomeReward('Too heavy!','The trunk is too heavy. You lose 1 turn trying to move it.','💔',()=>closeEndTurn());}},
+      {label:'II) Climb up and pass over',stat:'dex',CD:12,labelSuccess:'Climbed!',labelFail:'Slipped!',
+        success:()=>showOutcomeReward('Climbed!','You climb over the trunk and leap to the other side without any trouble.','🧗',()=>closeEndTurn()),
+        fail:()=>{const p=cp();p.skipTurns=(p.skipTurns||0)+1;showOutcomeReward('Slipped!','You slip among the branches. You lose 1 turn recovering from the fall.','💔',()=>closeEndTurn());}},
+      {label:'III) Find another path',stat:null,CD:null,labelSuccess:'Went around',labelFail:null,
+        success:()=>{const p=cp();p.skipTurns=(p.skipTurns||0)+1;showOutcomeReward('Around','You circle past the tree, between tall grass and swampy terrain. It takes you longer than expected. Loose a turn.','💔',()=>closeEndTurn());},fail:null},
     ]
   },
 
   // 12. Old Man Encounter
   {id:'old_man',type:'encounter',title:'Old Man',desc:'An old man sits by the road, gesturing for you to stop.',icon:'👴',
     options:[
-      {label:'I) Stop and listen',stat:'int',diff:14,labelSuccess:'Thank you!',labelFail:'Kept talking!',
+      {label:'I) Stop and listen',stat:'int',CD:14,labelSuccess:'Thank you!',labelFail:'Kept talking!',
         success:()=>{const p=cp();p.gold+=30;showOutcomeReward('Grateful!','The old man speaks for a long time, telling you stories of his youth and remembering the good days. He notices he held you for a long time and is so happy someone stopped to share some time with him, he gives you some gold!','💰',()=>closeEndTurn());},
         fail:()=>{const p=cp();p.skipTurns=(p.skipTurns||0)+1;showOutcomeReward('Endless stories...','The old man goes on and on about strange stories. You think he might be senile. He holds you for hours and hours.','💔',()=>closeEndTurn());}},
-      {label:'II) Keep walking',stat:null,diff:null,labelSuccess:'Ignored him',labelFail:null,
+      {label:'II) Keep walking',stat:null,CD:null,labelSuccess:'Ignored him',labelFail:null,
         success:()=>showOutcomeReward('Ignored','You continued on your way.','🛤️',()=>closeEndTurn()),fail:null},
     ]
   },
@@ -815,44 +931,44 @@ const ROUTE_EVENTS=[
   // 13. Torrential Rain
   {id:'torrential_rain',type:'punishment',title:'Torrential Rain',desc:'Huge storms ruin your day.',icon:'⛈️',
     options:[
-      {label:'I) Keep walking',stat:'dex',diff:14,labelSuccess:'Made it!',labelFail:'Lost!',
+      {label:'I) Keep walking',stat:'dex',CD:14,labelSuccess:'Made it!',labelFail:'Lost!',
         success:()=>showOutcomeReward('Made it!','You pushed through the storm.','⛈️',()=>closeEndTurn()),
         fail:()=>{const p=cp();const dmg=pctDamage(p,0.08);p.hp=Math.max(1,p.hp-dmg);p.skipTurns=(p.skipTurns||0)+1;showOutcomeReward('Lost!','-'+dmg+' HP and lose 1 turn.','💔',()=>closeEndTurn());}},
-      {label:'II) Rest under tree',stat:'int',diff:14,labelSuccess:'Rested!',labelFail:'Tree hit!',
+      {label:'II) Rest under tree',stat:'int',CD:14,labelSuccess:'Rested!',labelFail:'Tree hit!',
         success:()=>showOutcomeReward('Rested!','You waited out the storm.','⛈️',()=>closeEndTurn()),
         fail:()=>{const p=cp();const dmg=pctDamage(p,0.12);p.hp=Math.max(1,p.hp-dmg);p.skipTurns=(p.skipTurns||0)+1;showOutcomeReward('Lightning!','Tree crushed you! -'+dmg+' HP, lose 1 turn.','💔',()=>closeEndTurn());}},
     ]
   },
 
   // 14. Battle Remains
-  {id:'battle_remains',type:'exploration',title:'Battle Remains',desc:'You find remains of an epic battle.',icon:'⚔️',
+  {id:'battle_remains',type:'exploration',title:'Battle Remains',desc:'You find the remains of an epic battle, bodies and equipment scattered around. Blood covers the road you are passing by. You can feel the battle was vicious. There are no signs of any survivors.',icon:'⚔️',
     options:[
-      {label:'I) Investigate (INT)',stat:'int',diff:12,labelSuccess:'Found item!',labelFail:'Looters!',
-        success:()=>showOutcomeReward('Found!','Found something useful. Draw a card...','🃏',()=>drawCardReward(1)),
-        fail:()=>initCombat({name:'Looter',icon:'🥷',sprite:'🥷',hp:35,maxHp:35,mp:10,maxMp:10,str:4,int:2,dex:4,armorClass:10,skills:[{name:'Steal',cost:0,dmg:0.5,type:'physical',desc:'Quick strike.'}]})},
-      {label:'II) Search corpses (STR)',stat:'str',diff:12,labelSuccess:'Found item!',labelFail:'Looters!',
-        success:()=>showOutcomeReward('Found!','Found something useful. Draw a card...','🃏',()=>drawCardReward(1)),
-        fail:()=>initCombat({name:'Looter',icon:'🥷',sprite:'🥷',hp:35,maxHp:35,mp:10,maxMp:10,str:4,int:2,dex:4,armorClass:10,skills:[{name:'Steal',cost:0,dmg:0.5,type:'physical',desc:'Quick strike.'}]})},
-      {label:'III) Flee',stat:null,diff:null,labelSuccess:'Ignored',labelFail:null,
-        success:()=>showOutcomeReward('Fled','You left the scene.','🏃',()=>closeEndTurn()),fail:null},
+      {label:'I) Investigate if there are reusable items',stat:'int',CD:12,labelSuccess:'Found!',labelFail:'Raiders!',
+        success:()=>showOutcomeReward('Found!','You find an item lying under some ragged cloths.','🃏',()=>drawCardReward(1)),
+        fail:()=>{GS._battleRemains=true;initCombat({name:'Raider Gang',icon:'🥷',sprite:'🥷',hp:50,maxHp:50,mp:15,maxMp:15,str:5,int:2,dex:4,armorClass:12,skills:[{name:'Strike',cost:0,dmg:0.6,type:'physical',desc:'Quick strike.'}]})},
+      {label:'II) You lift the corpses in search of items',stat:'str',CD:12,labelSuccess:'Found!',labelFail:'Raiders!',
+        success:()=>showOutcomeReward('Found!','Under the body of a tall, big warrior, you find an item.','🃏',()=>drawCardReward(1)),
+        fail:()=>{GS._battleRemains=true;initCombat({name:'Raider Gang',icon:'🥷',sprite:'🥷',hp:50,maxHp:50,mp:15,maxMp:15,str:5,int:2,dex:4,armorClass:12,skills:[{name:'Strike',cost:0,dmg:0.6,type:'physical',desc:'Quick strike.'}]})},
+      {label:'III) Flee the scene',stat:null,CD:null,labelSuccess:'Fled',labelFail:null,
+        success:()=>showOutcomeReward('Fled','Before raiders come into the scene, you decide its better to leave this field behind. There is nothing worth the trouble at sight.','🏃',()=>closeEndTurn()),fail:null},
     ]
   },
 
   // 15. Echoes in the Forest
   {id:'echoes_forest',type:'encounter',title:'Echoes in the Forest',desc:'You hear something following you.',icon:'👻',
     options:[
-      {label:'Investigate (DEX)',stat:'dex',diff:14,labelSuccess:'Nothing there!',labelFail:'Minor combat!',
+      {label:'Investigate (DEX)',stat:'dex',CD:14,labelSuccess:'Nothing there!',labelFail:'Minor combat!',
         success:()=>showOutcomeReward('Nothing','It was just the wind.','🍃',()=>closeEndTurn()),
         fail:()=>initCombat({name:'Forest Spirit',icon:'👻',sprite:'👻',hp:30,maxHp:30,mp:15,maxMp:15,str:3,int:3,dex:4,armorClass:10,skills:[{name:'Haunt',cost:5,dmg:0.5,type:'magic',desc:'Ghostly attack.'}]})},
     ]
   },
 
   // 16. Wandering Spirit
-  {id:'wandering_spirit',type:'encounter',title:'Wandering Spirit',desc:'A strange presence.',icon:'🔮',
+  {id:'wandering_spirit',type:'encounter',title:'Wandering Spirit',desc:'You feel a strange presence around, your body feels heavy under this overwhelming energy',icon:'🔮',
     options:[
-      {label:'Confront (INT)',stat:'int',diff:18,labelSuccess:'Buff received!',labelFail:'Debuff!',
-        success:()=>{const p=cp();p.buffTurns=(p.buffTurns||0)+3;showOutcomeReward('Blessed!','Temporary buff for 3 turns!','✨',()=>closeEndTurn());},
-        fail:()=>{const p=cp();p.debuffTurns=(p.debuffTurns||0)+2;showOutcomeReward('Cursed!','Temporary debuff for 2 turns!','💀',()=>closeEndTurn());}},
+      {label:'I) Remember your studies on wandering spirits',stat:'int',CD:18,labelSuccess:'Blessed!',labelFail:'Cursed!',
+        success:()=>{const p=cp();const buffs=['swiftness','unflinching','son_of_sun','raiden','steel_body'];const randomBuff=buffs[Math.floor(Math.random()*buffs.length)];addStatus(p,'buff',randomBuff);showOutcomeReward('Blessed!','You remember when you read about the forest wandering spirit, you show you mean no harm to the living creatures of the forest and the spirit blesses you.','✨',()=>closeEndTurn());},
+        fail:()=>{const p=cp();const debuffs=['wither','oil_body','wet','burn','poisoned','paralyze'];const randomDebuff=debuffs[Math.floor(Math.random()*debuffs.length)];addStatus(p,'debuff',randomDebuff);showOutcomeReward('Cursed!','You know you read about this spirit somewhere but can`t remember where or what to do. You try to speak in the common tongue, but that reminds the spirit of all the mortals that damaged its forest. The spirit curses you.','💀',()=>closeEndTurn());}},
     ]
   },
 ];
@@ -862,23 +978,31 @@ function showRunesLabyrinth(){
   const html=`<div class="mo-title">🏛️ Ancient Labyrinth</div>
     <div class="mo-text">Once you enter the runes, you discover it's an enormous labyrinth. You choose to:</div>
     <div class="mo-choices" style="display:flex;flex-direction:column;gap:6px">
-      <button class="act-btn" onclick="runesLabyrinthChoice('int')">I) Analyze its structure to avoid getting lost (INT)</button>
-      <button class="act-btn" onclick="runesLabyrinthChoice('dex')">II) Check for tracks and try to find the most used path (DEX)</button>
-      <button class="act-btn" onclick="runesLabyrinthChoice('leave')">III) Turn around before entering the maze</button>
+      <button class="act-btn" onclick="runesLabyrinthChoice('explore')">I) Explore the labyrinth calmly, analyzing each rock, grass, and path.</button>
+      <button class="act-btn" onclick="runesLabyrinthChoice('leave')">II) It's too dangerous, continue without entering</button>
     </div>`;
   openModal(null,null,[],html);
 }
 function runesLabyrinthChoice(stat){
-  if(stat==='leave'){closeModal();closeEndTurn();return;}
-  const p=cp();const s=calcStats(p);const diff=stat==='int'?14:12;
-  const roll=Math.floor(Math.random()*20)+1;const total=roll+(stat==='int'?s.int:s.dex);
-  if(total>=diff){
-    closeModal();
-    openModal('🏛️ Success!','You navigate the labyrinth! Gain 2 items from deck 1!',[{label:'Nice!',fn:()=>{drawCardReward(1);setTimeout(()=>drawCardReward(1),100);closeModal();}}]);
-  }else{
-    closeModal();
-    p.skipTurns=(p.skipTurns||0)+2;
-    openModal('🏛️ Lost!','You got lost and took 2 turns to find the exit!',[{label:'Darn...',fn:closeEndTurn}]);
+  if(stat==='leave'){closeModal();showOutcomeReward('Too dangerous...','You scan the labyrinth and note it\'s too big and complicated, you decide to continue your path without entering it.','🛤️',()=>closeEndTurn());return;}
+  if(stat==='explore'){
+    const p=cp();const s=calcStats(p);const diff=14;
+    const roll=Math.floor(Math.random()*20)+1;const total=roll+s.int+s.dex;
+    if(total>=diff){
+      closeModal();
+      openModal('🏛️ Success!','You reach the end of the path. A Chest awaits you—take two item cards.',[{label:'Draw Deck 1!',fn:()=>{
+        closeModal();
+        GS._afterReward = () => {
+          openModal('🏛️ Second Card!','Take a Deck 2 card.',[{label:'Draw Deck 2!',fn:()=>{closeModal();drawCardReward(2);}}]);
+        };
+        drawCardReward(1);
+      }}]);
+    }else{
+      closeModal();
+      p.skipTurns=(p.skipTurns||0)+2;
+      openModal('🏛️ Lost!','You get lost, spending 2 turns to escape the labyrinth.',[{label:'Darn...',fn:closeEndTurn}]);
+    }
+    return;
   }
 }
 
@@ -890,6 +1014,30 @@ function loseRandomItem(p,callback){
   const idx=p.inventory.indexOf(item);
   if(idx>=0)p.inventory.splice(idx,1);
   callback();
+}
+
+// Helper to lose multiple equipment cards
+function loseEquipmentCards(p,count,callback){
+  const equipment=p.inventory.filter(i=>i && i.slot);
+  if(equipment.length===0){callback();return;}
+  let removed=0;
+  for(let i=0;i<Math.min(count,equipment.length);i++){
+    const item=equipment[Math.floor(Math.random()*equipment.length)];
+    const idx=p.inventory.indexOf(item);
+    if(idx>=0){p.inventory.splice(idx,1);removed++;}
+  }
+  if(removed<count){callback();}
+  else{callback();}
+}
+
+// Goblin Ambush combat resolver
+function resolveGoblinCombat(){
+  const p=cp();const s=calcStats(p);const combatStat=getCombatStat(p);
+  const roll=Math.floor(Math.random()*20)+1+combatStat+(GS._combatMod||0);
+  GS._combatMod=0;
+  const diff=11;
+  if(roll>=diff){const g=15+Math.floor(Math.random()*20);p.gold+=g;showOutcomeReward('Victory!','+'+g+' gold','💰',()=>closeEndTurn());}
+  else{const dmg=pctDamage(p,0.11);p.hp=Math.max(1,p.hp-dmg);showOutcomeReward('Defeated!','-'+dmg+' HP','💔',()=>closeEndTurn());}
 }
 
 function getRouteEventCards(count=3){
@@ -905,6 +1053,8 @@ window.showS = function(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   if(id==='charCreation')renderForms();
+  if(id==='testAreaScreen')renderTestArea();
+  if(id==='battleTestScreen')renderBattleTest();
   // Menu has animated background
   if(id==='menuScreen'){
     startMenuAnim();
@@ -912,6 +1062,147 @@ window.showS = function(id){
     stopMenuAnim();
   }
 };
+
+// Test Area - Render event list
+function renderTestArea(){
+  const list=document.getElementById('testEventList');
+  if(!list)return;
+  list.innerHTML=ROUTE_EVENTS.map(e=>`
+    <button class="act-btn" onclick="testEvent('${e.id}')">${e.icon} ${e.title}</button>
+  `).join('');
+}
+
+// Test Area - Start event with test player
+function testEvent(eventId){
+  const event=ROUTE_EVENTS.find(e=>e.id===eventId);
+  if(!event)return;
+  // Create test player (Human Male Warrior)
+  const testPlayer={
+    name:'TestHero',race:'human',gender:'male',class:'warrior',level:1,exp:0,gold:100,
+    hp:100,maxHp:100,mp:30,maxMp:30,statPoints:0,
+    inventory:[],equipped:{weapon:'short_sword',head:null,body:null,feet:null,shield:null,accessory:null},
+    tileIdx:0,allocStr:0,allocInt:0,allocDex:0,allocHp:0,
+    bossesDefeated:0,questsCompleted:0,curses:{},poison:0,skipTurns:0
+  };
+  // Set up game state
+  GS.players=[testPlayer];
+  GS.curP=0;
+  GS.turn=1;
+  GS.initOrder=[0];
+  GS._testMode=true;
+  // Switch to game screen
+  showS('gameScreen');
+  // Trigger the event
+  setEventBackground(event.id);
+  showEventOptions(event);
+}
+
+// Battle Test Area
+let btForm={cls:'warrior',race:'human',gender:'male',name:'Hero'};
+
+function renderBattleTest(){
+  const cf=document.getElementById('btCharForm');
+  if(!cf)return;
+  cf.innerHTML=`
+    <div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:4px">
+        <span style="color:var(--dim);font-size:11px">RACE:</span>
+        <button class="s-btn" onclick="btCycleRace(-1)">◀</button>
+        <span id="btRaceLabel" style="min-width:60px;text-align:center;font-size:12px">${RACES[btForm.race].icon} ${RACES[btForm.race].name}</span>
+        <button class="s-btn" onclick="btCycleRace(1)">▶</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:4px">
+        <span style="color:var(--dim);font-size:11px">CLASS:</span>
+        <button class="s-btn" onclick="btCycleClass(-1)">◀</button>
+        <span id="btClassLabel" style="min-width:70px;text-align:center;font-size:12px">${renderIcon(CLASSES[btForm.cls].icon,CLASSES[btForm.cls].fallback)} ${CLASSES[btForm.cls].name}</span>
+        <button class="s-btn" onclick="btCycleClass(1)">▶</button>
+      </div>
+      <input type="text" id="btNameInput" value="${btForm.name}" style="width:100px;background:rgba(0,0,0,0.5);border:1px solid var(--border);color:var(--text);padding:4px" maxlength="12">
+    </div>
+  `;
+  // Render boss lists
+  const mbList=document.getElementById('btMiniBossList');
+  const fbList=document.getElementById('btFinalBossList');
+  if(mbList){
+    mbList.innerHTML=MINI_BOSSES.map((b,i)=>`
+      <button class="act-btn" onclick="startBattleTest('mini',${i})">${b.icon} ${b.name}</button>
+    `).join('');
+  }
+  if(fbList){
+    fbList.innerHTML=FINAL_BOSSES.map((b,i)=>`
+      <button class="act-btn" onclick="startBattleTest('final',${i})">${b.icon} ${b.name}</button>
+    `).join('');
+  }
+}
+
+function btCycleRace(dir){
+  const races=Object.keys(RACES);
+  let idx=races.indexOf(btForm.race);
+  idx=(idx+dir+races.length)%races.length;
+  btForm.race=races[idx];
+  renderBattleTest();
+}
+
+function btCycleClass(dir){
+  const classes=Object.keys(CLASSES);
+  let idx=classes.indexOf(btForm.cls);
+  idx=(idx+dir+classes.length)%classes.length;
+  btForm.cls=classes[idx];
+  renderBattleTest();
+}
+
+function startBattleTest(type, idx){
+  const boss=type==='mini'?MINI_BOSSES[idx]:FINAL_BOSSES[idx];
+  const nameInput=document.getElementById('btNameInput');
+  btForm.name=nameInput?nameInput.value:'Hero';
+  
+  const base=CLASSES[btForm.cls];
+  // Create test player with full equipment
+  const testPlayer={
+    name:btForm.name,race:btForm.race,gender:btForm.gender,class:btForm.cls,level:1,exp:0,gold:500,
+    hp:base.hp,maxHp:base.hp,mp:base.mp,maxMp:base.mp,statPoints:0,
+    inventory:[],equipped:{},
+    tileIdx:0,allocStr:0,allocInt:0,allocDex:0,allocHp:0,
+    bossesDefeated:0,questsCompleted:0,curses:{},poison:0,skipTurns:0
+  };
+  
+  // Give some starter items based on class
+  const starterItems={
+    mage:['apprentice_staff','cloth_robe','worn_boots','iron_ring'],
+    warrior:['short_sword','tower_shield','leather_cap','iron_ring'],
+    ranger:['short_bow','leather_vest','worn_boots','iron_ring'],
+    monk:['iron_knuckles','monks_gi','worn_boots','iron_ring'],
+    rogue:['rusty_dagger','leather_vest','worn_boots','iron_ring']
+  };
+  const items=starterItems[btForm.cls]||starterItems.warrior;
+  items.forEach(itId=>{
+    const it=ITEMS[itId];
+    if(it){
+      testPlayer.inventory.push({...it});
+      if(it.slot && !testPlayer.equipped[it.slot]){
+        testPlayer.equipped[it.slot]=itId;
+      }
+    }
+  });
+  
+  // Set up boss object
+  const b={...boss};
+  b.hp=b.maxHp;
+  b.isMiniBoss=type==='mini';
+  b.isFinalBoss=type==='final';
+  if(b.maxMp)b.mp=b.maxMp;
+  
+  // Set up game state
+  GS.players=[testPlayer];
+  GS.curP=0;
+  GS.turn=1;
+  GS.initOrder=[0];
+  GS._testMode=true;
+  
+  // Start combat
+  showS('gameScreen');
+  setTimeout(()=>initCombat(b),100);
+}
 
 let menuAnimId = null;
 function startMenuAnim(){
@@ -1945,15 +2236,24 @@ function drawHeroSprite(ctx,cx,cy,cls,color,isCur,name, scale = 1, race = 'human
   // Draw character image
   ctx.drawImage(img, drawX, drawY, sw, sh);
   
-  // Current player glow
+  // Current player glow - enhanced
   if (isCur) {
     ctx.save();
+    // Outer glow circle
     ctx.shadowColor = '#ffe840';
-    ctx.shadowBlur = 25;
+    ctx.shadowBlur = 30;
+    ctx.strokeStyle = '#ffe840';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(cx, cy, sw * 0.8, 0, Math.PI * 2);
+    ctx.stroke();
+    // Reset shadow for inner elements
+    ctx.shadowBlur = 0;
+    // Ground highlight ellipse
     ctx.strokeStyle = '#ffe840';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.ellipse(cx, drawY + sh - 2, sw * 0.35, sh * 0.07, 0, 0, Math.PI * 4);
+    ctx.ellipse(cx, drawY + sh - 2, sw * 0.4, sh * 0.08, 0, 0, Math.PI * 4);
     ctx.stroke();
     ctx.restore();
   }
@@ -2012,7 +2312,7 @@ bCv.addEventListener('click',e=>{
 // ══════════════════════════════════════════════════════
 //  GAME STATE
 // ══════════════════════════════════════════════════════
-const GS={players:[],curP:0,turn:0,phase:'roll',initOrder:[],highlightedTiles:[],diceVal:0,shopItems:[],currentCards:[],combat:null,_assignedMainQuests:{},_afterReward:null};
+const GS={players:[],curP:0,turn:0,phase:'roll',initOrder:[],highlightedTiles:[],diceVal:0,shopItems:[],currentCards:[],combat:null,_assignedMainQuests:{},_afterReward:null,_combatMod:0};
 let playerCount=4,pForms=[];
 
 function recordVisit(p,tileIdx){if(!p.visitHistory)p.visitHistory=[];p.visitHistory.push({tile:tileIdx,turn:GS.turn});p.visitHistory=p.visitHistory.filter(v=>GS.turn-v.turn<8);}
@@ -2028,6 +2328,39 @@ function calcStats(p){
     if(it.ac)ac+=it.ac;if(it.spd)spd+=it.spd;if(it.mp)mpBonus+=it.mp;
   });
   return{str,int,dex,ac,spd,mpBonus,hp};
+}
+
+// Base stats without equipment (for route events outside combat)
+function getBaseStats(p){
+  const base=CLASSES[p.class];
+  return{
+    str: base.str + (p.allocStr||0),
+    int: base.int + (p.allocInt||0),
+    dex: base.dex + (p.allocDex||0),
+    con: base.con + (p.allocCon||0)
+  };
+}
+
+// Event background image handler
+function setEventBackground(eventId){
+  const bg=document.getElementById('eventBg');
+  if(!bg)return;
+  console.log('Loading event background:', 'assets/event/'+eventId+'.jpeg');
+  const img=new Image();
+  img.onload=function(){
+    console.log('Event background loaded!');
+    bg.style.backgroundImage=`url('assets/event/${eventId}.jpeg')`;
+    bg.style.display='block';
+  };
+  img.onerror=function(){
+    console.log('Event background NOT found:', 'assets/event/'+eventId+'.jpeg');
+    bg.style.display='none';
+  };
+  img.src=`assets/event/${eventId}.jpeg`;
+}
+function clearEventBackground(){
+  const bg=document.getElementById('eventBg');
+  if(bg){bg.style.display='none';bg.style.backgroundImage='';}
 }
 
 // ══════════════════════════════════════════════════════
@@ -2305,7 +2638,7 @@ function rollInit(){
     <div style="text-align:center;min-width:80px">
       <div style="font-size:11px;color:${rv.p.color||'var(--gold)'};margin-bottom:6px;
                   font-family:'Cinzel',serif;white-space:nowrap">
-        ${CLASSES[rv.p.class].icon} ${rv.p.name}
+        ${renderIcon(CLASSES[rv.p.class].icon,CLASSES[rv.p.class].fallback)} ${rv.p.name}
       </div>
       <div id="initDie${i}" class="dice"
            style="width:58px;height:58px;font-size:44px;margin:0 auto;border-radius:6px;
@@ -2379,7 +2712,7 @@ function rollInit(){
         <ul class="init-list">
           ${sorted.map((r,k)=>`
             <li style="animation-delay:${k*.1}s">
-              <span>${k+1}. ${CLASSES[r.p.class].icon} ${r.p.name}</span>
+              <span>${k+1}. ${renderIcon(CLASSES[r.p.class].icon,CLASSES[r.p.class].fallback)} ${r.p.name}</span>
               <span class="i-score" style="color:${k===0?'var(--gold)':'var(--text)'}">
                 ${r.r}+${r.dex}=${r.score}
               </span>
@@ -2394,7 +2727,7 @@ function rollInit(){
       d.className='mo-choices'; d.style.marginTop='14px';
       const b=document.createElement('button');
       b.className='act-btn pri';
-      b.textContent=`▶ Begin — ${CLASSES[GS.players[GS.curP].class].icon} ${GS.players[GS.curP].name} goes first`;
+      b.textContent=`▶ Begin — ${renderIcon(CLASSES[GS.players[GS.curP].class].icon,CLASSES[GS.players[GS.curP].class].fallback)} ${GS.players[GS.curP].name} goes first`;
       b.onclick=()=>{closeModal();startTurn();};
       d.appendChild(b); mbx.appendChild(d);
     }
@@ -2407,6 +2740,49 @@ function rollInit(){
 function startTurn(){
   const p=cp();
   const cls=CLASSES[p.class];
+  
+  // Initialize status if not exists
+  if(!p.status) p.status = {};
+  
+  // Apply buff effects at start of turn
+  if(p.status.swiftness){
+    // 2x movement - handled in rollDice
+  }
+  if(p.status.unflinching){
+    // +2 CA - handled in combat
+  }
+  if(p.status.son_of_sun){
+    // Immune to fire - handled in combat
+  }
+  if(p.status.raiden){
+    // Immune to lightning - handled in combat
+  }
+  if(p.status.steel_body){
+    // Resist slash/pierce - handled in combat
+  }
+  
+  // Apply debuff effects at start of turn
+  if(p.status.paralyze){
+    const roll = Math.floor(Math.random()*20)+1;
+    if(roll <= 10){
+      toast(`⚡ ${p.name} is paralyzed! Loses turn (rolled ${roll})`,'bad');
+      p.skipTurns = 1;
+      endTurn();
+      return;
+    } else {
+      toast(`⚡ ${p.name} shakes off paralysis! Acts normally (rolled ${roll})`,'good');
+    }
+  }
+  
+  // Check skipTurns (from previous turn)
+  if(p.skipTurns && p.skipTurns > 0){
+    p.skipTurns--;
+    if(p.skipTurns > 0){
+      toast(`${p.name} skips turn (${p.skipTurns} left)`,'imp');
+      endTurn();
+      return;
+    }
+  }
   
   // Center camera on current player
   if(p.tileIdx !== undefined && board.tiles[p.tileIdx]){
@@ -2448,23 +2824,37 @@ function rollDice(){
   const p=cp();
   const base=Math.floor(Math.random()*6)+1;
   let moveMod=(p.rollBonus||0)+(p.moveBonus||0);
+  // Apply swiftness (2x movement) and wither (50% movement) buffs/debuffs
+  if(p.status && p.status.swiftness){
+    // Double movement - handled after roll
+  }
+  if(p.status && p.status.wither){
+    moveMod -= Math.floor(base/2); // 50% reduction
+  }
   if((p.curses||{}).suffocate>0)moveMod-=1;
   const roll=base+moveMod;
-  GS.diceVal=roll;
+  
+  // Apply swiftness: double the final movement
+  const finalMove = p.status && p.status.swiftness ? roll * 2 : roll;
+  
+  GS.diceVal=finalMove;
   const de=document.getElementById('mainDice');
   de.classList.add('rolling');de.textContent='?';
   let ticks=0;
   const iv=setInterval(()=>{
     de.textContent=Math.floor(Math.random()*6)+1;
     if(++ticks>8){
-      clearInterval(iv);de.textContent=roll;de.classList.remove('rolling');
-      toast(`${p.name} rolled ${roll}!`);
+      clearInterval(iv);de.textContent=finalMove;de.classList.remove('rolling');
+      const swiftMsg = p.status && p.status.swiftness ? ` (${roll} x2 swiftness)` : '';
+      toast(`${p.name} rolled ${finalMove}!${swiftMsg}`);
       GS.phase='move';
-      const reach=getReach(p.tileIdx,roll).filter(t=>!wasVisitedRecently(p,t));
+      const reach=getReach(p.tileIdx,finalMove).filter(t=>!wasVisitedRecently(p,t));
       GS.highlightedTiles=reach;
       if(reach.length===0){toast(`No valid tiles (all visited recently). Skipped.`,'bad');endTurn();return;}
       renderActs();
     }
+  },80);
+}
   },80);
 }
 
@@ -2545,18 +2935,19 @@ function triggerEv(tileIdx){
     case 'side': openSideQuestDeck(); break;
     case 'miniboss': doMiniBoss(); break;
     case 'finalboss': doFinalBoss(); break;
-    default: endTurn();
+      default: closeEndTurn();
   }
 }
 function doNormal(){
   const p=cp();
   if(Math.random() < 0.2){
-    openModal('🌿 Uneventful','Nothing eventful happens along the road.',[{label:'Continue',fn:closeEndTurn}]);
+    openModal('🌿 Uneventful','Nothing eventful happens along the road.',[{label:'Continue',fn:()=>{clearEventBackground();closeEndTurn();}}]);
   }else{
     // Show all route events as face-down cards
     const cards = ROUTE_EVENTS;
     showCardSelection(cards, (selectedCard) => {
       if(selectedCard && selectedCard.options){
+        setEventBackground(selectedCard.id);
         // New multi-option event
         showEventOptions(selectedCard);
       }else if(selectedCard && selectedCard.action){
@@ -2570,9 +2961,18 @@ function doNormal(){
 
 // Show event options for new route events
 function showEventOptions(event){
-  const optionsHtml = event.options.map((opt,i)=>`
-    <button class="act-btn" onclick="handleEventOption('${event.id}',${i})">${opt.label}</button>
-  `).join('');
+  const optionsHtml = event.options.map((opt,i)=>{
+    let disabled = '';
+    let style = '';
+    if(opt.condition){
+      const condResult = opt.condition();
+      if(!condResult){
+        disabled = 'disabled';
+        style = 'opacity:0.4;cursor:not-allowed';
+      }
+    }
+    return `<button class="act-btn" onclick="${disabled?'':`handleEventOption('${event.id}',${i})`}" ${disabled?'disabled':''} style="${style}">${opt.label}</button>`;
+  }).join('');
   const html = `
     <div class="mo-title">${event.icon} ${event.title}</div>
     <div class="mo-text">${event.desc}</div>
@@ -2583,6 +2983,59 @@ function showEventOptions(event){
 }
 
 // Handle player's choice in an event
+// Get player's inspiration cards
+function getInspirationCards(){
+  const p=cp();
+  return (p.inventory||[]).filter(i=>i.type==='inspiration');
+}
+
+// Show inspiration card selection before rolling
+function showInspirationPrompt(callback){
+  const inspirations = getInspirationCards();
+  if(inspirations.length === 0){
+    callback();
+    return;
+  }
+  
+  const cardsHtml = inspirations.map((c,i)=>`
+    <div class="gcard" onclick="selectInspirationCard(${i})" style="width:100px;cursor:pointer">
+      <div style="font-size:36px;margin-bottom:5px">${c.icon}</div>
+      <div style="font-size:9px;color:var(--gold)">${c.name}</div>
+      <div style="font-size:8px;color:var(--dim)">${c.desc}</div>
+    </div>
+  `).join('');
+  
+  // Store the callback for when card is selected
+  GS._inspirationCallback = callback;
+  
+  openModal('💡 Inspiration Available!','You have inspiration cards! Use one for +2 to your roll?',[
+    {label:'Roll Normally',fn:()=>{closeModal();callback();}}
+  ],`<div style="text-align:center;margin-bottom:15px">${cardsHtml}</div>`);
+}
+
+function selectInspirationCard(cardIdx){
+  const p=cp();
+  const inspirations = getInspirationCards();
+  const card = inspirations[cardIdx];
+  if(!card){closeModal();return;}
+  
+  // Remove the card from inventory
+  const cardIndex = p.inventory.findIndex(i=>i.type==='inspiration' && i.id === card.id);
+  if(cardIndex > -1){
+    p.inventory.splice(cardIndex, 1);
+  }
+  
+  GS._inspirationBonus = card.effect || 2;
+  closeModal();
+  toast(`Used ${card.name}! +${GS._inspirationBonus} to roll`,'good');
+  
+  // Execute the callback
+  if(GS._inspirationCallback){
+    GS._inspirationCallback();
+    GS._inspirationCallback = null;
+  }
+}
+
 function handleEventOption(eventId, optIdx){
   const event = ROUTE_EVENTS.find(e=>e.id===eventId);
   if(!event || !event.options[optIdx]){closeModal();closeEndTurn();return;}
@@ -2591,31 +3044,52 @@ function handleEventOption(eventId, optIdx){
   // If no stat check needed
   if(!opt.stat){
     closeModal();
-    // Just show outcome and end turn
-    openModal(opt.labelSuccess || 'Continued...', '', [{label:'OK', fn:closeEndTurn}]);
+    // Call custom success function if defined
+    if(opt.success){
+      opt.success();
+    }else{
+      openModal(opt.labelSuccess || 'Continued...', '', [{label:'OK', fn:closeEndTurn}]);
+    }
     return;
   }
   
-  // Perform stat check
+  // Check for inspiration and show prompt
+  const inspirations = getInspirationCards();
+  if(inspirations.length > 0){
+    showInspirationPrompt(() => doEventRoll(eventId, optIdx));
+  } else {
+    doEventRoll(eventId, optIdx);
+  }
+}
+
+function doEventRoll(eventId, optIdx){
+  const event = ROUTE_EVENTS.find(e=>e.id===eventId);
+  const opt = event.options[optIdx];
+  
+  // Perform stat check (no equipment bonuses for route events)
   const p=cp();
-  const s=calcStats(p);
+  const s=getBaseStats(p);
   let statVal;
   if(opt.stat==='combat') statVal=getCombatStat(p);
-  else if(opt.stat==='con') statVal=s.str; // CON not implemented yet, use STR as fallback
+  else if(opt.stat==='avg_dex_str') statVal=Math.floor((s.dex + s.str)/2);
+  else if(opt.stat==='con') statVal=s.con;
   else statVal=s[opt.stat]||0;
   
-  const diff=opt.diff||10;
+  const diff=opt.CD||10;
   const roll=Math.floor(Math.random()*20)+1;
-  const total=roll+statVal;
+  const inspirationBonus = GS._inspirationBonus || 0;
+  GS._inspirationBonus = 0;
+  const total=roll+statVal+inspirationBonus;
   const success=total>=diff;
   
   // Show the roll result
-  const statName = {int:'INT',dex:'DEX',str:'STR',combat:'Combat'}[opt.stat]||opt.stat;
+  const statName = {int:'INT',dex:'DEX',str:'STR',combat:'Combat',avg_dex_str:'DEX+STR',con:'CON'}[opt.stat]||opt.stat;
+  const bonusText = inspirationBonus > 0 ? `<span style="color:var(--gold)"> +${inspirationBonus} (Inspiration)</span>` : '';
   const outcomeHtml = `
     <div style="text-align:center">
       <div style="font-size:48px;margin-bottom:10px">${success?'✅':'❌'}</div>
       <div style="font-size:16px;color:var(--gold);margin-bottom:10px">${success?opt.labelSuccess:opt.labelFail}</div>
-      <div style="font-size:12px;color:var(--dim)">Roll: ${roll} + ${statName}:${statVal} = ${total} vs DC:${diff}</div>
+      <div style="font-size:12px;color:var(--dim)">Roll: ${roll} + ${statName}:${statVal}${bonusText} = ${total} vs CD:${diff}</div>
     </div>`;
   
   closeModal();
@@ -2706,13 +3180,13 @@ function acceptSideQuest(idx){
   const p=cp();
   if(!p.sideQuests) p.sideQuests=[];
   const q=GS._sqDeck?.[idx]; if(!q) return;
-  if(p.sideQuests.length>=3){ toast('Already at 3 side quests.','bad'); closeModal(); endTurn(); return; }
+  if(p.sideQuests.length>=3){ toast('Already at 3 side quests.','bad'); closeModal(); closeEndTurn(); return; }
   p.sideQuests.push({id:q.id,name:q.name,desc:q.desc,progress:0,goal:1});
   toast(`Side quest accepted: ${q.name}`,'good');
-  closeModal(); endTurn(); updPlayers();
+  closeModal(); closeEndTurn(); updPlayers();
 }
 function declineSideQuest(){
-  closeModal(); endTurn();
+  closeModal(); closeEndTurn();
 }
 
 // ── VILLAGE SHOP ──
@@ -3054,7 +3528,7 @@ function readMainQuest(idx){
     </div>`;
   openModal(null,null,[
     {label:'Accept the quest',fn:()=>{closeModal();assignMainQuest(idx);}},
-    {label:'Decline the quest',fn:()=>{closeModal();endTurn();}}
+    {label:'Decline the quest',fn:()=>{closeModal();closeEndTurn();}}
   ],html);
 }
 function assignMainQuest(idx){
@@ -3065,7 +3539,7 @@ function assignMainQuest(idx){
   GS._assignedMainQuests[q.id]=GS.curP;
   p.inventory.push({id:`quest:${q.id}`,name:q.name,icon:'📜',rarity:'quest',type:'quest_card',desc:q.objective});
   toast(`${p.name} accepted "${q.name}"!`,'good');
-  closeModal(); endTurn(); updPlayers();
+  closeModal(); closeEndTurn(); updPlayers();
 }
 function openQuests(pi){
   const p=GS.players[pi];
@@ -3753,8 +4227,89 @@ function doEnemyTurn(){
   // Reset Fierce Attack decrement flag for player's next turn
   c._fierceDecremented = false;
   
-  const affordable=e.skills.filter(sk=>(e.mp||99)>=sk.cost);
-  const sk=affordable.length?affordable[Math.floor(Math.random()*affordable.length)]:e.skills[0];
+  // Get affordable skills
+  const affordable = e.skills.filter(sk => (e.mp||99) >= sk.cost);
+  if(affordable.length === 0){
+    // No MP for any skill, use basic attack
+    const sk = e.skills[0];
+    executeEnemySkill(sk);
+    return;
+  }
+  
+  // Smart skill selection based on player class
+  let selectedSkill = null;
+  const playerClass = p.class;
+  
+  // Check for buffs/debuffs on enemy
+  const enemyHasBuff = e._buffAC > 0 || e._buffStr > 0;
+  
+  // Priority 1: Use healing if enemy HP is low (< 30%)
+  if(e.hp < e.maxHp * 0.3){
+    const healSkills = affordable.filter(sk => sk.type === 'buff' && sk.hp);
+    if(healSkills.length > 0){
+      selectedSkill = healSkills[Math.floor(Math.random() * healSkills.length)];
+    }
+  }
+  
+  // Priority 2: Use STR buff if enemy doesn't have one
+  if(!selectedSkill && !enemyHasBuff){
+    const strBuffs = affordable.filter(sk => sk.type === 'buff' && sk.str);
+    if(strBuffs.length > 0){
+      selectedSkill = strBuffs[Math.floor(Math.random() * strBuffs.length)];
+    }
+  }
+  
+  // Priority 3: Class-specific attacks
+  if(!selectedSkill){
+    // Check for fire/lightning immunity from player buffs
+    const playerHasFireImmunity = p.status && p.status.son_of_sun;
+    const playerHasLightningImmunity = p.status && p.status.raiden;
+    const playerHasSteelBody = p.status && p.status.steel_body;
+    
+    // Filter skills based on effectiveness
+    let preferredSkills = [];
+    
+    if(playerClass === 'warrior'){
+      // Warriors have low INT, use magic attacks
+      preferredSkills = affordable.filter(sk => sk.type === 'magic');
+    } else if(playerClass === 'mage'){
+      // Mages have low STR, use physical attacks
+      preferredSkills = affordable.filter(sk => sk.type === 'physical');
+    } else if(playerClass === 'rogue'){
+      // Rogues have high evasion, use multi-hit or stun
+      preferredSkills = affordable.filter(sk => sk.hits > 1 || sk.stun);
+    } else if(playerClass === 'ranger'){
+      // Rangers are balanced, use any
+      preferredSkills = affordable;
+    } else if(playerClass === 'monk'){
+      // Monks have good defense, use heavy attacks
+      preferredSkills = affordable.filter(sk => sk.dmg && sk.dmg > 0.8);
+    }
+    
+    // Filter out ineffective skills
+    if(playerHasFireImmunity){
+      preferredSkills = preferredSkills.filter(sk => !sk.element || sk.element !== 'fire');
+    }
+    if(playerHasLightningImmunity){
+      preferredSkills = preferredSkills.filter(sk => !sk.element || sk.element !== 'lightning');
+    }
+    
+    // Pick from preferred, or fallback to random
+    if(preferredSkills.length > 0){
+      selectedSkill = preferredSkills[Math.floor(Math.random() * preferredSkills.length)];
+    }
+  }
+  
+  // Fallback: random skill
+  if(!selectedSkill){
+    selectedSkill = affordable[Math.floor(Math.random() * affordable.length)];
+  }
+  
+  executeEnemySkill(selectedSkill);
+}
+
+function executeEnemySkill(sk){
+  const p=cp(),c=GS.combat,e=c.enemy;
   const html=`
     <div class="mo-title">👾 ${e.name} acts!</div>
     <div class="mo-text">${e.name} uses: <strong style="color:var(--gold)">${sk.name}</strong><br><span style="font-size:10px;color:var(--dim)">${sk.desc||''}</span></div>
@@ -3772,8 +4327,57 @@ function doEnemyTurn(){
 
 function resolveEnemyAttack(sk,roll){
   const p=cp(),c=GS.combat,e=c.enemy;
-  const playerAC=p.armorClass||12;
-  const defMult=c.defending?c.tempDefMult:1.0;
+  const playerClass = p.class;
+  const baseAC = p.armorClass || 12;
+  let playerAC = baseAC;
+  
+  // Apply unflinching buff (+2 AC)
+  if(p.status && p.status.unflinching){
+    playerAC += 2;
+  }
+  
+  // Apply steel body AC bonus if applicable
+  if(p.status && p.status.steel_body){
+    playerAC += 2;
+  }
+  
+  // Calculate defense modifier based on player status
+  let defMult=c.defending?c.tempDefMult:1.0;
+  
+  // Apply unflinching buff (+2 AC)
+  if(p.status && p.status.unflinching){
+    // Handled in AC calculation
+  }
+  
+  // Apply SteelBody (50% damage from slashing/piercing)
+  if(p.status && p.status.steel_body && sk.damageType){
+    if(sk.damageType === 'slashing' || sk.damageType === 'piercing'){
+      defMult *= 0.5;
+    }
+  }
+  
+  // Apply Oil Body (200% fire damage)
+  if(p.status && p.status.oil_body && sk.element === 'fire'){
+    defMult *= 2.0;
+  }
+  
+  // Apply Wet (200% lightning damage)
+  if(p.status && p.status.wet && sk.element === 'lightning'){
+    defMult *= 2.0;
+  }
+  
+  // Check fire immunity (Son of the Sun)
+  if(p.status && p.status.son_of_sun && sk.element === 'fire'){
+    openModal('☀️ Blocked!','Your Son of the Sun buff makes you immune to fire damage!',[{label:'OK',fn:()=>{closeModal();c.log.push('☀️ Fire attack blocked by immunity!');renderCombat();doPlayerTurn();}}]);
+    return;
+  }
+  
+  // Check lightning immunity (Raiden)
+  if(p.status && p.status.raiden && sk.element === 'lightning'){
+    openModal('⚡ Blocked!','Your Raiden buff makes you immune to lightning damage!',[{label:'OK',fn:()=>{closeModal();c.log.push('⚡ Lightning attack blocked by immunity!');renderCombat();doPlayerTurn();}}]);
+    return;
+  }
+  
   c.defending=false;c.tempDefMult=0.5;
   let dmg=0;
   if(sk.type==='buff'){
@@ -3833,7 +4437,7 @@ function resolveEnemyAttack(sk,roll){
 }
 
 function closeCombatFled(){
-  closeModal();toast(`${cp().name} escaped!`,'good');GS.combat=null;endTurn();
+  closeModal();toast(`${cp().name} escaped!`,'good');GS.combat=null;closeEndTurn();
 }
 function combatWin(){
   const p=cp(),e=GS.combat.enemy;closeModal();spawnPtc(window.innerWidth/4,window.innerHeight/4,'#f0c060',40);
@@ -3843,6 +4447,13 @@ function combatWin(){
     GS._maidenTrap=false;
     p.gold+=20;
     openModal('👹 Trap Defeated!','You saw through the trick! Gained 20 gold!',[{label:'Nice!',fn:()=>{closeModal();combatWinContinue(p,e);}}]);
+    return;
+  }
+  
+  // Special: Battle Remains - win gives deck 1 card
+  if(GS._battleRemains){
+    GS._battleRemains=false;
+    openModal('🎉 Victory!','You defeated the raiders! Draw a card...',[{label:'Draw!',fn:()=>{closeModal();drawCardReward(1);combatWinContinue(p,e);}}]);
     return;
   }
   
@@ -4011,6 +4622,15 @@ function combatLose(){
     return;
   }
   
+  // Special: Battle Remains - lose takes 12% HP damage
+  if(GS._battleRemains){
+    GS._battleRemains=false;
+    const dmg=Math.floor(p.maxHp * 0.12);
+    p.hp = Math.max(1, p.hp - dmg);
+    openModal('💔 Defeated!','The raiders overpower you! You take '+dmg+' damage!',[{label:'OK',fn:()=>{closeModal();combatLoseContinue(p,e);}}]);
+    return;
+  }
+  
   combatLoseContinue(p,e);
 }
 
@@ -4079,7 +4699,7 @@ function drawCardReward(star){
   if(isExtra){pool=Object.values(ITEMS).filter(it=>(it.type==='consumable'||it.type==='accessory')&&it.rarity===rar&&it.classes.includes(p.class));}
   else{pool=Object.values(ITEMS).filter(it=>it.type!=='consumable'&&it.rarity===rar&&it.classes.includes(p.class));}
   if(!pool.length)pool=Object.values(ITEMS).filter(it=>it.rarity==='common'&&it.classes.includes(p.class));
-  if(!pool.length){endTurn();return;}
+  if(!pool.length){closeEndTurn();return;}
   const cards=[...pool].sort(()=>Math.random()-.5).slice(0,Math.min(3,pool.length));
   GS.currentCards=cards;
 
@@ -4165,7 +4785,7 @@ function pickCard(idx){
     if(GS._afterReward){
       const fn=GS._afterReward; GS._afterReward=null; fn();
     } else {
-      endTurn();
+      closeEndTurn();
     }
     updPlayers();
   },1200);
@@ -4202,78 +4822,48 @@ function openCharacterCard(playerIdx){
   const totalBaseStr = base.str + allocStr, totalBaseInt = base.int + allocInt, totalBaseDex = base.dex + allocDex;
   const overall = Math.floor((s.str + s.int + s.dex + s.ac + (s.str+s.int+s.dex) / 3) / 4);
   
+  const raceKey = p.race || 'human';
+  const genderKey = p.gender || 'male';
+  const classKey = p.class;
+  const cardImage = `assets/cards/${raceKey}_${genderKey}_${classKey}.png`;
+  
   const classTheme = {
-    mage:   { bg:'linear-gradient(180deg,#0a2a6a 0%,#0d3b8f 50%,#061a3a 100%)', border:'#69b4ff', glow:'#69b4ff', back:'linear-gradient(180deg,#0b1840 0%,#09122a 100%)' },
-    warrior:{ bg:'linear-gradient(180deg,#5a0a0a 0%,#8a1b1b 50%,#3a0a0a 100%)', border:'#ff6b6b', glow:'#ff6b6b', back:'linear-gradient(180deg,#2a0808 0%,#1a0404 100%)' },
-    ranger: { bg:'linear-gradient(180deg,#0a4a1a 0%,#1b6a2a 50%,#083818 100%)', border:'#7ed957', glow:'#7ed957', back:'linear-gradient(180deg,#083015 0%,#061e10 100%)' },
-    monk:   { bg:'linear-gradient(180deg,#7a4a1a 0%,#a05a1a 50%,#4a2a0a 100%)', border:'#ffb347', glow:'#ffb347', back:'linear-gradient(180deg,#3a1f0a 0%,#281407 100%)' }
+    mage:   { border:'#69b4ff', glow:'#69b4ff' },
+    warrior:{ border:'#ff6b6b', glow:'#ff6b6b' },
+    ranger: { border:'#7ed957', glow:'#7ed957' },
+    monk:   { border:'#ffb347', glow:'#ffb347' },
+    rogue:  { border:'#a0a0a0', glow:'#a0a0a0' }
   };
-  const cardColor = classTheme[p.class] || { bg:'linear-gradient(180deg,#333 0%,#222 50%,#111 100%)', border:'#d4af37', glow:'#d4af37', back:'linear-gradient(180deg,#1a1a1a 0%,#0a0a0a 100%)' };
+  const cardColor = classTheme[classKey] || { border:'#d4af37', glow:'#d4af37' };
   
   let html = `
     <div style="display:flex;gap:40px;padding:40px;justify-content:center;flex-wrap:wrap">
-      <div id="fifaCard" onclick="this.classList.toggle('flipped')" style="width:320px;height:480px;cursor:pointer;perspective:1000px">
+      <div onclick="this.classList.toggle('flipped')" style="width:320px;height:480px;cursor:pointer;perspective:1000px">
         <div style="width:100%;height:100%;position:relative;transition:transform 0.6s;transform-style:preserve-3d" id="cardInner">
+          <!-- FRONT -->
           <div style="position:absolute;width:100%;height:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden">
-            <div style="width:320px;height:480px;background:${cardColor.bg};border:4px solid ${cardColor.border};border-radius:16px;padding:12px;box-shadow:0 0 30px ${cardColor.glow}40,0 10px 40px rgba(0,0,0,0.5),inset 0 2px 0 rgba(255,255,255,0.3);position:relative;overflow:hidden;box-sizing:border-box">
-              <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(255,255,255,0.2) 0%,transparent 50%,transparent 100%);pointer-events:none"></div>
-              <div style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,0.8);border-radius:4px;padding:3px 8px;border:2px solid ${cardColor.border}">
-                <div style="font-size:32px;color:${cardColor.border};font-weight:900;line-height:1;text-shadow:0 2px 2px rgba(0,0,0,0.5)">${overall}</div>
-                <div style="font-size:7px;color:#fff;text-align:center;font-weight:bold">OVR</div>
+            <div style="width:320px;height:480px;background:url('${cardImage}') center/cover no-repeat;border:4px solid ${cardColor.border};border-radius:16px;box-shadow:0 0 30px ${cardColor.glow}40,0 10px 40px rgba(0,0,0,0.5);position:relative;overflow:hidden;box-sizing:border-box">
+              <!-- Name - Top Centered -->
+              <div style="position:absolute;top:28px;left:0;right:0;text-align:center;">
+                <div style="font-family:Academy,serif;font-size:20px;color:#000;font-weight:bold;text-shadow:2px 2px 4px rgba(0,0,0,0.9);letter-spacing:1px">${p.name}</div>
               </div>
-              <div style="position:absolute;top:6px;right:6px;font-size:28px;text-shadow:0 2px 2px rgba(0,0,0,0.5)">${base.icon}</div>
-              <div style="text-align:center;margin-top:40px;margin-bottom:4px">
-                <div style="font-size:24px;color:#fff;font-weight:bold;text-shadow:0 2px 4px rgba(0,0,0,0.8)">${p.name}</div>
-                <div style="font-size:9px;color:${cardColor.border};font-weight:bold;letter-spacing:1px">${(RACES[p.race]?.icon || RACES.human.icon)} ${(RACES[p.race]?.name || 'Human').toUpperCase()} · ${(GENDERS[p.gender]?.icon || GENDERS.male.icon)} ${(GENDERS[p.gender]?.name || 'Male').toUpperCase()} · ${base.name.toUpperCase()}</div>
+              <!-- Level - 25% from bottom -->
+              <div style="position:absolute;bottom:30%;left:0;right:0;text-align:center;">
+                <div style="font-family:Academy,serif;font-size:12px;color:#fff;font-weight:bold;text-shadow:1px 1px 3px rgba(0,0,0,0.9)">Level: ${p.level||1}</div>
               </div>
-              <div style="text-align:center;margin-bottom:8px">
-                <div id="charCardSprite" style="width:100px;height:100px;margin:0 auto;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.6))"></div>
-              </div>
-              <div style="font-size:6px;color:#fff;opacity:0.5;text-align:center;margin-bottom:4px">(Click to flip)</div>
-              <div style="padding:0 6px">
-                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-bottom:4px">
-                  <div class="stat-box" style="text-align:center;padding:4px;background:rgba(0,0,0,0.5);border-radius:3px" title="STR: ${totalBaseStr} base + ${bonusStr} gear = ${s.str}">
-                    <div style="font-size:14px;font-weight:bold;color:#fff">${s.str}</div>
-                    <div style="font-size:5px;color:#aaa;font-weight:bold">STR</div>
-                  </div>
-                  <div class="stat-box" style="text-align:center;padding:4px;background:rgba(0,0,0,0.5);border-radius:3px" title="INT: ${totalBaseInt} base + ${bonusInt} gear = ${s.int}">
-                    <div style="font-size:14px;font-weight:bold;color:#fff">${s.int}</div>
-                    <div style="font-size:5px;color:#aaa;font-weight:bold">INT</div>
-                  </div>
-                  <div class="stat-box" style="text-align:center;padding:5px;background:rgba(0,0,0,0.5);border-radius:4px" title="DEX: ${totalBaseDex} base + ${bonusDex} gear = ${s.dex}">
-                    <div style="font-size:16px;font-weight:bold;color:#fff">${s.dex}</div>
-                    <div style="font-size:6px;color:#aaa;font-weight:bold">DEX</div>
-                  </div>
-                  <div class="stat-box" style="text-align:center;padding:5px;background:rgba(0,0,0,0.5);border-radius:4px" title="Armor Class">
-                    <div style="font-size:16px;font-weight:bold;color:#fff">${s.ac + (p.armorClass||12)}</div>
-                    <div style="font-size:6px;color:#aaa;font-weight:bold">AC</div>
-                  </div>
-                </div>
-                <div style="display:flex;justify-content:space-between;align-items:center;padding:5px;background:rgba(0,0,0,0.5);border-radius:4px;font-size:10px">
-                  <div style="display:flex;gap:3px;align-items:center">
-                    <span style="color:#f55">❤</span>
-                    <span style="color:#fff;font-weight:bold">${p.hp}/${p.maxHp}</span>
-                  </div>
-                  <div style="display:flex;gap:3px;align-items:center">
-                    <span style="color:#55f">💧</span>
-                    <span style="color:#fff;font-weight:bold">${p.mp}/${p.maxMp}</span>
-                  </div>
-                  <div style="display:flex;gap:3px;align-items:center">
-                    <span style="color:#fb0">💰</span>
-                    <span style="color:#fff;font-weight:bold">${p.gold}</span>
-                  </div>
-                </div>
-              </div>
-              <div style="text-align:center;margin-top:6px">
-                <span style="color:${cardColor.border};font-size:10px">★</span>
-                <span style="color:${cardColor.border};font-size:10px${p.bossesDefeated >= 1 ? '' : ';opacity:0.3'}">★</span>
-                <span style="color:${cardColor.border};font-size:10px${p.bossesDefeated >= 4 ? '' : ';opacity:0.3'}">★</span>
-                <span style="color:${cardColor.border};font-size:10px${p.bossesDefeated >= 3 ? '' : ';opacity:0.3'}">★</span>
+              <!-- Stats - Bottom Left -->
+              <div style="position:absolute;bottom:28px;left:25%;text-align:left;display:flex;flex-direction:column;gap:2px">
+                <div style="font-family:Academy,serif;font-size:10px;color:#fff;font-weight:bold;text-shadow:1px 1px 2px rgba(0,0,0,0.9);margin-top:10px;margin-left:2px">${p.hp}/${p.maxHp}</div>
+                <div style="font-family:Academy,serif;font-size:10px;color:#fff;font-weight:bold;text-shadow:1px 1px 2px rgba(0,0,0,0.9);margin-top:3px;margin-left:-2px">${s.str}</div>
+                <div style="font-family:Academy,serif;font-size:10px;color:#fff;font-weight:bold;text-shadow:1px 1px 2px rgba(0,0,0,0.9);margin-top:0px">${s.dex}</div>
+                <div style="font-family:Academy,serif;font-size:10px;color:#fff;font-weight:bold;text-shadow:1px 1px 2px rgba(0,0,0,0.9);margin-top:0px;margin-left:9px">${s.int}</div>
+                <div style="font-family:Academy,serif;font-size:10px;color:#fff;font-weight:bold;text-shadow:1px 1px 2px rgba(0,0,0,0.9);margin-left:15px">${s.con}</div>
               </div>
             </div>
           </div>
+          <!-- BACK -->
           <div style="position:absolute;width:100%;height:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg)">
-            <div style="width:320px;height:480px;background:${cardColor.back};border:4px solid ${cardColor.border};border-radius:16px;padding:10px;box-shadow:0 0 30px ${cardColor.glow}40,0 10px 40px rgba(0,0,0,0.5);box-sizing:border-box;overflow:hidden">
+            <div style="width:320px;height:480px;background:linear-gradient(180deg,#1a1a1a 0%,#0a0a0a 100%);border:4px solid ${cardColor.border};border-radius:16px;padding:10px;box-shadow:0 0 30px ${cardColor.glow}40,0 10px 40px rgba(0,0,0,0.5);box-sizing:border-box;overflow:hidden;color:#fff">
               <div style="text-align:center;margin-bottom:4px">
                 <div style="font-size:11px;color:${cardColor.border};font-weight:bold">${p.name}</div>
                 <div style="font-size:7px;color:#888">${base.name}</div>
@@ -4291,6 +4881,10 @@ function openCharacterCard(playerIdx){
                 <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.4);padding:3px;border-radius:2px;border-left:3px solid #5f5">
                   <span style="color:#5f5;font-weight:bold">DEX</span>
                   <span style="color:#fff">${totalBaseDex}+${bonusDex}=${s.dex}</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.4);padding:3px;border-radius:2px;border-left:3px solid #fa0">
+                  <span style="color:#fa0;font-weight:bold">CON</span>
+                  <span style="color:#fff">${s.con}</span>
                 </div>
                 <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.4);padding:3px;border-radius:2px;border-left:3px solid #f55">
                   <span style="color:#f55;font-weight:bold">AC</span>
@@ -4614,6 +5208,23 @@ window.setRegions=function(defs){
   drawBoard();
 }
 function endTurn(){
+  // Apply buff/debuff damage at end of turn
+  const p = GS.players[GS.curP];
+  if(p.status){
+    // Apply DOT effects
+    if(p.status.burn){const dmg=3;p.hp=Math.max(1,p.hp-dmg);toast(`🔥 ${p.name} takes ${dmg} burn damage!`,'bad');}
+    if(p.status.poisoned){const dmg=2;p.hp=Math.max(1,p.hp-dmg);toast(`☠ ${p.name} takes ${dmg} poison damage!`,'bad');}
+    // Tick down durations
+    tickStatus(p);
+  }
+  
+  // Handle old curses
+  if(p.curses){
+    if(p.curses.suffocate>0){p.curses.suffocate--;}
+    if(p.curses.blindness>0){p.curses.blindness--;}
+    if(p.curses.paralysis>0){p.curses.paralysis--;}
+  }
+  
   GS.phase='roll';GS.highlightedTiles=[];GS.combat=null;
   const order=GS.initOrder,pos=order.indexOf(GS.curP);
   GS.curP=order[(pos+1)%order.length];
@@ -4633,7 +5244,7 @@ function startTrade(){
   }
   const html = `<div class="mo-title">🤝 Select Player to Trade With</div>
     <div class="mo-choices" style="display:flex;flex-direction:column;gap:8px;margin-top:15px">
-      ${otherPlayers.map((op, i) => `<button class="act-btn pri" onclick="openTradeWith(${GS.players.indexOf(op)})">${CLASSES[op.class].icon} ${op.name} (${op.gold} gold)</button>`).join('')}
+      ${otherPlayers.map((op, i) => `<button class="act-btn pri" onclick="openTradeWith(${GS.players.indexOf(op)})">${renderIcon(CLASSES[op.class].icon,CLASSES[op.class].fallback)} ${op.name} (${op.gold} gold)</button>`).join('')}
     </div>`;
   openModal(null, null, [], html);
 }
@@ -4781,7 +5392,16 @@ function finalizeTrade(){
   GS._trade = null;
 }
 
-function closeEndTurn(){closeModal();endTurn();}
+function closeEndTurn(){
+  closeModal();
+  clearEventBackground();
+  if(GS._testMode){
+    GS._testMode=false;
+    showS('menuScreen');
+  }else{
+    endTurn();
+  }
+}
 function setBanner(t){document.getElementById('turnBanner').textContent=t;}
 function updPlayers(){
   const c=document.getElementById('playersList');if(!c)return;
@@ -4796,6 +5416,13 @@ function updPlayers(){
       const name=k.charAt(0).toUpperCase()+k.slice(1);
       return `<span class="curse-badge" title="${name}: ${v} turn(s)">${icon}</span>`;
     }).join('');
+    // Buffs and Debuffs display
+    const statusHtml = p.status ? Object.entries(p.status).map(([key, st]) => {
+      const isBuff = st.type === 'buff';
+      const color = isBuff ? '#4f4' : '#f44';
+      const icon = st.icon || (isBuff ? '✨' : '💀');
+      return `<span class="curse-badge" style="color:${color}" title="${st.name}: ${st.desc} (${st.turns} turns)">${icon}</span>`;
+    }).join('') : '';
     const expPct=p.level?Math.min(100,(p.exp||0)/(p.level*50)*100):0;
     const rogueStyle = p.class === 'rogue' ? 'background:linear-gradient(135deg,#1a1a1a,#2a2a2a);' : '';
     return `<div class="pi-card${isCur?' cur':''}" style="${rogueStyle}">
@@ -4806,7 +5433,7 @@ function updPlayers(){
         <button class="pi-btn" onclick="event.stopPropagation();openQuests(${i})" title="Quest Tracker">Quest</button>
       </div>
       <div class="pi-name" onclick="openInventory(${i})">${cls.icon} ${p.name}${isCur?' ◀':''}</div>
-      <div class="pi-cls">${RACES[p.race]?.icon || RACES.human.icon} ${(RACES[p.race]?.name || 'Human')} · ${GENDERS[p.gender]?.icon || GENDERS.male.icon} ${(GENDERS[p.gender]?.name || 'Male')} · ${cls.name} Lv.${p.level||1} · ${p.gold}💰 ${p.statPoints>0?'⭐'+p.statPoints:''} ${curseHtml}</div>
+      <div class="pi-cls">${RACES[p.race]?.icon || RACES.human.icon} ${(RACES[p.race]?.name || 'Human')} · ${GENDERS[p.gender]?.icon || GENDERS.male.icon} ${(GENDERS[p.gender]?.name || 'Male')} · ${cls.name} Lv.${p.level||1} · ${p.gold}💰 ${p.statPoints>0?'⭐'+p.statPoints:''} ${curseHtml} ${statusHtml}</div>
       <div class="pi-bar"><div class="pi-fill pi-hp-fill" style="width:${pct}%"></div></div>
       <div class="pi-bar"><div class="pi-fill pi-mp-fill" style="width:${mpct}%"></div></div>
       <div class="pi-bar"><div class="pi-fill" style="width:${expPct}%;background:linear-gradient(90deg,#a06000,#d09000)"></div></div>
@@ -4951,7 +5578,7 @@ function showVictory(p){
   const el=document.createElement('div');
   el.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:999;display:flex;align-items:center;justify-content:center';
   el.innerHTML=`<div class="victory-wrap"><div class="v-title">✦ VICTORY ✦</div>
-    <div style="font-family:'IM Fell English',serif;font-size:17px;color:var(--text);margin-bottom:14px">${CLASSES[p.class].icon} ${p.name} has defeated 3 Final Bosses!</div>
+    <div style="font-family:'IM Fell English',serif;font-size:17px;color:var(--text);margin-bottom:14px">${renderIcon(CLASSES[p.class].icon,CLASSES[p.class].fallback)} ${p.name} has defeated 3 Final Bosses!</div>
     <div style="font-size:14px;color:var(--dim);margin-bottom:44px;font-family:'IM Fell English',serif;font-style:italic">The Enchanted Path is conquered. The realm is saved!</div>
     <div style="font-size:46px;margin-bottom:18px">💀💀💀</div>
     <button class="start-btn" onclick="location.reload()">⟶ Play Again</button></div>`;
