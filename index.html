@@ -854,16 +854,16 @@ const ROUTE_EVENTS=[
   },
 
   // 7. Caravan Attack
-  {id:'caravan_attack',type:'encounter',title:'Caravan Attacked',desc:'A caravan has been attacked.',icon:'🛒',
+  {id:'caravan_attack',type:'encounter',title:'Caravan Attacked',desc:'You find an attacked caravan. Wheels are off, wagon is torn apart. Luckily, the travelers are safe but need some help to repair the caravan and continue their path.',icon:'🛒',
     options:[
-      {label:'I) Help (STR/DEX/INT)',stat:'str',CD:12,labelSuccess:'Helped!',labelFail:'Couldn\'t help!',
-        success:()=>showOutcomeReward('Helped!','You helped the caravan. Draw a card...','🃏',()=>drawCardReward(1)),
-        fail:()=>showOutcomeReward('Failed','You couldn\'t help them.','💔',()=>closeEndTurn())},
-      {label:'II) Loot remains',stat:'combat',CD:10,labelSuccess:'Found loot!',labelFail:'Nothing!',
-        success:()=>showOutcomeReward('Looted!','Found something useful. Draw a card...','🃏',()=>drawCardReward(1)),
-        fail:()=>showOutcomeReward('Nothing','Found nothing of value.','💔',()=>closeEndTurn())},
+      {label:'I) Help repair (STR)',stat:'str',CD:12,labelSuccess:'Repaired!',labelFail:'Failed!',
+        success:()=>{showOutcomeReward('Repaired!','You use your strength to lift the caravan, your intelligence to know how to repair it and dexterity to perform those repairs. The travelers are so grateful that they give you an item!','🎁',()=>drawCardReward(1));},
+        fail:()=>showOutcomeReward('Failed!','You are unable to repair the caravan. The leader gives you a bad look and starts walking to the nearest town.','💔',()=>closeEndTurn())},
+      {label:'II) Loot remains',stat:'combat',CD:10,labelSuccess:'Looted!',labelFail:'Stopped!',
+        success:()=>showOutcomeReward('Looted!','Since they won\'t be needing some of their items, you loot them, obtaining 1 new item!','💰',()=>drawCardReward(1)),
+        fail:()=>showOutcomeReward('Stopped!','Caravan leader stops you and asks you politely to leave. You don\'t want to start an unnecessary fight so you leave.','🚶',()=>closeEndTurn())},
       {label:'III) Ignore',stat:null,CD:null,labelSuccess:'Ignored',labelFail:null,
-        success:()=>showOutcomeReward('Ignored','You continued on your way.','🛤️',()=>closeEndTurn()),fail:null},
+        success:()=>showOutcomeReward('Ignored','That doesn\'t seem to be your problem, so you carry on, whistling an old song from your village.','🛤️',()=>closeEndTurn()),fail:null},
     ]
   },
 
@@ -874,33 +874,60 @@ const ROUTE_EVENTS=[
         success:()=>showOutcomeReward('Victory!','The creature is defeated! Draw a card...','🃏',()=>drawCardReward(1)),
         fail:()=>{const p=cp();const dmg=pctDamage(p,0.14);p.hp=Math.max(1,p.hp-dmg);showOutcomeReward('Wounded!','The creature stands its ground, wounding you deeply. -'+dmg+' HP','💔',()=>closeEndTurn());}},
       {label:'II) Run (DEX)',stat:'dex',CD:10,labelSuccess:'Escaped!',labelFail:'Trapped!',
-        success:()=>showOutcomeReward('Escaped!','You got away safely.','🏃',()=>closeEndTurn()),
-        fail:()=>{const p=cp();const dmg=pctDamage(p,0.15);p.hp=Math.max(1,p.hp-dmg);showOutcomeReward('Trapped!','-'+dmg+' HP','💔',()=>closeEndTurn());}},
+        success:()=>showOutcomeReward('Escaped!','You manage to outrun the creature!','🏃',()=>closeEndTurn()),
+        fail:()=>{const p=cp();const dmg=pctDamage(p,0.10);p.hp=Math.max(1,p.hp-dmg);showOutcomeReward('Trapped!','The creature catches you! -'+dmg+' HP','💔',()=>closeEndTurn());}},
+      {label:'III) Negotiate (INT)',stat:'int',CD:14,labelSuccess:'Peaceful!',labelFail:'Angered!',
+        success:()=>showOutcomeReward('Peaceful!','You calm the creature with your knowledge of beasts. It lets you pass.','🤝',()=>closeEndTurn()),
+        fail:()=>{const p=cp();const dmg=pctDamage(p,0.08);p.hp=Math.max(1,p.hp-dmg);showOutcomeReward('Angered!','The creature doesn\'t understand your words and attacks! -'+dmg+' HP','💔',()=>closeEndTurn());}},
     ]
   },
 
   // 9. Helpless Maiden
-  {id:'helpless_maiden',type:'encounter',title:'Helpless Maiden',desc:'A woman by the road asks for help.',icon:'👩',
+  {id:'helpless_maiden',type:'encounter',title:'Helpless Maiden',desc:'While you are walking, you spot a maiden on the side of the road asking for help. She looks like a lady from a good family, her clothes are not the ones of an adventurer, she seems out of place and lost.',icon:'👩',
     options:[
-      {label:'I) Help',stat:'str',CD:12,labelSuccess:'It was a trick!',labelFail:'Saved her?',
-        success:()=>{GS._maidenTrap=true;initCombat({name:'Maiden Trap',icon:'👹',sprite:'👹',hp:40,maxHp:40,mp:10,maxMp:10,str:4,int:3,dex:4,armorClass:10,skills:[{name:'Backstab',cost:0,dmg:0.8,type:'physical',desc:'Treacherous blow.'}]})},
-        fail:()=>{GS._maidenTrap=true;initCombat({name:'Maiden Trap',icon:'👹',sprite:'👹',hp:40,maxHp:40,mp:10,maxMp:10,str:4,int:3,dex:4,armorClass:10,skills:[{name:'Backstab',cost:0,dmg:0.8,type:'physical',desc:'Treacherous blow.'}]})}},
-      {label:'II) Continue journey',stat:null,CD:null,labelSuccess:'Ignored her',labelFail:null,
-        success:()=>showOutcomeReward('Ignored','You continued on your way.','🛤️',()=>closeEndTurn()),fail:null},
+      {label:'I) Help her (DEX DC 14)',stat:'dex',CD:14,labelSuccess:'It was a trap!',labelFail:'It was a trap!',
+        success:()=>showOutcomeReward('It was a trap!','You react in time, blocking her stealth attack and knocking her out! You grab one item from her bag for the inconveniences.','⚔️',()=>drawCardReward(1)),
+        fail:()=>{const p=cp();const goldLoss=Math.floor(p.gold*0.20);p.gold=Math.max(0,p.gold-goldLoss);const sellables=p.inventory.filter(i=>i && (i.slot||i.type==='consumable'));let lostItemName='nothing';if(sellables.length>0){const item=sellables[Math.floor(Math.random()*sellables.length)];lostItemName=item.name||'an item';const idx=p.inventory.indexOf(item);if(idx>=0)p.inventory.splice(idx,1);}showOutcomeReward('It was a trap!',`She robs you while holding a dagger to your throat! Lost ${goldLoss} gold and ${lostItemName}!`,'🗡️',()=>closeEndTurn());}},
+      {label:'II) Ignore her',stat:null,CD:null,labelSuccess:'Ignored',labelFail:null,
+        success:()=>showOutcomeReward('Ignored','You pass by her. Something seemed off and you are not willing to be taken advantage of.','🛤️',()=>closeEndTurn()),fail:null},
     ]
   },
 
   // 10. Rare Herbs
-  {id:'rare_herbs',type:'exploration',title:'Rare Herbs',desc:'You find a strange plant by the road.',icon:'🌿',
+  {id:'rare_herbs',type:'exploration',title:'Rare Herbs',desc:'You spot, by the side of the road, behind a small rock, a glowing blue plant, with red thorns. It captivates your sight.',icon:'🌿',
     options:[
-      {label:'I) Cut it (DEX)',stat:'dex',CD:12,labelSuccess:'Got plant!',labelFail:'Pricked!',
-        success:()=>{const p=cp();p.inventory.push({id:'rare_herb',name:'Rare Herb',icon:'🌿',type:'consumable',rarity:'rare',desc:'Sellable for 60 gold',sellPrice:60});showOutcomeReward('Collected!','Rare Herb added to inventory!','🌿',()=>closeEndTurn());},
-        fail:()=>{const p=cp();p.skipTurns=(p.skipTurns||0)+1;showOutcomeReward('Poison!','Pricked! Lose 1 turn.','💔',()=>closeEndTurn());}},
-      {label:'II) Analyze (INT)',stat:'int',CD:14,labelSuccess:'Identified!',labelFail:'Nothing unusual',
-        success:()=>showOutcomeReward('Identified!','Valuable but highly poisonous plant!','🌿',()=>closeEndTurn()),
-        fail:()=>showOutcomeReward('Nothing','Cannot identify anything unusual.','💔',()=>closeEndTurn())},
-      {label:'III) Continue',stat:null,CD:null,labelSuccess:'Ignored',labelFail:null,
-        success:()=>showOutcomeReward('Ignored','You continued on your way.','🛤️',()=>closeEndTurn()),fail:null},
+      {label:'I) Cut it (DEX)',stat:'dex',CD:12,labelSuccess:'Collected!',labelFail:'Poisoned!',
+        success:()=>{const p=cp();p.inventory.push({id:'rare_herb',name:'Glowing Herb',icon:'💠',type:'consumable',rarity:'rare',desc:'Sellable for 80 gold',sellPrice:80});showOutcomeReward('Collected!','You cut the plant with a clean and swift movement and put it in your bag. Glowing Herb added!','💠',()=>closeEndTurn());},
+        fail:()=>{
+          const p=cp();
+          const s=getBaseStats(p);
+          const conRoll=Math.floor(Math.random()*20)+1;
+          const conTotal=conRoll+s.con;
+          if(conTotal>=17){
+            showOutcomeReward('Survived!','You brace your body and take deep breaths while you feel the venom passing by. You do feel tired, but after a few minutes you are back on your feet.','💪',()=>closeEndTurn());
+          }else{
+            p.curses=p.curses||{};
+            p.curses.poisoned=(p.curses.poisoned||0)+3;
+            p.skipTurns=(p.skipTurns||0)+1;
+            showOutcomeReward('Unconscious!','You feel an excruciating pain fill your body. You cant move a muscle and your vision goes blank. You pass out from the pain. Poisoned for 3 turns + lose next turn.','💀',()=>closeEndTurn());
+          }
+        }},
+      {label:'II) Analyze it (INT)',stat:'int',CD:12,labelSuccess:'Identified!',labelFail:'Unknown',
+        success:()=>{
+          GS._rareHerbsAnalyzed = true;
+          openModal('💡 Identified!','This plant was in your first herbology book. You know it\'s very rare and sells at a good price, but it is also highly poisonous. The knowledge gives you an advantage if you decide to cut it.',[
+            {label:'Cut it (+ADVANTAGE)',fn:()=>{closeModal();handleEventOption('rare_herbs',0);}},
+            {label:'Continue Walking',fn:()=>{closeModal();showOutcomeReward('Ignored','You decide not to risk it and continue on your way.','🛤️',()=>closeEndTurn());}}
+          ]);
+        },
+        fail:()=>{
+          openModal('❓ Unknown','At your eyes, it\'s just a rare plant. You can\'t identify its properties.',[
+            {label:'Try to Cut it',fn:()=>{closeModal();handleEventOption('rare_herbs',0);}},
+            {label:'Continue Walking',fn:()=>{closeModal();showOutcomeReward('Ignored','You don\'t even come close. You are not a herbologist or an alchemist after all, what use does a plant have for you?','🛤️',()=>closeEndTurn());}}
+          ]);
+        }},
+      {label:'III) Continue Walking',stat:null,CD:null,labelSuccess:'Ignored',labelFail:null,
+        success:()=>showOutcomeReward('Ignored','You don\'t even come close. You are not a herbologist or an alchemist after all, what use does a plant have for you?','🛤️',()=>closeEndTurn()),fail:null},
     ]
   },
 
@@ -930,14 +957,14 @@ const ROUTE_EVENTS=[
   },
 
   // 13. Torrential Rain
-  {id:'torrential_rain',type:'punishment',title:'Torrential Rain',desc:'Huge storms ruin your day.',icon:'⛈️',
+  {id:'torrential_rain',type:'punishment',title:'Torrential Rain',desc:'As you advance through the field, black clouds begin to close over the sky. Lightning roars all around. The smell of wet earth suddenly fills your nose, as a torrential downpour begins to fall.',icon:'⛈️',
     options:[
-      {label:'I) Keep walking',stat:'dex',CD:14,labelSuccess:'Made it!',labelFail:'Lost!',
-        success:()=>showOutcomeReward('Made it!','You pushed through the storm.','⛈️',()=>closeEndTurn()),
-        fail:()=>{const p=cp();const dmg=pctDamage(p,0.08);p.hp=Math.max(1,p.hp-dmg);p.skipTurns=(p.skipTurns||0)+1;showOutcomeReward('Lost!','-'+dmg+' HP and lose 1 turn.','💔',()=>closeEndTurn());}},
-      {label:'II) Rest under tree',stat:'int',CD:14,labelSuccess:'Rested!',labelFail:'Tree hit!',
-        success:()=>showOutcomeReward('Rested!','You waited out the storm.','⛈️',()=>closeEndTurn()),
-        fail:()=>{const p=cp();const dmg=pctDamage(p,0.12);p.hp=Math.max(1,p.hp-dmg);p.skipTurns=(p.skipTurns||0)+1;showOutcomeReward('Lightning!','Tree crushed you! -'+dmg+' HP, lose 1 turn.','💔',()=>closeEndTurn());}},
+      {label:'I) Keep Walking (CON/DEX/STR)',stat:'con_dex_str',CD:12,labelSuccess:'Endured!',labelFail:'Frozen!',
+        success:()=>showOutcomeReward('Endured!','You keep walking, you feel the cold water and your clothes begin to weigh down. Nothing you didn\'t experience in the past.','🌧️',()=>closeEndTurn()),
+        fail:()=>{const p=cp();const dmg=Math.floor(p.maxHp*0.08);p.hp=Math.max(1,p.hp-dmg);p.skipTurns=(p.skipTurns||0)+1;showOutcomeReward('Frozen!','You are freezing and completely wet. The terrain is very difficult to walk by. You get a cold. -'+dmg+' HP and lose next turn.','🥶',()=>closeEndTurn());}},
+      {label:'II) Rest under a tree (INT)',stat:'int',CD:12,labelSuccess:'Sheltered!',labelFail:'Struck!',
+        success:()=>showOutcomeReward('Sheltered!','You find shelter under a big oak, some drops get past it, but nothing to worry about. The sky clears after a few minutes.','🌳',()=>closeEndTurn()),
+        fail:()=>{const p=cp();const dmg=Math.floor(p.maxHp*0.13);p.hp=Math.max(1,p.hp-dmg);p.skipTurns=(p.skipTurns||0)+1;showOutcomeReward('Struck!','The tree is struck by a thunder and one of its branches fell over your foot. You suffer a big injury. -'+dmg+' HP and lose next turn.','⚡',()=>closeEndTurn());}},
     ]
   },
 
@@ -956,11 +983,34 @@ const ROUTE_EVENTS=[
   },
 
   // 15. Echoes in the Forest
-  {id:'echoes_forest',type:'encounter',title:'Echoes in the Forest',desc:'You hear something following you.',icon:'👻',
+  {id:'echoes_forest',type:'encounter',title:'Echoes in the Forest',desc:'You feel something following you.',icon:'👻',
     options:[
-      {label:'Investigate (DEX)',stat:'dex',CD:14,labelSuccess:'Nothing there!',labelFail:'Minor combat!',
-        success:()=>showOutcomeReward('Nothing','It was just the wind.','🍃',()=>closeEndTurn()),
-        fail:()=>initCombat({name:'Forest Spirit',icon:'👻',sprite:'👻',hp:30,maxHp:30,mp:15,maxMp:15,str:3,int:3,dex:4,armorClass:10,skills:[{name:'Haunt',cost:5,dmg:0.5,type:'magic',desc:'Ghostly attack.'}]})},
+      {label:'I) Investigate (DEX)',stat:'dex',CD:12,labelSuccess:'Safe!',labelFail:'Attacked!',
+        success:()=>showOutcomeReward('Safe!','You sharpen your hearing; you can make out where the figure following you is. Not knowing what it is, you walk slowly in the opposite direction, with your hands raised to show that you are not a threat.','🌲',()=>closeEndTurn()),
+        fail:()=>{
+          const p=cp();
+          const s=getBaseStats(p);
+          const playerRoll1 = Math.floor(Math.random()*20)+1;
+          const playerRoll2 = Math.floor(Math.random()*20)+1;
+          const playerRoll = Math.min(playerRoll1, playerRoll2);
+          const playerTotal = playerRoll + s.dex;
+          
+          const enemyRoll = Math.floor(Math.random()*20)+1 + 4;
+          const enemyTotal = enemyRoll;
+          
+          closeModal();
+          if(playerTotal >= enemyTotal){
+            openModal('👻 Spirit Defeated!','You fight the Forest Spirit! Your quick reflexes let you land a decisive blow! The forest spirit runs to the forest and quickly fades away.',[
+              {label:'Continue',fn:()=>{closeModal();closeEndTurn();}}
+            ]);
+          }else{
+            const dmg = Math.floor(p.maxHp * 0.14);
+            p.hp = Math.max(1, p.hp - dmg);
+            openModal('👻 Spirit Attacked!','The Forest Spirit hurts you deeply and leaves you in the ground before returning to the depths of the forest.',[
+              {label:'-'+dmg+' HP',fn:()=>{closeModal();closeEndTurn();}}
+            ]);
+          }
+        }},
     ]
   },
 
@@ -3062,6 +3112,17 @@ function handleEventOption(eventId, optIdx){
     return;
   }
   
+  // Set disadvantage flag for Helpless Maiden trap
+  if(eventId === 'helpless_maiden' && optIdx === 0){
+    GS._helplessMaidenDisadvantage = true;
+  }
+  
+  // Set advantage flag for Rare Herbs if analyzed
+  if(eventId === 'rare_herbs' && optIdx === 0 && GS._rareHerbsAnalyzed){
+    GS._rareHerbsAdvantage = true;
+    GS._rareHerbsAnalyzed = false;
+  }
+  
   // Check for inspiration and show prompt
   const inspirations = getInspirationCards();
   if(inspirations.length > 0){
@@ -3075,30 +3136,57 @@ function doEventRoll(eventId, optIdx){
   const event = ROUTE_EVENTS.find(e=>e.id===eventId);
   const opt = event.options[optIdx];
   
+  // Check for disadvantage flag (Helpless Maiden trap)
+  const hasDisadvantage = GS._helplessMaidenDisadvantage;
+  
+  // Check for advantage flag (Rare Herbs after analysis)
+  const hasAdvantage = GS._rareHerbsAdvantage;
+  GS._rareHerbsAdvantage = false; // Clear after use
+  
   // Perform stat check (no equipment bonuses for route events)
   const p=cp();
   const s=getBaseStats(p);
   let statVal;
   if(opt.stat==='combat') statVal=getCombatStat(p);
   else if(opt.stat==='avg_dex_str') statVal=Math.floor((s.dex + s.str)/2);
+  else if(opt.stat==='con_dex_str') statVal=Math.floor((s.con + s.dex + s.str)/3);
   else if(opt.stat==='con') statVal=s.con;
   else statVal=s[opt.stat]||0;
   
   const diff=opt.CD||10;
-  const roll=Math.floor(Math.random()*20)+1;
+  
+  // Roll with disadvantage or advantage if needed
+  let roll, rollDisplay;
+  if(hasDisadvantage) {
+    const d1 = Math.floor(Math.random()*20)+1;
+    const d2 = Math.floor(Math.random()*20)+1;
+    roll = Math.min(d1, d2);
+    rollDisplay = `[${d1}, ${d2}] → ${roll} (DISADVANTAGE)`;
+    GS._helplessMaidenDisadvantage = false;
+  } else if(hasAdvantage) {
+    const d1 = Math.floor(Math.random()*20)+1;
+    const d2 = Math.floor(Math.random()*20)+1;
+    roll = Math.max(d1, d2);
+    rollDisplay = `[${d1}, ${d2}] → ${roll} (ADVANTAGE)`;
+  } else {
+    roll=Math.floor(Math.random()*20)+1;
+    rollDisplay = roll.toString();
+  }
+  
   const inspirationBonus = GS._inspirationBonus || 0;
   GS._inspirationBonus = 0;
   const total=roll+statVal+inspirationBonus;
   const success=total>=diff;
   
   // Show the roll result
-  const statName = {int:'INT',dex:'DEX',str:'STR',combat:'Combat',avg_dex_str:'DEX+STR',con:'CON'}[opt.stat]||opt.stat;
+  const statName = {int:'INT',dex:'DEX',str:'STR',combat:'Combat',avg_dex_str:'DEX+STR',con:'CON',con_dex_str:'CON+DEX+STR'}[opt.stat]||opt.stat;
   const bonusText = inspirationBonus > 0 ? `<span style="color:var(--gold)"> +${inspirationBonus} (Inspiration)</span>` : '';
+  const rollTypeText = hasDisadvantage ? `<br><span style="color:#ff6b6b;font-size:10px">(Rolled with DISADVANTAGE)</span>` : (hasAdvantage ? `<br><span style="color:#4f4;font-size:10px">(Rolled with ADVANTAGE)</span>` : '');
   const outcomeHtml = `
     <div style="text-align:center">
       <div style="font-size:48px;margin-bottom:10px">${success?'✅':'❌'}</div>
       <div style="font-size:16px;color:var(--gold);margin-bottom:10px">${success?opt.labelSuccess:opt.labelFail}</div>
-      <div style="font-size:12px;color:var(--dim)">Roll: ${roll} + ${statName}:${statVal}${bonusText} = ${total} vs CD:${diff}</div>
+      <div style="font-size:12px;color:var(--dim)">Roll: ${rollDisplay} + ${statName}:${statVal}${bonusText} = ${total} vs CD:${diff}${rollTypeText}</div>
     </div>`;
   
   closeModal();
