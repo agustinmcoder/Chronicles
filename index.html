@@ -4349,16 +4349,10 @@ function animatePlayerAttack(skill, callback){
   // Log hit roll to battle log
   c.log.push(`🎲 Attack roll: ${d20Roll}+${hitMod}=${hitRoll} ${isHit ? '- Hit!' : '- Miss!'}`);
   
-  // Show dice popup(s) - show skill damage dice only on HIT (never on miss)
+  // Show 3D dice above the hero sprite on HIT
   if(isHit && skillDice.length > 0){
     skillDice.forEach((die, idx) => {
-      const roll = diceRolls[idx];
-      const dicePopup = document.createElement('div');
-      dicePopup.textContent = roll;
-      const offsetX = idx * 70;
-      dicePopup.style.cssText = `position:absolute;left:calc(35% + ${offsetX}px);top:30%;width:60px;height:60px;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:bold;color:#fff;background:linear-gradient(145deg,#8B4513,#654321);border:3px solid #fff;border-radius:10px;box-shadow:0 4px 8px rgba(0,0,0,0.5);z-index:200;animation:dicePop 2s forwards`;
-      effects.appendChild(dicePopup);
-      setTimeout(() => dicePopup.remove(), 2000);
+      Dice3D.battleRoll(die, diceRolls[idx], idx);
     });
   }
   
@@ -6615,7 +6609,109 @@ const Dice3D = (() => {
     }
   }
 
-  return { setup, spin, setResult };
+  // Show a 3D die 25px above the hero sprite during a battle attack.
+  // dieType: 'd4'|'d6'|'d8'|'d10'|'d12'|'d20'
+  // rollValue: the number to show after spinning
+  // idx: horizontal index when multiple dice roll at once (0, 1, 2…)
+  function battleRoll(dieType, rollValue, idx) {
+    const spriteEl = document.getElementById('battlePlayerSprite');
+    if(!spriteEl) return;
+
+    const SIZE = 70;
+    const GAP  = 80; // px between dice when multiple dice appear
+
+    // Fallback to text popup if 3D model isn't ready
+    if(loadError || !Object.keys(meshTemplates).length) {
+      const effects = document.getElementById('battleEffects');
+      if(!effects) return;
+      const pop = document.createElement('div');
+      pop.textContent = rollValue;
+      pop.style.cssText = `position:absolute;left:calc(10% + ${idx*GAP}px);top:10%;width:${SIZE}px;height:${SIZE}px;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:bold;color:#fff;background:linear-gradient(145deg,#8B4513,#654321);border:3px solid #fff;border-radius:10px;z-index:200;animation:dicePop 2s forwards`;
+      effects.appendChild(pop);
+      setTimeout(() => pop.remove(), 2000);
+      return;
+    }
+
+    // Position: centred on hero sprite, 25px above its top edge
+    const rect = spriteEl.getBoundingClientRect();
+    const left = rect.left + rect.width / 2 - SIZE / 2 + idx * GAP;
+    const top  = rect.top - 25 - SIZE;
+
+    // Wrapper (fixed so it sits over the battle screen regardless of scroll)
+    const wrap = document.createElement('div');
+    wrap.style.cssText = `position:fixed;left:${left}px;top:${top}px;width:${SIZE}px;height:${SIZE}px;z-index:500;pointer-events:none;transition:opacity 0.4s`;
+    document.body.appendChild(wrap);
+
+    // Three.js canvas
+    const canvas = document.createElement('canvas');
+    canvas.width  = SIZE;
+    canvas.height = SIZE;
+    canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block';
+    wrap.appendChild(canvas);
+
+    // Number overlay
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:bold;color:var(--gold);z-index:2;text-shadow:1px 1px 4px #000;font-family:'Cinzel',serif;font-size:${Math.floor(SIZE*0.42)}px`;
+    wrap.appendChild(overlay);
+
+    // Three.js setup
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setSize(SIZE, SIZE, false);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+
+    const scene  = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
+    camera.position.set(0, 0, 5.5);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+    const dir = new THREE.DirectionalLight(0xf0c060, 1.5);
+    dir.position.set(3, 5, 5);
+    scene.add(dir);
+    const rim = new THREE.DirectionalLight(0x8060ff, 0.4);
+    rim.position.set(-3, -2, -3);
+    scene.add(rim);
+
+    const template = meshTemplates[dieType] || meshTemplates['d6'] || Object.values(meshTemplates)[0];
+    if(!template) { wrap.remove(); return; }
+    const mesh = template.clone(true);
+    const box  = new THREE.Box3().setFromObject(mesh);
+    const siz  = box.getSize(new THREE.Vector3());
+    const sc   = 3.0 / Math.max(siz.x, siz.y, siz.z);
+    mesh.scale.setScalar(sc);
+    const center = box.getCenter(new THREE.Vector3());
+    mesh.position.sub(center.multiplyScalar(sc));
+    scene.add(mesh);
+
+    let spinX = 0.18, spinY = 0.28;
+    let animId;
+    function animate() {
+      animId = requestAnimationFrame(animate);
+      mesh.rotation.x += spinX;
+      mesh.rotation.y += spinY;
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Slow down and show result after 650 ms
+    setTimeout(() => {
+      spinX = 0.008;
+      spinY = 0.015;
+      overlay.textContent = rollValue;
+    }, 650);
+
+    // Fade out and clean up after 2 s
+    setTimeout(() => {
+      wrap.style.opacity = '0';
+      setTimeout(() => {
+        cancelAnimationFrame(animId);
+        renderer.dispose();
+        wrap.remove();
+      }, 400);
+    }, 2000);
+  }
+
+  return { setup, spin, setResult, battleRoll };
 })();
 
 function openModal(title,text,choices,rawHtml){
