@@ -6691,13 +6691,15 @@ const Dice3D = (() => {
     const mesh = template.clone(true);
     const box  = new THREE.Box3().setFromObject(mesh);
     const siz  = box.getSize(new THREE.Vector3());
-    const sc   = 3.0 / Math.max(siz.x, siz.y, siz.z);
+    // Scale down so the die fits comfortably inside the container
+    const sc   = 1.6 / Math.max(siz.x, siz.y, siz.z);
     mesh.scale.setScalar(sc);
     const center = box.getCenter(new THREE.Vector3());
     mesh.position.sub(center.multiplyScalar(sc));
     scene.add(mesh);
 
-    let spinX = 0.18, spinY = 0.28;
+    // Slow, readable roll — about 2 full rotations over 2 seconds
+    let spinX = 0.05, spinY = 0.08;
     let animId;
     function animate() {
       animId = requestAnimationFrame(animate);
@@ -6707,14 +6709,14 @@ const Dice3D = (() => {
     }
     animate();
 
-    // Slow down and show result after 650 ms
+    // After 2 s: stop rolling and reveal the result
     setTimeout(() => {
-      spinX = 0.008;
-      spinY = 0.015;
+      spinX = 0;
+      spinY = 0;
       overlay.textContent = rollValue;
-    }, 650);
+    }, 2000);
 
-    // Fade out and clean up after 2 s
+    // After 2 s roll + 3 s hold: fade out and clean up
     setTimeout(() => {
       wrap.style.opacity = '0';
       setTimeout(() => {
@@ -6722,7 +6724,7 @@ const Dice3D = (() => {
         renderer.dispose();
         wrap.remove();
       }, 400);
-    }, 2000);
+    }, 5000);
   }
 
   return { setup, spin, setResult, battleRoll };
