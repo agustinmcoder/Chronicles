@@ -318,6 +318,9 @@ canvas{display:block}
 .body-slot.chest{width:55px;height:45px}
 .boss-tracker{text-align:center;margin-top:auto;padding-top:10px;border-top:1px solid var(--border);width:100%}
 </style>
+<!-- Three.js + GLTFLoader for 3D dice -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 </head>
 <body>
 <audio id="bgMusic" loop>
@@ -395,7 +398,7 @@ document.addEventListener('click', function() {
   <div id="bottomHud">
     <div class="hud-players" id="playersList"></div>
     <div class="hud-action">
-      <div class="dice-wrap"><div class="dice" id="mainDice" onclick="rollDice()">?</div></div>
+      <div class="dice-wrap"><div class="dice" id="mainDice" data-die="d6" onclick="rollDice()">?</div></div>
       <div id="actionBtns" style="width:100%"></div>
       <button class="act-btn" style="font-size:12px;margin-top:6px;padding:6px 12px" onclick="startTrade()">🤝 Trade</button>
       <button class="act-btn" style="font-size:12px;margin-top:6px;padding:6px 12px" onclick="saveGame()">💾 Save</button>
@@ -2771,6 +2774,7 @@ function loadGame(){
         renderActs();
         setBanner(`Turn ${GS.turn} — ${GS.players[GS.curP].name}'s turn`);
         toast('Game loaded! 📂', 'good');
+        Dice3D.setup('mainDice', 52, 'd6');
     },100);
     return true;
   }catch(e){
@@ -2810,6 +2814,7 @@ function startGame(){
   // Force redraw after a short delay
   setTimeout(()=>{ console.log('Forcing redraw'); drawBoard(); }, 500);
   showS('gameScreen');
+  setTimeout(()=>Dice3D.setup('mainDice',52,'d6'), 250);
   setTimeout(()=>{
     genBoard();
     // Reset for new game
@@ -2846,7 +2851,7 @@ function rollInit(){
                   font-family:'Cinzel',serif;white-space:nowrap">
         ${renderIcon(CLASSES[rv.p.class].icon,CLASSES[rv.p.class].fallback)} ${rv.p.name}
       </div>
-      <div id="initDie${i}" class="dice"
+      <div id="initDie${i}" class="dice" data-die="d20"
            style="width:58px;height:58px;font-size:44px;margin:0 auto;border-radius:6px;
                   cursor:pointer;display:flex;align-items:center;justify-content:center;
                   transition:transform .1s,box-shadow .1s;letter-spacing:0"
@@ -2886,23 +2891,17 @@ function rollInit(){
     die.style.cursor='default';
     die.classList.add('rolling');
 
-    let ticks=0;
-    const iv=setInterval(()=>{
-      die.textContent=Math.floor(Math.random()*20)+1;
-      if(++ticks>14){
-        clearInterval(iv);
-        die.classList.remove('rolling');
-        die.textContent=rv.r;
-        die.style.fontSize='44px';
-        // Colour feedback
-        if(rv.r>=15){die.style.color='#f0c060';die.style.borderColor='var(--gold)';}
-        else if(rv.r<=4){die.style.color='#e05050';die.style.borderColor='var(--red)';}
-        if(bonus) bonus.textContent=`${rv.r} + ${rv.dex} DEX = ${rv.score}`;
-
-        // Once everyone has rolled, reveal the turn order
-        if(rolls.every(r=>r.revealed)) _showInitOrder(rolls);
-      }
-    },70);
+    Dice3D.spin('initDie'+i, rv.r, ()=>{
+      die.classList.remove('rolling');
+      // Colour feedback
+      const color = rv.r>=15?'#f0c060':rv.r<=4?'#e05050':null;
+      if(color) Dice3D.setResult('initDie'+i, rv.r, color);
+      if(rv.r>=15) die.style.borderColor='var(--gold)';
+      else if(rv.r<=4) die.style.borderColor='var(--red)';
+      if(bonus) bonus.textContent=`${rv.r} + ${rv.dex} DEX = ${rv.score}`;
+      // Once everyone has rolled, reveal the turn order
+      if(rolls.every(r=>r.revealed)) _showInitOrder(rolls);
+    });
   };
 
   function _showInitOrder(rolls){
@@ -3045,21 +3044,17 @@ function rollDice(){
   
   GS.diceVal=finalMove;
   const de=document.getElementById('mainDice');
-  de.classList.add('rolling');de.textContent='?';
-  let ticks=0;
-  const iv=setInterval(()=>{
-    de.textContent=Math.floor(Math.random()*6)+1;
-    if(++ticks>8){
-      clearInterval(iv);de.textContent=finalMove;de.classList.remove('rolling');
-      const swiftMsg = p.status && p.status.swiftness ? ` (${roll} x2 swiftness)` : '';
-      toast(`${p.name} rolled ${finalMove}!${swiftMsg}`);
-      GS.phase='move';
-      const reach=getReach(p.tileIdx,finalMove).filter(t=>!wasVisitedRecently(p,t));
-      GS.highlightedTiles=reach;
-      if(reach.length===0){toast(`No valid tiles (all visited recently). Skipped.`,'bad');endTurn();return;}
-      renderActs();
-    }
-  },80);
+  de.classList.add('rolling');
+  Dice3D.spin('mainDice', finalMove, ()=>{
+    de.classList.remove('rolling');
+    const swiftMsg = p.status && p.status.swiftness ? ` (${roll} x2 swiftness)` : '';
+    toast(`${p.name} rolled ${finalMove}!${swiftMsg}`);
+    GS.phase='move';
+    const reach=getReach(p.tileIdx,finalMove).filter(t=>!wasVisitedRecently(p,t));
+    GS.highlightedTiles=reach;
+    if(reach.length===0){toast(`No valid tiles (all visited recently). Skipped.`,'bad');endTurn();return;}
+    renderActs();
+  });
 }
 
 function rollEscapeDice(needed){
@@ -3069,29 +3064,21 @@ function rollEscapeDice(needed){
   const de=document.getElementById('escapeDice');
   if(!de) return;
   de.classList.add('rolling');
-  let ticks=0;
-  const iv=setInterval(()=>{
-    de.textContent=Math.floor(Math.random()*20)+1;
-    if(++ticks>14){
-      clearInterval(iv);
-      const roll=Math.floor(Math.random()*20)+1;
-      de.textContent=roll;
-      de.classList.remove('rolling');
-      const success=roll>=needed;
-      de.style.borderColor=success?'#40a040':'#a04040';
-      de.style.color=success?'#40a040':'#a04040';
-      const s=calcStats(p);
-      const fleeSuccess = roll + s.dex > 14;
-      toast(`🎲 Rolled ${roll}! ${fleeSuccess?'SUCCESS!':'FAILED!'}`,fleeSuccess?'good':'bad');
-      setTimeout(()=>{
-        closeModal();
-        const dmg=sk.exec(p,e,c,roll);
-        if(c.fled){closeCombatFled();return;}
-        if(e.hp<=0){combatWin();return;}
-        doEnemyTurn();
-      },800);
-    }
-  },70);
+  const roll=Math.floor(Math.random()*20)+1;
+  const success=roll>=needed;
+  const fleeSuccess = roll + calcStats(p).dex > 14;
+  Dice3D.spin('escapeDice', roll, ()=>{
+    de.classList.remove('rolling');
+    Dice3D.setResult('escapeDice', roll, success?'#40a040':'#a04040');
+    toast(`🎲 Rolled ${roll}! ${fleeSuccess?'SUCCESS!':'FAILED!'}`,fleeSuccess?'good':'bad');
+    setTimeout(()=>{
+      closeModal();
+      const dmg=sk.exec(p,e,c,roll);
+      if(c.fled){closeCombatFled();return;}
+      if(e.hp<=0){combatWin();return;}
+      doEnemyTurn();
+    },800);
+  });
 }
 
 function getReach(from,steps){
@@ -3288,7 +3275,7 @@ function showEventDiceRollWithBonus(eventId, optIdx){
       <div style="font-size:18px;color:var(--gold);margin-bottom:15px">${event.title}</div>
       <div style="font-size:13px;color:var(--dim);margin-bottom:10px">${opt.label}</div>
       <div style="font-size:12px;color:var(--text);margin-bottom:20px">${statName}: ${statVal}${advText}${inspireText}</div>
-      <div class="dice" id="eventDice" style="width:80px;height:80px;font-size:56px;cursor:pointer;margin:0 auto" onclick="rollEventDice('${eventId}',${optIdx})">🎲</div>
+      <div class="dice" id="eventDice" data-die="d20" style="width:80px;height:80px;font-size:56px;cursor:pointer;margin:0 auto" onclick="rollEventDice('${eventId}',${optIdx})">🎲</div>
       <div style="font-size:11px;color:var(--dim);margin-top:15px">Click dice to roll</div>
     </div>`;
   
@@ -3353,7 +3340,7 @@ function showEventDiceRoll(eventId, optIdx){
       <div style="font-size:18px;color:var(--gold);margin-bottom:15px">${event.title}</div>
       <div style="font-size:13px;color:var(--dim);margin-bottom:10px">${opt.label}</div>
       <div style="font-size:12px;color:var(--text);margin-bottom:20px">Need ${diff}+ (${statName}: ${statVal})${advText}</div>
-      <div class="dice" id="eventDice" style="width:80px;height:80px;font-size:56px;cursor:pointer;margin:0 auto" onclick="rollEventDice('${eventId}',${optIdx})">🎲</div>
+      <div class="dice" id="eventDice" data-die="d20" style="width:80px;height:80px;font-size:56px;cursor:pointer;margin:0 auto" onclick="rollEventDice('${eventId}',${optIdx})">🎲</div>
       <div style="font-size:11px;color:var(--dim);margin-top:15px">Click dice to roll</div>
     </div>`;
   
@@ -3399,62 +3386,41 @@ function rollEventDice(eventId, optIdx){
   
   const de = document.getElementById('eventDice');
   if(!de) return;
-  
+
+  // Compute final roll before animating
+  let roll, rollDisplay;
+  if(hasDisadvantage) {
+    const d1 = Math.floor(Math.random()*20)+1;
+    const d2 = Math.floor(Math.random()*20)+1;
+    roll = Math.min(d1, d2);
+    rollDisplay = `[${d1}, ${d2}] → ${roll}`;
+    GS._helplessMaidenDisadvantage = false;
+  } else if(hasAdvantage) {
+    const d1 = Math.floor(Math.random()*20)+1;
+    const d2 = Math.floor(Math.random()*20)+1;
+    roll = Math.max(d1, d2);
+    rollDisplay = `[${d1}, ${d2}] → ${roll}`;
+    GS._rareHerbsAdvantage = false;
+  } else {
+    roll = Math.floor(Math.random()*20)+1;
+    rollDisplay = roll.toString();
+  }
+
+  const inspirationBonus = GS._inspirationBonus || 0;
+  GS._inspirationBonus = 0;
+  const total = roll + statVal + inspirationBonus;
+  const success = total >= diff;
+  const displayVal = rollDisplay.includes('[') ? rollDisplay.split('→')[1].trim() : roll;
+
   de.classList.add('rolling');
-  let ticks=0;
-  
-  const iv = setInterval(()=>{
-    if(hasDisadvantage || hasAdvantage){
-      de.textContent = Math.floor(Math.random()*20)+1 + ',' + Math.floor(Math.random()*20)+1;
-    } else {
-      de.textContent = Math.floor(Math.random()*20)+1;
-    }
-    if(++ticks > 12){
-      clearInterval(iv);
-      
-      // Final roll calculation
-      let roll, rollDisplay;
-      if(hasDisadvantage) {
-        const d1 = Math.floor(Math.random()*20)+1;
-        const d2 = Math.floor(Math.random()*20)+1;
-        roll = Math.min(d1, d2);
-        rollDisplay = `[${d1}, ${d2}] → ${roll}`;
-        GS._helplessMaidenDisadvantage = false;
-      } else if(hasAdvantage) {
-        const d1 = Math.floor(Math.random()*20)+1;
-        const d2 = Math.floor(Math.random()*20)+1;
-        roll = Math.max(d1, d2);
-        rollDisplay = `[${d1}, ${d2}] → ${roll}`;
-        GS._rareHerbsAdvantage = false;
-      } else {
-        roll = Math.floor(Math.random()*20)+1;
-        rollDisplay = roll.toString();
-      }
-      
-      // Get inspiration bonus if used
-      const inspirationBonus = GS._inspirationBonus || 0;
-      GS._inspirationBonus = 0;
-      
-      const total = roll + statVal + inspirationBonus;
-      const success = total >= diff;
-      
-      // Update dice display
-      de.textContent = rollDisplay.includes('[') ? rollDisplay.split('→')[1].trim() : roll;
-      de.classList.remove('rolling');
-      de.style.borderColor = success ? '#40a040' : '#a04040';
-      de.style.color = success ? '#40a040' : '#a04040';
-      
-      const statName = {int:'INT',dex:'DEX',str:'STR',combat:'Combat',avg_dex_str:'DEX+STR',con:'CON',con_dex_str:'CON+DEX+STR'}[opt.stat]||opt.stat;
-      const bonusText = inspirationBonus > 0 ? `<span style="color:var(--gold)"> +${inspirationBonus} (Inspiration)</span>` : '';
-      const rollTypeText = hasDisadvantage ? `<br><span style="color:#ff6b6b;font-size:10px">(Rolled with DISADVANTAGE)</span>` : (hasAdvantage ? `<br><span style="color:#4f4;font-size:10px">(Rolled with ADVANTAGE)</span>` : '');
-      
-      setTimeout(()=>{
-        closeModal();
-        // Directly show the outcome without an extra modal
-        success ? opt.success() : opt.fail();
-      },600);
-    }
-  },70);
+  Dice3D.spin('eventDice', displayVal, ()=>{
+    de.classList.remove('rolling');
+    Dice3D.setResult('eventDice', displayVal, success ? '#40a040' : '#a04040');
+    setTimeout(()=>{
+      closeModal();
+      success ? opt.success() : opt.fail();
+    }, 600);
+  });
 }
 function doVillage(){
   const p=cp();
@@ -4536,7 +4502,7 @@ function showEscapeBattle(skillId){
   const diceHtml = `
     <div style="text-align:center;padding:20px">
       <div style="font-size:14px;margin-bottom:15px">Need ${needed}+ to escape!</div>
-      <div class="dice" id="escapeDice" style="width:80px;height:80px;font-size:56px;cursor:pointer;margin:0 auto" onclick="rollEscapeBattleDice(${needed})">🎲</div>
+      <div class="dice" id="escapeDice" data-die="d20" style="width:80px;height:80px;font-size:56px;cursor:pointer;margin:0 auto" onclick="rollEscapeBattleDice(${needed})">🎲</div>
       <div style="font-size:12px;color:var(--dim);margin-top:15px">Click to roll</div>
     </div>`;
   
@@ -4549,36 +4515,25 @@ function rollEscapeBattleDice(needed){
   const sk = skills.find(s => s.id === 'run' || s.id === 'swift_retreat') || skills[0];
   const de = document.getElementById('escapeDice');
   if(!de) return;
-  
   de.classList.add('rolling');
-  let ticks = 0;
-  
-  const iv = setInterval(() => {
-    de.textContent = Math.floor(Math.random() * 20) + 1;
-    if(++ticks > 14){
-      clearInterval(iv);
-      const roll = Math.floor(Math.random() * 20) + 1;
-      de.textContent = roll;
-      de.classList.remove('rolling');
-      const success = roll >= needed;
-      de.style.borderColor = success ? '#40a040' : '#a04040';
-      de.style.color = success ? '#40a040' : '#a04040';
-      
-      const fleeSuccess = roll + (p.class === 'ranger' || p.class === 'rogue' ? Math.floor(p.dex * 1.5) : p.dex) > 14;
-      
-      setTimeout(() => {
-        closeModal();
-        if(fleeSuccess){
-          c.fled = true;
-          closeCombatFled();
-        } else {
-          c.log.push('Escape failed!');
-          renderBattleScreen();
-          doEnemyTurn();
-        }
-      }, 800);
-    }
-  }, 70);
+  const roll = Math.floor(Math.random() * 20) + 1;
+  const success = roll >= needed;
+  const fleeSuccess = roll + (p.class === 'ranger' || p.class === 'rogue' ? Math.floor(p.dex * 1.5) : p.dex) > 14;
+  Dice3D.spin('escapeDice', roll, ()=>{
+    de.classList.remove('rolling');
+    Dice3D.setResult('escapeDice', roll, success?'#40a040':'#a04040');
+    setTimeout(() => {
+      closeModal();
+      if(fleeSuccess){
+        c.fled = true;
+        closeCombatFled();
+      } else {
+        c.log.push('Escape failed!');
+        renderBattleScreen();
+        doEnemyTurn();
+      }
+    }, 800);
+  });
 }
 
 function doPlayerTurn(){
@@ -4716,7 +4671,7 @@ function combatSkill(idx){
     const s=calcStats(p);
     const needed=sk.id==='swift_retreat'?14-Math.floor(s.dex*1.5):14-s.dex;
     const diceHtml = `<div style="display:flex;justify-content:center;gap:15px;margin:15px 0">
-      <div class="dice" id="escapeDice" style="width:60px;height:60px;font-size:48px;cursor:pointer" onclick="rollEscapeDice(${needed})">🎲</div>
+      <div class="dice" id="escapeDice" data-die="d20" style="width:60px;height:60px;font-size:48px;cursor:pointer" onclick="rollEscapeDice(${needed})">🎲</div>
     </div><div style="text-align:center;font-size:11px;color:var(--dim)">Click the die to roll! (Need ${needed}+)</div>`;
     openModal(`🏃 ${sk.name}`,`${sk.desc}<br><br>Need to roll ${needed}+ on D20<br>${sk.id==='swift_retreat'?'(DEX bonus ×1.5)':'(DEX bonus)'}`,[],diceHtml);
     return;
@@ -4747,7 +4702,7 @@ function combatSkill(idx){
     openModal('🐺 Call of Nature', 
       `<div style="text-align:center;padding:20px">
         <div style="font-size:48px;margin-bottom:10px">🐺</div>
-        <div style="font-size:18px;color:#4f4;font-weight:bold;margin-bottom:10px">¡Wolf summoned!</div>
+        <div style="font-size:18px;color:#4f4;font-weight:bold;margin-bottom:10px">Wolf summoned!</div>
         <div style="font-size:12px;color:var(--dim)">The wolf will assist for 7 turns (25% of your damage)</div>
       </div>`,
       [{label:'OK', fn:()=>{closeModal();renderCombat();doEnemyTurn();updPlayers();}}]
@@ -6510,6 +6465,159 @@ function toast(msg,type=''){
   el.style.color=col;el.textContent=msg;el.style.display='block';el.style.opacity='1';
   clearTimeout(el._t);el._t=setTimeout(()=>{el.style.opacity='0';setTimeout(()=>{el.style.display='none';},400);},4600);
 }
+// ══════════════════════════════════════════════════════
+//  3D DICE SYSTEM
+//  Single GLB: assets/dice/dice.glb
+//  Mesh name → die type:
+//    polySurface5_d4_0  = D4
+//    polySurface2_d6_0  = D6
+//    polySurface1_d8_0  = D8
+//    pPlatonic7_d10_0   = D10
+//    polySurface3_d12_0 = D12
+//    polySurface4_d20_0 = D20
+//    pPlatonic9_d100_0  = D100
+// ══════════════════════════════════════════════════════
+const Dice3D = (() => {
+  const MODEL_PATH = 'assets/dice/dice.glb';
+
+  const MESH_NAMES = {
+    d4:   'polySurface5_d4_0',
+    d6:   'polySurface2_d6_0',
+    d8:   'polySurface1_d8_0',
+    d10:  'pPlatonic7_d10_0',
+    d12:  'polySurface3_d12_0',
+    d20:  'polySurface4_d20_0',
+    d100: 'pPlatonic9_d100_0',
+  };
+
+  let meshTemplates = {};   // dieType -> THREE.Object3D (source, never added to any scene)
+  let loadAttempted = false;
+  let loadError = false;
+  const instances = {};
+
+  function tryLoad() {
+    if(loadAttempted || !window.THREE || !THREE.GLTFLoader) return;
+    loadAttempted = true;
+    const loader = new THREE.GLTFLoader();
+    loader.load(MODEL_PATH, (gltf) => {
+      // Extract each die mesh by its name in the GLB
+      gltf.scene.traverse(node => {
+        for(const [type, name] of Object.entries(MESH_NAMES)) {
+          if(node.name === name) meshTemplates[type] = node;
+        }
+      });
+    }, undefined, (err) => {
+      loadError = true;
+      console.warn('[Dice3D] Model load failed – falling back to text dice.', err);
+    });
+  }
+
+  function setup(elementId, size, dieType) {
+    tryLoad();
+    dieType = dieType || 'd6';
+    const el = document.getElementById(elementId);
+    if(!el) return;
+    // Dispose previous instance
+    if(instances[elementId]) {
+      if(instances[elementId].animId) cancelAnimationFrame(instances[elementId].animId);
+      if(instances[elementId].renderer) instances[elementId].renderer.dispose();
+      delete instances[elementId];
+    }
+    // Meshes not ready yet – retry shortly
+    if(!Object.keys(meshTemplates).length && !loadError) {
+      setTimeout(() => setup(elementId, size, dieType), 300);
+      return;
+    }
+    // Load failed – keep text fallback
+    if(loadError) return;
+
+    el.style.position = 'relative';
+    el.style.overflow = 'hidden';
+    el.innerHTML = '';
+
+    // Canvas for Three.js
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;display:block';
+    el.appendChild(canvas);
+
+    // Number overlay
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:bold;color:var(--gold);pointer-events:none;z-index:2;text-shadow:1px 1px 4px #000;font-family:'Cinzel',serif;font-size:${Math.floor(size*0.42)}px`;
+    el.appendChild(overlay);
+
+    // Three.js setup
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setSize(size, size, false);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
+    camera.position.set(0, 0, 5.5);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+    const dir = new THREE.DirectionalLight(0xf0c060, 1.5);
+    dir.position.set(3, 5, 5);
+    scene.add(dir);
+    const rim = new THREE.DirectionalLight(0x8060ff, 0.4);
+    rim.position.set(-3, -2, -3);
+    scene.add(rim);
+
+    // Clone the correct die mesh (fall back to d6 or first available)
+    const template = meshTemplates[dieType] || meshTemplates['d6'] || Object.values(meshTemplates)[0];
+    if(!template) return;
+    const mesh = template.clone(true);
+    const box = new THREE.Box3().setFromObject(mesh);
+    const siz = box.getSize(new THREE.Vector3());
+    const sc = 3.0 / Math.max(siz.x, siz.y, siz.z);
+    mesh.scale.setScalar(sc);
+    const center = box.getCenter(new THREE.Vector3());
+    mesh.position.sub(center.multiplyScalar(sc));
+    scene.add(mesh);
+
+    const state = { renderer, scene, camera, mesh, overlay, spinX: 0.008, spinY: 0.015, animId: null };
+    function animate() {
+      state.animId = requestAnimationFrame(animate);
+      mesh.rotation.x += state.spinX;
+      mesh.rotation.y += state.spinY;
+      renderer.render(scene, camera);
+    }
+    animate();
+    instances[elementId] = state;
+  }
+
+  // Fast spin for 650 ms, then show result number
+  function spin(elementId, finalValue, callback) {
+    const inst = instances[elementId];
+    if(!inst || !inst.mesh) {
+      if(callback) setTimeout(callback, 650);
+      return;
+    }
+    inst.spinX = 0.18;
+    inst.spinY = 0.28;
+    if(inst.overlay) inst.overlay.textContent = '';
+    setTimeout(() => {
+      inst.spinX = 0.008;
+      inst.spinY = 0.015;
+      if(inst.overlay) inst.overlay.textContent = finalValue;
+      if(callback) callback();
+    }, 650);
+  }
+
+  // Set overlay value and optional color (green = success, red = fail)
+  function setResult(elementId, value, color) {
+    const inst = instances[elementId];
+    if(inst && inst.overlay) {
+      inst.overlay.textContent = value;
+      if(color) inst.overlay.style.color = color;
+    }
+  }
+
+  return { setup, spin, setResult };
+})();
+
 function openModal(title,text,choices,rawHtml){
   const box=document.getElementById('modalBox');
   if(rawHtml){
@@ -6520,6 +6628,14 @@ function openModal(title,text,choices,rawHtml){
     box.querySelectorAll('.act-btn.pri').forEach((b,i)=>{if(choices?.[i])b.onclick=choices[i].fn;});
   }
   document.getElementById('modal').classList.add('on');
+  // Auto-setup 3D dice for any .dice elements that appear inside this modal
+  setTimeout(()=>{
+    document.querySelectorAll('#modal .dice[id]').forEach(el=>{
+      const sz = el.offsetWidth || parseInt(el.style.width) || 80;
+      const die = el.dataset.die || 'd20';
+      Dice3D.setup(el.id, sz, die);
+    });
+  }, 50);
 }
 
 // ══════════════════════════════════════════════════════
