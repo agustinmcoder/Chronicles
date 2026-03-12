@@ -319,8 +319,8 @@ canvas{display:block}
 .boss-tracker{text-align:center;margin-top:auto;padding-top:10px;border-top:1px solid var(--border);width:100%}
 </style>
 <!-- Three.js + GLTFLoader for 3D dice -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 </head>
 <body>
 <audio id="bgMusic" loop>
@@ -6490,20 +6490,34 @@ const Dice3D = (() => {
   const instances = {};
 
   function tryLoad() {
-    if(loadAttempted || !window.THREE || !THREE.GLTFLoader) return;
+    if(loadAttempted) return;
+    if(!window.THREE)        { console.warn('[Dice3D] THREE not available yet'); return; }
+    if(!THREE.GLTFLoader)    { console.warn('[Dice3D] THREE.GLTFLoader not found'); return; }
     loadAttempted = true;
+    console.log('[Dice3D] Loading model:', MODEL_PATH);
     const loader = new THREE.GLTFLoader();
     loader.load(MODEL_PATH, (gltf) => {
       // Extract each die mesh by its name in the GLB
       gltf.scene.traverse(node => {
         for(const [type, name] of Object.entries(MESH_NAMES)) {
-          if(node.name === name) meshTemplates[type] = node;
+          if(node.name === name) {
+            meshTemplates[type] = node;
+            console.log(`[Dice3D] ✔ Mesh found: ${name} → ${type}`);
+          }
         }
       });
+      console.log('[Dice3D] Ready. Loaded dice types:', Object.keys(meshTemplates).join(', ') || 'NONE — check mesh names!');
     }, undefined, (err) => {
       loadError = true;
-      console.warn('[Dice3D] Model load failed – falling back to text dice.', err);
+      console.error('[Dice3D] Model load failed:', err);
     });
+  }
+
+  // Kick off loading as soon as the scripts are available — don't wait for setup()
+  if(window.THREE && THREE.GLTFLoader) {
+    tryLoad();
+  } else {
+    window.addEventListener('load', tryLoad);
   }
 
   function setup(elementId, size, dieType) {
