@@ -27,6 +27,58 @@ canvas{display:block}
 #creditsScreen{background:linear-gradient(rgba(4,6,4,0.7),rgba(4,6,4,0.7)),url('assets/fondo/fondo.gif');background-size:cover;background-position:center}
 #testAreaScreen{background:linear-gradient(rgba(4,6,4,0.7),rgba(4,6,4,0.7)),url('assets/fondo/fondo.gif');background-size:cover;background-position:center}
 #battleTestScreen{background:linear-gradient(rgba(4,6,4,0.7),rgba(4,6,4,0.7)),url('assets/fondo/fondo.gif');background-size:cover;background-position:center}
+#battleScreen{position:fixed;inset:0;z-index:100;background:#0a0a0a}
+.battle-bg{position:absolute;inset:0;background:url('assets/fondo/final_boss_hell.gif');background-size:cover;background-position:center}
+.battle-container{position:relative;height:100%;display:flex;flex-direction:column;padding:0}
+.battle-header{display:flex;justify-content:space-between;align-items:center;padding:10px 20px}
+.battle-header .back-btn{font-size:18px;padding:8px 15px}
+.battle-title{font-family:'Cinzel Decorative',serif;font-size:26px;color:var(--gold);text-shadow:0 0 10px rgba(255,100,0,0.5)}
+.battle-log{height:240px;width:90%;overflow-y:auto;background:rgba(0,0,0,0.5);border-radius:10px;padding:12px;margin:10px auto;font-size:14px;color:var(--dim);text-align:center;position:relative;z-index:5000;transition:background 0.2s}
+.battle-log:hover{background:rgba(0,0,0,0.95)}
+.battle-actions{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:10px;background:rgba(0,0,0,0.7);border-radius:8px;margin:10px 5px;z-index:100;position:relative;width:80%;margin-left:auto;margin-right:auto;height:18%;min-height:120px;overflow-y:auto}
+.battle-actions .act-btn{width:calc(33% - 4px);font-size:11px;padding:6px 8px;min-height:35px;background:rgba(14,40,14,0.85);border:1px solid #333;color:#fff;position:relative}
+.battle-actions .act-btn:hover{background:rgba(20,60,20,0.9);border-color:#4a4}
+.battle-actions .act-btn:hover::after{content:attr(data-desc);position:fixed;bottom:82%;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.95);border:1px solid #555;padding:8px 10px;border-radius:5px;font-size:11px;color:#fff;white-space:nowrap;z-index:10000;margin-bottom:5px;pointer-events:none}
+.battle-actions .act-btn:disabled:hover::after{content:none}
+.battle-actions .act-btn.pri{background:rgba(240,194,96,0.3);border:1px solid #c90;color:#fc0}
+.battle-actions .act-btn.pri:hover{background:rgba(240,194,96,0.5);border-color:#fff}
+.battle-consumable{padding:10px;text-align:center}
+.hp-fill{background:linear-gradient(90deg,#c03030,#e05050);height:100%;transition:width 0.3s ease}
+.mp-fill{background:linear-gradient(90deg,#404080,#4080d0);height:100%;transition:width 0.3s ease}
+.battle-arena{flex:1;width:80%;display:flex;align-items:center;justify-content:space-between;padding:0;position:relative;min-height:300px;margin:0 auto}
+.combatant-side{width:30%;display:flex;flex-direction:column;align-items:center;transition:transform 0.3s ease}
+.player-side{margin-right:auto;padding-left:0}
+.enemy-side{margin-left:auto;padding-right:0}
+.combatant-sprite{font-size:180px;width:270px;height:270px;display:flex;align-items:center;justify-content:center}
+.player-side .combatant-sprite{font-size:102px;width:102px;height:153px;align-items:flex-end}
+.player-side .combatant-sprite img{width:100%;height:100%;object-fit:fill;align-self:flex-end}
+.enemy-side .combatant-sprite{width:270px;height:270px}
+.combatant-sprite img{width:100%;height:100%;object-fit:contain;max-width:270px;max-height:270px}
+.combatant-name{font-family:'Cinzel',serif;font-size:28px;color:var(--gold);margin-top:15px}
+.combatant-stats{width:100%;max-width:250px;margin-top:12px}
+.hp-bar,.mp-bar{height:14px;background:rgba(0,0,0,0.6);border-radius:7px;overflow-hidden;margin-bottom:4px}
+.combatant-sprite{font-size:180px;width:270px;height:270px;display:flex;align-items:center;justify-content:center}
+.combatant-sprite img{width:270px;height:270px;object-fit:contain;max-width:270px;max-height:270px}
+.combatant-name{font-family:'Cinzel',serif;font-size:28px;color:var(--gold);margin-top:15px}
+.combatant-stats{width:100%;max-width:250px;margin-top:12px}
+.hp-bar,.mp-bar{height:14px;background:rgba(0,0,0,0.6);border-radius:7px;overflow-hidden;margin-bottom:4px}
+
+/* Attack animations */
+@keyframes attackLunge{0%{transform:translateX(0)}50%{transform:translateX(80px)}100%{transform:translateX(0)}}
+@keyframes attackRetreat{0%{transform:translateX(0)}50%{transform:translateX(-80px)}100%{transform:translateX(0)}}
+@keyframes arrowFly{0%{left:30%;opacity:1;transform:scale(1)}100%{left:70%;opacity:1;transform:scale(0.5)}}
+@keyframes magicCast{0%{transform:scale(0.5);opacity:0}50%{transform:scale(1.2);opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes magicProjectile{0%{left:30%;opacity:1}100%{left:70%;opacity:0}}
+@keyframes hitShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+@keyframes damagePopup{0%{transform:translateY(0)scale(1);opacity:1}100%{transform:translateY(-50px)scale(1.5);opacity:0}}
+@keyframes dicePop{0%{transform:scale(0.5);opacity:0}50%{transform:scale(1.2);opacity:1}100%{transform:scale(1);opacity:0}}
+@keyframes fadeUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-30px)}}
+.player-attack{animation:attackLunge 0.3s ease}
+.enemy-attack{animation:attackRetreat 0.3s ease}
+.damage-popup{position:absolute;font-size:28px;font-weight:bold;color:#ff4040;text-shadow:2px 2px 0 #000;animation:damagePopup 1s forwards;pointer-events:none}
+.hit-flash{animation:hitShake 0.2s ease}
+@keyframes bossIdle{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+.boss-idle{animation:bossIdle 3s ease-in-out infinite}
 #gameScreen{background:url('assets/fondo/fondo.gif');background-size:cover;background-position:center}
 .title{font-family:'Cinzel Decorative',serif;font-size:clamp(52px,4.5vw,65px);font-weight:900;color:var(--gold);
   text-shadow:0 0 14px rgba(440,194,96,.9),0 0 35px rgba(440,194,96,.4),4px 4px 0 #5a3800;
@@ -111,11 +163,14 @@ canvas{display:block}
 .pi-btns .pi-btn{font-size:10px}
 
 /* Modal text sizing */
-.mo .mo-text{font-size:12px !important;line-height:1.45}
-.mo .mo-text div{font-size:12px !important;line-height:1.45}
+.mo .mo-text{font-size:14px !important;line-height:1.45}
+.mo .mo-text div{font-size:14px !important;line-height:1.45}
 .sb-ttl{font-size:9px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:4px;margin-bottom:7px}
 @keyframes diceRoll{0%{transform:rotate(0) scale(1)}45%{transform:rotate(90deg) scale(1.4)}50%{transform:rotate(180deg) scale(.9)}75%{transform:rotate(470deg) scale(1.1)}100%{transform:rotate(360deg) scale(1)}}
-.act-btn{width:100%;background:rgba(14,40,14,.85);border:1px solid var(--border);color:var(--text);font-family:'Cinzel',serif;font-size:12px;letter-spacing:1px;padding:7px 10px;cursor:pointer;text-align:left;transition:all .15s;margin-bottom:3px;display:flex;align-items:center;gap:5px}
+@keyframes bossEntrance{0%{transform:scale(0) rotate(-180deg);opacity:0}50%{transform:scale(1.3) rotate(10deg);opacity:1}70%{transform:scale(0.9) rotate(-5deg)}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes bossGlow{0%{box-shadow:0 0 20px rgba(255,0,0,0.8),0 0 40px rgba(255,100,0,0.5)}50%{box-shadow:0 0 40px rgba(255,200,0,1),0 0 80px rgba(255,100,0,0.8)}100%{box-shadow:0 0 20px rgba(255,0,0,0.8),0 0 40px rgba(255,100,0,0.5)}}
+@keyframes screenFlash{0%{background:rgba(255,255,255,0.9)}100%{background:transparent}}
+.act-btn{width:100%;background:rgba(14,40,14,.85);border:1px solid var(--border);color:var(--text);font-family:'Cinzel',serif;font-size:14px;letter-spacing:1px;padding:9px 12px;cursor:pointer;text-align:left;transition:all .15s;margin-bottom:3px;display:flex;align-items:center;gap:5px}
 .act-btn:hover:not(:disabled){border-color:var(--gold-dark);color:var(--gold);background:rgba(45,40,45,.85);padding-left:9px}
 .act-btn:disabled{opacity:.35;cursor:not-allowed}
 .act-btn.pri{border-color:var(--gold-dark);color:var(--gold);background:rgba(240,194,96,.09)}
@@ -132,8 +187,8 @@ canvas{display:block}
 .mo.on{display:flex}
 .mb{background:rgba(5,8,5,.95);border:4px solid var(--gold-dark);box-shadow:0 0 70px rgba(0,0,0,.95),0 0 40px rgba(440,194,96,.07);padding:30px;max-width:500px;width:90%;max-height:85vh;overflow-y:auto;animation:mbIn .45s ease;border-radius:8px}
 @keyframes mbIn{from{transform:scale(.9) translateY(-14px);opacity:0}to{transform:none;opacity:1}}
-.mo-title{font-family:'Cinzel Decorative',serif;font-size:clamp(18px,2.3vw,23px);color:var(--gold);text-align:center;margin-bottom:14px;text-shadow:0 0 10px rgba(440,194,96,.35)}
-.mo-text{font-family:'IM Fell English',serif;font-size:18px;line-height:1.75;color:var(--text);text-align:center;margin-bottom:16px}
+.mo-title{font-family:'Cinzel Decorative',serif;font-size:clamp(22px,3vw,28px);color:var(--gold);text-align:center;margin-bottom:14px;text-shadow:0 0 10px rgba(440,194,96,.35)}
+.mo-text{font-family:'IM Fell English',serif;font-size:20px;line-height:1.75;color:var(--text);text-align:center;margin-bottom:16px}
 .mo-choices{display:flex;flex-direction:column;gap:5px}
 /* COMBAT */
 .combat-wrap{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:14px}
@@ -148,6 +203,7 @@ canvas{display:block}
 .vs-txt{font-family:'Cinzel Decorative',serif;font-size:23px;color:var(--gold-dark)}
 .clog{background:rgba(0,0,0,.45);border:1px solid var(--border);padding:10px;font-family:'IM Fell English',serif;font-size:14px;line-height:1.6;max-height:90px;overflow-y:auto;margin-bottom:14px;color:var(--dim)}
 .c-sprite{font-size:52px;margin-bottom:5px}
+.boss-intro{animation:bossEntrance 1s ease,bossGlow 2s ease infinite}
 .dice-roll-area{background:rgba(0,0,0,.35);border:1px solid var(--border);padding:13px;text-align:center;margin-bottom:14px;font-size:14px;color:var(--dim)}
 .big-dice{font-size:47px;display:inline-block;margin:7px 13px;cursor:pointer;transition:transform .1s;filter:drop-shadow(0 0 6px rgba(440,194,96,.5))}
 .big-dice:hover{transform:scale(1.15)}
@@ -181,7 +237,7 @@ canvas{display:block}
 .cbadge.common{color:#888}.cbadge.rare{color:var(--blue)}.cbadge.epic{color:var(--purple)}.cbadge.legendary{color:var(--gold)}
 .cicon{font-size:57px;margin-bottom:5px}.cname{font-size:10px;color:var(--text);font-weight:600;margin-bottom:5px}
 .cstat{font-size:9px;color:var(--dim);font-family:'IM Fell English',serif;line-height:1.4}
-.ctip{position:absolute;bottom:105%;left:50%;transform:translateX(-50%);width:250px;background:rgba(3,5,3,.98);border:1px solid var(--gold-dark);padding:10px;font-family:'IM Fell English',serif;font-size:13px;color:var(--text);z-index:400;pointer-events:none;opacity:0;transition:opacity .4s;text-align:left;white-space:normal;word-wrap:break-word;max-height:200px;overflow-y:auto}
+.ctip{position:absolute;bottom:105%;left:50%;transform:translateX(-50%);width:250px;background:rgba(3,5,3,.98);border:1px solid var(--gold-dark);padding:10px;font-family:'IM Fell English',serif;font-size:15px;color:var(--text);z-index:400;pointer-events:none;opacity:0;transition:opacity .4s;text-align:left;white-space:normal;word-wrap:break-word;max-height:200px;overflow-y:auto}
 .gcard:hover .ctip{opacity:1}
 .inv-slot .ctip{bottom:105%;left:50%;transform:translateX(-50%);width:250px}
 .inv-slot:hover .ctip{opacity:1}
@@ -267,11 +323,15 @@ canvas{display:block}
 <audio id="bgMusic" loop>
   <source src="assets/music/bgmusic.mp3" type="audio/mpeg">
 </audio>
+<audio id="bossMusic" loop>
+  <source src="assets/music/final_boss.mp3" type="audio/mpeg">
+</audio>
 <audio id="deathSound">
   <source src="assets/music/dead.mp3" type="audio/mpeg">
 </audio>
 <script>
 let hasInteracted = false;
+let musicPlaying = false;
 document.addEventListener('click', function() {
   if(hasInteracted) return;
   hasInteracted = true;
@@ -351,6 +411,44 @@ document.addEventListener('click', function() {
         <div class="leg"><div class="ld" style="background:#4a1010"></div>Mini-Boss</div>
         <div class="leg"><div class="ld" style="background:#4a0840"></div>Final Boss</div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- BATTLE SCREEN -->
+<div id="battleScreen" class="screen">
+  <div id="battleBg" class="battle-bg"></div>
+  <div class="battle-container">
+    <div class="battle-header">
+      <button class="back-btn" onclick="toggleBattleMusic()" id="battleMusicBtn">🎵</button>
+      <div style="flex:1"></div>
+    </div>
+    </div>
+    <div class="battle-arena">
+      <div class="combatant-side player-side" id="playerSide">
+        <div class="combatant-sprite" id="battlePlayerSprite"></div>
+        <div class="combatant-name" id="battlePlayerName"></div>
+        <div class="combatant-stats">
+          <div class="hp-bar"><div class="hp-fill" id="battlePlayerHp"></div></div>
+          <div class="mp-bar"><div class="mp-fill" id="battlePlayerMp"></div></div>
+        </div>
+        <div class="combatant-status" id="battlePlayerStatus"></div>
+      </div>
+      <div class="battle-effects" id="battleEffects"></div>
+      <div class="combatant-side enemy-side" id="enemySide">
+        <div class="combatant-sprite" id="battleEnemySprite"></div>
+        <div class="combatant-name" id="battleEnemyName"></div>
+        <div class="combatant-stats">
+          <div class="hp-bar"><div class="hp-fill" id="battleEnemyHp"></div></div>
+          <div class="mp-bar"><div class="mp-fill" id="battleEnemyMp"></div></div>
+        </div>
+        <div class="combatant-status" id="battleEnemyStatus"></div>
+      </div>
+    </div>
+    <div class="battle-log" id="battleLog"></div>
+    <div class="battle-actions" id="battleActions"></div>
+    <div class="battle-consumable">
+      <button class="act-btn" onclick="useConsumableInBattle()">🧪 Use Consumable</button>
     </div>
   </div>
 </div>
@@ -512,11 +610,11 @@ function hasStatus(target, statusKey){
 // ── CLASS SKILL DEFINITIONS ──
 const CLASS_SKILLS = {
   mage: [
-    {id:'basic_atk',    name:'Basic Attack',   icon:'⚡',kind:'atk',mpCost:0, desc:'D4 + 25% INT. Magic damage.',
+    {id:'basic_atk',    name:'Basic Attack',   icon:'⚡',kind:'atk',mpCost:0,dice:['d4'],desc:'D4 + 25% INT. Magic damage.',
       exec:(p,e,c,r)=>{const s=calcStats(p);const d4=c._playerDiceRoll||Math.floor(Math.random()*4)+1;const dmgBase=d4+Math.floor(s.int*0.25);const hitRoll=Math.floor(Math.random()*20)+1+s.int;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s attack missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.log.push(`⚡ Basic Attack — ${dmg} magic dmg (D4:${d4}+${Math.floor(s.int*0.25)} INT)`);return dmg;}},
-    {id:'lightning',   name:'Lightning Bolt', icon:'🌩️',kind:'mgk',mpCost:18,desc:'D6 + 50% INT. Electric damage.',
+    {id:'lightning',   name:'Lightning Bolt', icon:'🌩️',kind:'mgk',mpCost:18,dice:['d6'],desc:'D6 + 50% INT. Electric damage.',
       exec:(p,e,c,r)=>{const s=calcStats(p);const d6=c._playerDiceRoll||Math.floor(Math.random()*6)+1;const dmgBase=d6+Math.floor(s.int*0.5);const hitRoll=Math.floor(Math.random()*20)+1+s.int;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Lightning Bolt missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.log.push(`🌩️ Lightning Bolt — ${dmg} electric dmg (D6:${d6}+${Math.floor(s.int*0.5)} INT)`);return dmg;}},
-    {id:'fireball',    name:'Fireball',       icon:'🔥',kind:'mgk',mpCost:44,desc:'D6 + 50% INT. Fire damage.',
+    {id:'fireball',    name:'Fireball',       icon:'🔥',kind:'mgk',mpCost:44,dice:['d6'],desc:'D6 + 50% INT. Fire damage.',
       exec:(p,e,c,r)=>{const s=calcStats(p);const d6=c._playerDiceRoll||Math.floor(Math.random()*6)+1;const dmgBase=d6+Math.floor(s.int*0.5);const hitRoll=Math.floor(Math.random()*20)+1+s.int;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Fireball missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.log.push(`🔥 Fireball — ${dmg} fire dmg (D6:${d6}+${Math.floor(s.int*0.5)} INT)`);return dmg;}},
     {id:'curse',       name:'Curse',          icon:'💀',kind:'mgk',mpCost:15,desc:'Reduces enemy STR by 50% for 3 turns.',
       exec:(p,e,c,r)=>{const s=calcStats(p);const hitRoll=Math.floor(Math.random()*20)+1+s.int;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Curse missed!`);return 0;}e._cursedTurns=(e._cursedTurns||0)+3;const originalStr=e.str;e.str=Math.max(1,Math.floor(e.str*0.5));c.log.push(`💀 Curse applied! Enemy STR ${originalStr}→${e.str} (3 turns)`);return 0;}},
@@ -530,11 +628,11 @@ const CLASS_SKILLS = {
       exec:(p,e,c,r)=>{c.fled=true;c.log.push(`🌀 ${p.name} teleports away in a flash of magic!`);return 0;}},
   ],
   warrior: [
-    {id:'basic_atk',   name:'Basic Attack',   icon:'⚔️',kind:'atk',mpCost:0, desc:'Fixed 500 damage. Slash.',
-      exec:(p,e,c,r)=>{const s=calcStats(p);const hitRoll=Math.floor(Math.random()*20)+1+s.str;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s attack missed!`);return 0;}const dmg=500;e.hp=Math.max(0,e.hp-dmg);c.log.push(`⚔️ Basic Attack — ${dmg} slash dmg (fixed)`);return dmg;}},
-    {id:'fierce_atk',  name:'Fierce Attack', icon:'💥',kind:'atk',mpCost:0, desc:'D4 + D6 + 50% STR (round down). 2 turn cooldown. Slash.',
+    {id:'basic_atk',   name:'Basic Attack',   icon:'⚔️',kind:'atk',mpCost:0,dice:['d6'],desc:'D6 + 50% STR. Slash.',
+      exec:(p,e,c,r)=>{const s=calcStats(p);const d6=c._skillDiceRolls?c._skillDiceRolls[0]:Math.floor(Math.random()*6)+1;const dmgBase=d6+Math.floor(s.str*0.5);const hitRoll=Math.floor(Math.random()*20)+1+s.str;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s attack missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.log.push(`⚔️ Basic Attack — ${dmg} slash dmg (D6:${d6}+${Math.floor(s.str*0.5)} STR)`);return dmg;}},
+    {id:'fierce_atk',  name:'Fierce Attack', icon:'💥',kind:'atk',mpCost:0, dice:['d4','d6'],desc:'D4 + D6 + 50% STR (round down). 2 turn cooldown. Slash.',
       exec:(p,e,c,r)=>{if(c.fierceRecharge>0){c.log.push(`💥 Fierce Attack still recharging (${c.fierceRecharge} turns left)!`);return 0;}const s=calcStats(p);const d4=c._playerDiceRoll||Math.floor(Math.random()*4)+1;const d6=Math.floor(Math.random()*6)+1;const dmgBase=d4+d6+Math.floor(s.str*0.5);const hitRoll=Math.floor(Math.random()*20)+1+s.str;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Fierce Attack missed!`);c.fierceRecharge=2;return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.fierceRecharge=2;c.log.push(`💥 Fierce Attack — ${dmg} slash dmg! (D4:${d4}+D6:${d6}+${Math.floor(s.str*0.5)} STR, recharging 2 turns)`);return dmg;}},
-    {id:'magic_bolt',  name:'Magic Bolt',    icon:'✨',kind:'mgk',mpCost:14,desc:'D4 + 50% INT (round down). Magic damage.',
+    {id:'magic_bolt',  name:'Magic Bolt',    icon:'✨',kind:'mgk',mpCost:14,dice:['d4'],desc:'D4 + 50% INT (round down). Magic damage.',
       exec:(p,e,c,r)=>{const s=calcStats(p);const d4=c._playerDiceRoll||Math.floor(Math.random()*4)+1;const dmgBase=d4+Math.floor(s.int*0.5);const hitRoll=Math.floor(Math.random()*20)+1+s.str;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Magic Bolt missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.log.push(`✨ Magic Bolt — ${dmg} magic dmg (D4:${d4}+${Math.floor(s.int*0.5)} INT)`);return dmg;}},
     {id:'defend',      name:'Defend',         icon:'🛡️',kind:'def',mpCost:0, desc:'65% damage reduction.',
       exec:(p,e,c,r)=>{c.tempDefMult=0.35;c.defending=true;c.log.push(`🛡️ ${p.name} defends! 65% dmg reduction.`);return 0;}},
@@ -542,9 +640,9 @@ const CLASS_SKILLS = {
       exec:(p,e,c,r)=>{const s=calcStats(p);const flee=r+s.dex>14;if(flee){c.fled=true;c.log.push(`🏃 ${p.name} retreats from battle!`);}else{c.log.push(`🏃 Retreat failed! (roll:${r}+DEX:${s.dex})`);}return 0;}},
   ],
   ranger: [
-    {id:'shoot',       name:'Shoot Arrow',    icon:'🏹',kind:'atk',mpCost:0, desc:'D4 + 50% DEX (round down). Piercing damage.',
+    {id:'shoot',       name:'Shoot Arrow',    icon:'🏹',kind:'atk',mpCost:0,dice:['d4'],desc:'D4 + 50% DEX (round down). Piercing damage.',
       exec:(p,e,c,r)=>{const s=calcStats(p);const d4=c._playerDiceRoll||Math.floor(Math.random()*4)+1;const dmgBase=d4+Math.floor(s.dex*0.5);const hitRoll=Math.floor(Math.random()*20)+1+s.dex;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s arrow missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.log.push(`🏹 Shoot Arrow — ${dmg} piercing dmg (D4:${d4}+${Math.floor(s.dex*0.5)} DEX)`);return dmg;}},
-    {id:'double_arrow',name:'Double Arrow',   icon:'🪃',kind:'atk',mpCost:14,desc:'D4 + 50% DEX per arrow (2 arrows). Piercing.',
+    {id:'double_arrow',name:'Double Arrow',   icon:'🪃',kind:'atk',mpCost:14,dice:['d4','d4'],desc:'D4 + 50% DEX per arrow (2 arrows). Piercing.',
       exec:(p,e,c,r)=>{const s=calcStats(p);let total=0;let hits=0;for(let i=0;i<2;i++){const d4=c._playerDiceRoll?c._playerDiceRoll:Math.floor(Math.random()*4)+1;const dmgBase=d4+Math.floor(s.dex*0.5);const hitRoll=Math.floor(Math.random()*20)+1+s.dex;c.log.push(`🎲 Arrow ${i+1} Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll>=(e.armorClass||12)){const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);total+=dmg;hits++;}}c.log.push(`🪃 Double Arrow — ${total} piercing dmg (${hits}/2 hits)`);return total;}},
     {id:'heal_beam',   name:'Healing Beam',   icon:'💚',kind:'def',mpCost:40,desc:'D4 + 50% INT (round down) heal.',
       exec:(p,e,c,r)=>{const s=calcStats(p);const d4=c._playerDiceRoll||Math.floor(Math.random()*4)+1;const heal=d4+Math.floor(s.int*0.5);p.hp=Math.min(p.maxHp,p.hp+heal);c.log.push(`💚 Healing Beam — restored ${heal} HP! (D4:${d4}+${Math.floor(s.int*0.5)} INT)`);return 0;}},
@@ -556,9 +654,9 @@ const CLASS_SKILLS = {
       exec:(p,e,c,r)=>{c.wolf={hp:40,maxHp:40,turns:7,strMult:0.25};c.log.push(`🐺 A wolf answers the call! (7 turns, 25% of ranger damage)`);return 0;}},
   ],
   monk: [
-    {id:'basic_atk',   name:'Basic Attack',   icon:'🥊',kind:'atk',mpCost:0, desc:'D4 + 50% DEX + 50% STR (both round down). Blunt damage.',
+    {id:'basic_atk',   name:'Basic Attack',   icon:'🥊',kind:'atk',mpCost:0,dice:['d4'],desc:'D4 + 50% DEX + 50% STR (both round down). Blunt damage.',
       exec:(p,e,c,r)=>{const s=calcStats(p);const d4=c._playerDiceRoll||Math.floor(Math.random()*4)+1;const dmgBase=d4+Math.floor(s.dex*0.5)+Math.floor(s.str*0.5);const hitMod=Math.floor(s.str*0.5)+Math.floor(s.dex*0.5);const hitRoll=Math.floor(Math.random()*20)+1+hitMod;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s attack missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.log.push(`🥊 Basic Attack — ${dmg} blunt dmg (D4:${d4}+${Math.floor(s.dex*0.5)} DEX+${Math.floor(s.str*0.5)} STR)`);return dmg;}},
-    {id:'furious_blows',name:'Furious Blows', icon:'👊',kind:'atk',mpCost:14,desc:'D4 + 33% DEX + 33% STR per hit (1-6 hits). Blunt.',
+    {id:'furious_blows',name:'Furious Blows', icon:'👊',kind:'atk',mpCost:14,dice:['d4'],desc:'D4 + 33% DEX + 33% STR per hit (1-6 hits). Blunt.',
       exec:(p,e,c,r)=>{const s=calcStats(p);const hits=Math.max(1,Math.floor(Math.random()*6)+1);let total=0;let hitCount=0;const hitMod=Math.floor(s.str*0.33)+Math.floor(s.dex*0.33);for(let i=0;i<hits;i++){const d4=c._playerDiceRoll?c._playerDiceRoll:Math.floor(Math.random()*4)+1;const dmgBase=d4+Math.floor(s.dex*0.33)+Math.floor(s.str*0.33);const hitRoll=Math.floor(Math.random()*20)+1+hitMod;if(hitRoll>=(e.armorClass||12)){const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);total+=dmg;hitCount++;}}c.log.push(`👊 Furious Blows — ${hits} hits, ${hitCount} landed = ${total} blunt dmg`);return total;}},
     {id:'magic_bolt',  name:'Magic Bolt',    icon:'⚡',kind:'mgk',mpCost:14,desc:'D4 + 50% INT (round down). Magic damage.',
       exec:(p,e,c,r)=>{const s=calcStats(p);const d4=c._playerDiceRoll||Math.floor(Math.random()*4)+1;const dmgBase=d4+Math.floor(s.int*0.5);const hitMod=Math.floor(s.str*0.5)+Math.floor(s.dex*0.5);const hitRoll=Math.floor(Math.random()*20)+1+hitMod;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Magic Bolt missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.log.push(`⚡ Magic Bolt — ${dmg} magic dmg (D4:${d4}+${Math.floor(s.int*0.5)} INT)`);return dmg;}},
@@ -568,17 +666,17 @@ const CLASS_SKILLS = {
       exec:(p,e,c,r)=>{const s=calcStats(p);const flee=r+s.dex>14;if(flee){c.fled=true;c.log.push(`🏃 ${p.name} uses agility to escape!`);}else{c.log.push(`🏃 Escape failed! (roll:${r}+DEX:${s.dex})`);}return 0;}},
   ],
   rogue: [
-    {id:'basic_atk',   name:'Basic Attack',   icon:'🗡️',kind:'atk',mpCost:0, desc:'D4 + 50% DEX + 50% STR. Piercing damage.',
+    {id:'basic_atk',   name:'Basic Attack',   icon:'🗡️',kind:'atk',mpCost:0,dice:['d4'],desc:'D4 + 50% DEX + 50% STR. Piercing damage.',
       exec:(p,e,c,r)=>{const s=calcStats(p);const d4=c._playerDiceRoll||Math.floor(Math.random()*4)+1;const dmgBase=d4+Math.floor(s.dex*0.5)+Math.floor(s.str*0.5);const hitMod=Math.floor(s.str*0.5)+Math.floor(s.dex*0.5);const hitRoll=Math.floor(Math.random()*20)+1+hitMod;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s attack missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.log.push(`🗡️ Basic Attack — ${dmg} piercing dmg (D4:${d4}+${Math.floor(s.dex*0.5)} DEX+${Math.floor(s.str*0.5)} STR)`);return dmg;}},
-    {id:'backstab',   name:'Backstab',       icon:'🔪',kind:'atk',mpCost:12,desc:'D6 + 75% DEX. 2 turn cooldown. Must hit.',
+    {id:'backstab',   name:'Backstab',       icon:'🔪',kind:'atk',mpCost:12,dice:['d6'],desc:'D6 + 75% DEX. 2 turn cooldown. Must hit.',
       exec:(p,e,c,r)=>{if(c.backstabCd>0){c.log.push(`🔪 Backstab still recharging (${c.backstabCd} turns left)!`);return 0;}const s=calcStats(p);const d6=c._playerDiceRoll||Math.floor(Math.random()*6)+1;const dmgBase=d6+Math.floor(s.dex*0.75);const hitRoll=Math.floor(Math.random()*20)+1+s.dex;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Backstab missed!`);c.backstabCd=2;return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.backstabCd=2;c.log.push(`🔪 Backstab — ${dmg} piercing dmg! (D6:${d6}+${Math.floor(s.dex*0.75)} DEX, recharging 2 turns)`);return dmg;}},
-    {id:'poison_blade',name:'Poison Blade',  icon:'☠️',kind:'atk',mpCost:18,desc:'D6 + 50% DEX + 50% STR. Poison deals 30 dmg/turn for 3 turns.',
+    {id:'poison_blade',name:'Poison Blade',  icon:'☠️',kind:'atk',mpCost:18,dice:['d6'],desc:'D6 + 50% DEX + 50% STR. Poison deals 30 dmg/turn for 3 turns.',
       exec:(p,e,c,r)=>{const s=calcStats(p);const d6=c._playerDiceRoll||Math.floor(Math.random()*6)+1;const dmgBase=d6+Math.floor(s.dex*0.5)+Math.floor(s.str*0.5);const hitRoll=Math.floor(Math.random()*20)+1+s.dex;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Poison Blade missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);e._poisonedTurns=(e._poisonedTurns||0)+3;e._poisonDmg=30;c.log.push(`☠️ Poison Blade — ${dmg} dmg + poison (30/turn for 3 turns)`);return dmg;}},
-    {id:'smoke_bomb',  name:'Smoke Bomb',     icon:'💨',kind:'esc',mpCost:15,desc:'D6 + DEX bonus to escape. Guaranteed escape if roll > 8.',
+    {id:'smoke_bomb',  name:'Smoke Bomb',     icon:'💨',kind:'esc',mpCost:15,dice:['d6'],desc:'D6 + DEX bonus to escape. Guaranteed escape if roll > 8.',
       exec:(p,e,c,r)=>{const s=calcStats(p);const d6=c._playerDiceRoll||Math.floor(Math.random()*6)+1;const roll=r+d6+s.dex;const flee=roll>8;if(flee){c.fled=true;c.log.push(`💨 Smoke Bomb! ${p.name} vanishes in smoke! (roll:${r}+D6:${d6}+DEX:${s.dex})`);}else{c.log.push(`💨 Smoke Bomb failed. (roll:${roll}>8 needed)`);}return 0;}},
     {id:'evasion',     name:'Evasion',        icon:'👻',kind:'def',mpCost:10,desc:'50% chance to dodge next attack.',
       exec:(p,e,c,r)=>{c.evading=true;c.log.push(`👻 ${p.name} enters Evasion stance! 50% dodge chance.`);return 0;}},
-    {id:'sneak_attack',name:'Sneak Attack',  icon:'💀',kind:'atk',mpCost:25,desc:'D8 + 100% DEX. Extra 100 dmg if enemy not yet acted.',
+    {id:'sneak_attack',name:'Sneak Attack',  icon:'💀',kind:'atk',mpCost:25,dice:['d8'],desc:'D8 + 100% DEX. Extra 100 dmg if enemy not yet acted.',
       exec:(p,e,c,r)=>{const s=calcStats(p);const d8=c._playerDiceRoll||Math.floor(Math.random()*8)+1;const dmgBase=d8+Math.floor(s.dex);const hitRoll=Math.floor(Math.random()*20)+1+s.dex;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Sneak Attack missed!`);return 0;}let dmg=dmgBase;if(!e._hasActed){dmg+=100;c.log.push(`💀 Sneak Attack from shadows — ${dmg} piercing dmg (D8:${d8}+${Math.floor(s.dex)} DEX + 100 ambush bonus)`);}else{c.log.push(`💀 Sneak Attack — ${dmg} piercing dmg (D8:${d8}+${Math.floor(s.dex)} DEX)`);}e.hp=Math.max(0,e.hp-dmg);return dmg;}},
     {id:'shadow_cloak',name:'Shadow Cloak',  icon:'🌑',kind:'def',mpCost:30,desc:'Become invisible for 2 turns. 75% dodge, enemies can\'t target.',
       exec:(p,e,c,r)=>{c.shadowCloak=2;c.log.push(`🌑 ${p.name} vanishes into shadow! Invisible for 2 turns, 75% dodge.`);return 0;}},
@@ -598,107 +696,107 @@ const SPRITE_DATA = {
 // ── ITEMS ──
 const ITEMS = {
   // Mage weapons
-  apprentice_staff:{id:'apprentice_staff',name:'Apprentice Staff',icon:'🪄',type:'weapon',subtype:'staff',slot:'weapon',classes:['mage'],rarity:'common',int:4,mp:10,spd:1,desc:'A basic wooden staff for novice mages.'},
-  oak_wand:{id:'oak_wand',name:'Oak Wand',icon:'✨',type:'weapon',subtype:'wand',slot:'weapon',classes:['mage'],rarity:'common',int:5,spd:4,desc:'A flexible oak wand. Quick spell casting.'},
-  crystal_orb:{id:'crystal_orb',name:'Crystal Orb',icon:'🔮',type:'weapon',subtype:'orb',slot:'weapon',classes:['mage'],rarity:'common',int:8,spd:0,desc:'A focusing orb. Max spell power, low speed.'},
-  silver_staff:{id:'silver_staff',name:'Silver Staff',icon:'⚗️',type:'weapon',subtype:'staff',slot:'weapon',classes:['mage'],rarity:'rare',int:10,mp:15,spd:4,desc:'Silver-tipped staff. Channels arcane energy.'},
-  runic_wand:{id:'runic_wand',name:'Runic Wand',icon:'💫',type:'weapon',subtype:'wand',slot:'weapon',classes:['mage'],rarity:'rare',int:12,spd:3,desc:'Covered in glowing runes. Fast casting.'},
-  void_orb:{id:'void_orb',name:'Void Orb',icon:'🌀',type:'weapon',subtype:'orb',slot:'weapon',classes:['mage'],rarity:'epic',int:15,ac:3,spd:1,desc:'Pulsing with void energy. Huge magic power.'},
-  moonstaff:{id:'moonstaff',name:'Moonstaff',icon:'🌙',type:'weapon',subtype:'staff',slot:'weapon',classes:['mage'],rarity:'epic',int:20,mp:20,spd:3,desc:'Blessed by lunar light. Balanced magic damage.'},
-  staff_of_ages:{id:'staff_of_ages',name:'Staff of Ages',icon:'🌟',type:'weapon',subtype:'staff',slot:'weapon',classes:['mage'],rarity:'legendary',int:25,mp:40,spd:4,desc:'Ancient beyond reckoning.'},
-  archmage_orb:{id:'archmage_orb',name:'Archmage Orb',icon:'💎',type:'weapon',subtype:'orb',slot:'weapon',classes:['mage'],rarity:'legendary',int:22,ac:5,mp:30,spd:4,desc:'The pinnacle of magical foci.'},
+  apprentice_staff:{id:'apprentice_staff',name:'Apprentice Staff',icon:'🪄',type:'weapon',subtype:'staff',slot:'weapon',classes:['mage'],rarity:1,int:4,mp:10,spd:1,desc:'A basic wooden staff for novice mages.'},
+  oak_wand:{id:'oak_wand',name:'Oak Wand',icon:'✨',type:'weapon',subtype:'wand',slot:'weapon',classes:['mage'],rarity:1,int:5,spd:4,desc:'A flexible oak wand. Quick spell casting.'},
+  crystal_orb:{id:'crystal_orb',name:'Crystal Orb',icon:'🔮',type:'weapon',subtype:'orb',slot:'weapon',classes:['mage'],rarity:1,int:8,spd:0,desc:'A focusing orb. Max spell power, low speed.'},
+  silver_staff:{id:'silver_staff',name:'Silver Staff',icon:'⚗️',type:'weapon',subtype:'staff',slot:'weapon',classes:['mage'],rarity:2,int:10,mp:15,spd:4,desc:'Silver-tipped staff. Channels arcane energy.'},
+  runic_wand:{id:'runic_wand',name:'Runic Wand',icon:'💫',type:'weapon',subtype:'wand',slot:'weapon',classes:['mage'],rarity:2,int:12,spd:3,desc:'Covered in glowing runes. Fast casting.'},
+  void_orb:{id:'void_orb',name:'Void Orb',icon:'🌀',type:'weapon',subtype:'orb',slot:'weapon',classes:['mage'],rarity:3,int:15,ac:3,spd:1,desc:'Pulsing with void energy. Huge magic power.'},
+  moonstaff:{id:'moonstaff',name:'Moonstaff',icon:'🌙',type:'weapon',subtype:'staff',slot:'weapon',classes:['mage'],rarity:3,int:20,mp:20,spd:3,desc:'Blessed by lunar light. Balanced magic damage.'},
+  staff_of_ages:{id:'staff_of_ages',name:'Staff of Ages',icon:'🌟',type:'weapon',subtype:'staff',slot:'weapon',classes:['mage'],rarity:4,int:25,mp:40,spd:4,desc:'Ancient beyond reckoning.'},
+  archmage_orb:{id:'archmage_orb',name:'Archmage Orb',icon:'💎',type:'weapon',subtype:'orb',slot:'weapon',classes:['mage'],rarity:4,int:22,ac:5,mp:30,spd:4,desc:'The pinnacle of magical foci.'},
   
   // Warrior weapons
-  short_sword:{id:'short_sword',name:'Short Sword',icon:'🗡️',type:'weapon',subtype:'sword_shield',slot:'weapon',classes:['warrior'],rarity:'common',str:4,ac:3,spd:4,desc:'A basic one-handed sword.'},
-  tower_shield:{id:'tower_shield',name:'Tower Shield',icon:'🛡️',type:'weapon',subtype:'sword_shield',slot:'shield',classes:['warrior'],rarity:'common',ac:8,spd:0,desc:'Heavy shield. Great defense.'},
-  claymore:{id:'claymore',name:'Claymore',icon:'⚔️',type:'weapon',subtype:'twohander',slot:'weapon',classes:['warrior'],rarity:'common',str:8,spd:1,desc:'A heavy two-handed greatsword.'},
-  twin_daggers:{id:'twin_daggers',name:'Twin Daggers',icon:'🔪',type:'weapon',subtype:'dual',slot:'weapon',classes:['warrior'],rarity:'common',str:5,ac:1,spd:4,desc:'Dual blades — speed over power.'},
-  war_sword:{id:'war_sword',name:'War Sword',icon:'🗡️',type:'weapon',subtype:'sword_shield',slot:'weapon',classes:['warrior'],rarity:'rare',str:8,ac:5,spd:4,desc:'A veteran warrior\'s trusted blade.'},
-  steel_shield:{id:'steel_shield',name:'Steel Shield',icon:'🛡️',type:'weapon',subtype:'sword_shield',slot:'weapon',classes:['warrior'],rarity:'rare',ac:10,spd:1,desc:'Tempered steel. Deflects heavy blows.'},
-  zweihander:{id:'zweihander',name:'Zweihänder',icon:'⚔️',type:'weapon',subtype:'twohander',slot:'weapon',classes:['warrior'],rarity:'rare',str:12,spd:1,desc:'A massive greatsword.'},
-  chaos_blades:{id:'chaos_blades',name:'Chaos Blades',icon:'🔪',type:'weapon',subtype:'dual',slot:'weapon',classes:['warrior'],rarity:'epic',str:10,ac:4,spd:6,desc:'Twin blades infused with chaos magic.'},
-  dragon_blade:{id:'dragon_blade',name:'Dragonblade',icon:'🐉',type:'weapon',subtype:'twohander',slot:'weapon',classes:['warrior'],rarity:'epic',str:18,ac:4,spd:4,desc:'Forged from a dragon\'s tooth.'},
-  excalibur:{id:'excalibur',name:'Excalibur',icon:'⚡',type:'weapon',subtype:'sword_shield',slot:'weapon',classes:['warrior'],rarity:'legendary',str:20,ac:10,spd:4,desc:'The legendary blade of kings.'},
-  ragnarok:{id:'ragnarok',name:'Ragnarök',icon:'🌩️',type:'weapon',subtype:'twohander',slot:'weapon',classes:['warrior'],rarity:'legendary',str:25,spd:3,desc:'Sword of the apocalypse.'},
+  short_sword:{id:'short_sword',name:'Short Sword',icon:'🗡️',type:'weapon',subtype:'sword_shield',slot:'weapon',classes:['warrior'],rarity:1,str:4,ac:3,spd:4,desc:'A basic one-handed sword.'},
+  tower_shield:{id:'tower_shield',name:'Tower Shield',icon:'🛡️',type:'weapon',subtype:'sword_shield',slot:'shield',classes:['warrior'],rarity:1,ac:8,spd:0,desc:'Heavy shield. Great defense.'},
+  claymore:{id:'claymore',name:'Claymore',icon:'⚔️',type:'weapon',subtype:'twohander',slot:'weapon',classes:['warrior'],rarity:1,str:8,spd:1,desc:'A heavy two-handed greatsword.'},
+  twin_daggers:{id:'twin_daggers',name:'Twin Daggers',icon:'🔪',type:'weapon',subtype:'dual',slot:'weapon',classes:['warrior'],rarity:1,str:5,ac:1,spd:4,desc:'Dual blades — speed over power.'},
+  war_sword:{id:'war_sword',name:'War Sword',icon:'🗡️',type:'weapon',subtype:'sword_shield',slot:'weapon',classes:['warrior'],rarity:2,str:8,ac:5,spd:4,desc:'A veteran warrior\'s trusted blade.'},
+  steel_shield:{id:'steel_shield',name:'Steel Shield',icon:'🛡️',type:'weapon',subtype:'sword_shield',slot:'weapon',classes:['warrior'],rarity:2,ac:10,spd:1,desc:'Tempered steel. Deflects heavy blows.'},
+  zweihander:{id:'zweihander',name:'Zweihänder',icon:'⚔️',type:'weapon',subtype:'twohander',slot:'weapon',classes:['warrior'],rarity:2,str:12,spd:1,desc:'A massive greatsword.'},
+  chaos_blades:{id:'chaos_blades',name:'Chaos Blades',icon:'🔪',type:'weapon',subtype:'dual',slot:'weapon',classes:['warrior'],rarity:3,str:10,ac:4,spd:6,desc:'Twin blades infused with chaos magic.'},
+  dragon_blade:{id:'dragon_blade',name:'Dragonblade',icon:'🐉',type:'weapon',subtype:'twohander',slot:'weapon',classes:['warrior'],rarity:3,str:18,ac:4,spd:4,desc:'Forged from a dragon\'s tooth.'},
+  excalibur:{id:'excalibur',name:'Excalibur',icon:'⚡',type:'weapon',subtype:'sword_shield',slot:'weapon',classes:['warrior'],rarity:4,str:20,ac:10,spd:4,desc:'The legendary blade of kings.'},
+  ragnarok:{id:'ragnarok',name:'Ragnarök',icon:'🌩️',type:'weapon',subtype:'twohander',slot:'weapon',classes:['warrior'],rarity:4,str:25,spd:3,desc:'Sword of the apocalypse.'},
   
   // Ranger weapons
-  short_bow:{id:'short_bow',name:'Short Bow',icon:'🏹',type:'weapon',subtype:'bow',slot:'weapon',classes:['ranger'],rarity:'common',dex:4,spd:3,desc:'A basic wooden bow.'},
-  hunters_bow:{id:'hunters_bow',name:"Hunter's Bow",icon:'🏹',type:'weapon',subtype:'bow',slot:'weapon',classes:['ranger'],rarity:'rare',dex:8,spd:3,desc:'A seasoned hunter\'s trusted bow.'},
-  elven_bow:{id:'elven_bow',name:'Elven Bow',icon:'🌿',type:'weapon',subtype:'bow',slot:'weapon',classes:['ranger'],rarity:'rare',dex:10,spd:4,desc:'Crafted by elven bowyers.'},
-  phantom_bow:{id:'phantom_bow',name:'Phantom Bow',icon:'👻',type:'weapon',subtype:'bow',slot:'weapon',classes:['ranger'],rarity:'epic',dex:14,ac:2,spd:5,desc:'Arrows phase through armor.'},
-  artemis_bow:{id:'artemis_bow',name:'Artemis Bow',icon:'🌠',type:'weapon',subtype:'bow',slot:'weapon',classes:['ranger'],rarity:'legendary',dex:20,ac:4,spd:5,desc:'Blessed by the goddess of the hunt.'},
+  short_bow:{id:'short_bow',name:'Short Bow',icon:'🏹',type:'weapon',subtype:'bow',slot:'weapon',classes:['ranger'],rarity:1,dex:4,spd:3,desc:'A basic wooden bow.'},
+  hunters_bow:{id:'hunters_bow',name:"Hunter's Bow",icon:'🏹',type:'weapon',subtype:'bow',slot:'weapon',classes:['ranger'],rarity:2,dex:8,spd:3,desc:'A seasoned hunter\'s trusted bow.'},
+  elven_bow:{id:'elven_bow',name:'Elven Bow',icon:'🌿',type:'weapon',subtype:'bow',slot:'weapon',classes:['ranger'],rarity:2,dex:10,spd:4,desc:'Crafted by elven bowyers.'},
+  phantom_bow:{id:'phantom_bow',name:'Phantom Bow',icon:'👻',type:'weapon',subtype:'bow',slot:'weapon',classes:['ranger'],rarity:3,dex:14,ac:2,spd:5,desc:'Arrows phase through armor.'},
+  artemis_bow:{id:'artemis_bow',name:'Artemis Bow',icon:'🌠',type:'weapon',subtype:'bow',slot:'weapon',classes:['ranger'],rarity:4,dex:20,ac:4,spd:5,desc:'Blessed by the goddess of the hunt.'},
   
   // Monk weapons
-  iron_knuckles:{id:'iron_knuckles',name:'Iron Knuckles',icon:'🥊',type:'weapon',subtype:'knuckles',slot:'weapon',classes:['monk'],rarity:'common',str:4,dex:1,spd:4,desc:'Basic iron knuckles.'},
-  monks_staff:{id:'monks_staff',name:"Monk's Staff",icon:'🪨',type:'weapon',subtype:'monk_staff',slot:'weapon',classes:['monk'],rarity:'common',str:5,dex:2,ac:4,spd:4,desc:'A balanced fighting staff.'},
-  jade_knuckles:{id:'jade_knuckles',name:'Jade Knuckles',icon:'💚',type:'weapon',subtype:'knuckles',slot:'weapon',classes:['monk'],rarity:'rare',str:7,dex:2,hp:10,spd:5,desc:'Heals slightly on hit.'},
-  iron_staff:{id:'iron_staff',name:'Iron Staff',icon:'⚒️',type:'weapon',subtype:'monk_staff',slot:'weapon',classes:['monk'],rarity:'rare',str:10,dex:3,ac:4,spd:4,desc:'Iron-capped fighting staff.'},
-  dragon_fists:{id:'dragon_fists',name:'Dragon Fists',icon:'🔥',type:'weapon',subtype:'knuckles',slot:'weapon',classes:['monk'],rarity:'epic',str:14,int:4,spd:6,desc:'Wreathed in dragon fire.'},
-  heaven_staff:{id:'heaven_staff',name:'Heaven Staff',icon:'☁️',type:'weapon',subtype:'monk_staff',slot:'weapon',classes:['monk'],rarity:'legendary',str:18,int:6,ac:8,spd:4,desc:'Forged in the sky realm.'},
+  iron_knuckles:{id:'iron_knuckles',name:'Iron Knuckles',icon:'🥊',type:'weapon',subtype:'knuckles',slot:'weapon',classes:['monk'],rarity:1,str:4,dex:1,spd:4,desc:'Basic iron knuckles.'},
+  monks_staff:{id:'monks_staff',name:"Monk's Staff",icon:'🪨',type:'weapon',subtype:'monk_staff',slot:'weapon',classes:['monk'],rarity:1,str:5,dex:2,ac:4,spd:4,desc:'A balanced fighting staff.'},
+  jade_knuckles:{id:'jade_knuckles',name:'Jade Knuckles',icon:'💚',type:'weapon',subtype:'knuckles',slot:'weapon',classes:['monk'],rarity:2,str:7,dex:2,hp:10,spd:5,desc:'Heals slightly on hit.'},
+  iron_staff:{id:'iron_staff',name:'Iron Staff',icon:'⚒️',type:'weapon',subtype:'monk_staff',slot:'weapon',classes:['monk'],rarity:2,str:10,dex:3,ac:4,spd:4,desc:'Iron-capped fighting staff.'},
+  dragon_fists:{id:'dragon_fists',name:'Dragon Fists',icon:'🔥',type:'weapon',subtype:'knuckles',slot:'weapon',classes:['monk'],rarity:3,str:14,int:4,spd:6,desc:'Wreathed in dragon fire.'},
+  heaven_staff:{id:'heaven_staff',name:'Heaven Staff',icon:'☁️',type:'weapon',subtype:'monk_staff',slot:'weapon',classes:['monk'],rarity:4,str:18,int:6,ac:8,spd:4,desc:'Forged in the sky realm.'},
   
   // Rogue weapons
-  rusty_dagger:{id:'rusty_dagger',name:'Rusty Dagger',icon:'🔪',type:'weapon',subtype:'dagger',slot:'weapon',classes:['rogue'],rarity:'common',str:3,dex:3,spd:4,desc:'A worn dagger.'},
-  sharp_knife:{id:'sharp_knife',name:'Sharp Knife',icon:'🔪',type:'weapon',subtype:'dagger',slot:'weapon',classes:['rogue'],rarity:'common',str:4,dex:4,spd:5,desc:'Keen blade for precision strikes.'},
-  twin_shadows:{id:'twin_shadows',name:'Twin Shadows',icon:'🌑',type:'weapon',subtype:'dual',slot:'weapon',classes:['rogue'],rarity:'common',str:5,dex:5,spd:4,desc:'Paired shadow daggers.'},
-  venom_fang:{id:'venom_fang',name:'Venom Fang',icon:'🐍',type:'weapon',subtype:'dagger',slot:'weapon',classes:['rogue'],rarity:'rare',str:6,dex:6,spd:5,desc:'Coated in deadly poison.'},
-  shadow_claws:{id:'shadow_claws',name:'Shadow Claws',icon:'💅',type:'weapon',subtype:'dual',slot:'weapon',classes:['rogue'],rarity:'rare',str:7,dex:8,spd:5,desc:'Claws of pure shadow.'},
-  assassin_bow:{id:'assassin_bow',name:'Assassin Bow',icon:'🎯',type:'weapon',subtype:'bow',slot:'weapon',classes:['rogue'],rarity:'rare',dex:10,spd:4,desc:'For the silent killer.'},
-  blade_of_whispers:{id:'blade_of_whispers',name:'Blade of Whispers',icon:'🤫',type:'weapon',subtype:'dagger',slot:'weapon',classes:['rogue'],rarity:'epic',str:10,dex:12,spd:6,desc:'Strikes without a sound.'},
-  nightstalker:{id:'nightstalker',name:'Nightstalker',icon:'🌙',type:'weapon',subtype:'dual',slot:'weapon',classes:['rogue'],rarity:'epic',str:12,dex:14,spd:6,desc:'Forged in eternal darkness.'},
-  phantom_bow:{id:'phantom_bow',name:'Phantom Bow',icon:'👻',type:'weapon',subtype:'bow',slot:'weapon',classes:['rogue'],rarity:'epic',dex:14,ac:3,spd:5,desc:'Arrows pass through armor.'},
-  deathmark:{id:'deathmark',name:'Deathmark',icon:'💀',type:'weapon',subtype:'dagger',slot:'weapon',classes:['rogue'],rarity:'legendary',str:15,dex:18,spd:7,desc:'One strike, one death.'},
-  eclipse_twin:{id:'eclipse_twin',name:'Eclipse Twin',icon:'🌑',type:'weapon',subtype:'dual',slot:'weapon',classes:['rogue'],rarity:'legendary',str:18,dex:20,spd:6,desc:'Twin blades of the void.'},
+  rusty_dagger:{id:'rusty_dagger',name:'Rusty Dagger',icon:'🔪',type:'weapon',subtype:'dagger',slot:'weapon',classes:['rogue'],rarity:1,str:3,dex:3,spd:4,desc:'A worn dagger.'},
+  sharp_knife:{id:'sharp_knife',name:'Sharp Knife',icon:'🔪',type:'weapon',subtype:'dagger',slot:'weapon',classes:['rogue'],rarity:1,str:4,dex:4,spd:5,desc:'Keen blade for precision strikes.'},
+  twin_shadows:{id:'twin_shadows',name:'Twin Shadows',icon:'🌑',type:'weapon',subtype:'dual',slot:'weapon',classes:['rogue'],rarity:1,str:5,dex:5,spd:4,desc:'Paired shadow daggers.'},
+  venom_fang:{id:'venom_fang',name:'Venom Fang',icon:'🐍',type:'weapon',subtype:'dagger',slot:'weapon',classes:['rogue'],rarity:2,str:6,dex:6,spd:5,desc:'Coated in deadly poison.'},
+  shadow_claws:{id:'shadow_claws',name:'Shadow Claws',icon:'💅',type:'weapon',subtype:'dual',slot:'weapon',classes:['rogue'],rarity:2,str:7,dex:8,spd:5,desc:'Claws of pure shadow.'},
+  assassin_bow:{id:'assassin_bow',name:'Assassin Bow',icon:'🎯',type:'weapon',subtype:'bow',slot:'weapon',classes:['rogue'],rarity:2,dex:10,spd:4,desc:'For the silent killer.'},
+  blade_of_whispers:{id:'blade_of_whispers',name:'Blade of Whispers',icon:'🤫',type:'weapon',subtype:'dagger',slot:'weapon',classes:['rogue'],rarity:3,str:10,dex:12,spd:6,desc:'Strikes without a sound.'},
+  nightstalker:{id:'nightstalker',name:'Nightstalker',icon:'🌙',type:'weapon',subtype:'dual',slot:'weapon',classes:['rogue'],rarity:3,str:12,dex:14,spd:6,desc:'Forged in eternal darkness.'},
+  phantom_bow:{id:'phantom_bow',name:'Phantom Bow',icon:'👻',type:'weapon',subtype:'bow',slot:'weapon',classes:['rogue'],rarity:3,dex:14,ac:3,spd:5,desc:'Arrows pass through armor.'},
+  deathmark:{id:'deathmark',name:'Deathmark',icon:'💀',type:'weapon',subtype:'dagger',slot:'weapon',classes:['rogue'],rarity:4,str:15,dex:18,spd:7,desc:'One strike, one death.'},
+  eclipse_twin:{id:'eclipse_twin',name:'Eclipse Twin',icon:'🌑',type:'weapon',subtype:'dual',slot:'weapon',classes:['rogue'],rarity:4,str:18,dex:20,spd:6,desc:'Twin blades of the void.'},
   
   // Armor - Helmets
-  leather_cap:{id:'leather_cap',name:'Leather Cap',icon:'🪖',type:'armor',subtype:'helmet',slot:'head',classes:['mage','warrior','ranger','monk','rogue'],rarity:'common',ac:2,desc:'Basic head protection.'},
-  iron_helm:{id:'iron_helm',name:'Iron Helm',icon:'⛑️',type:'armor',subtype:'helmet',slot:'head',classes:['warrior','monk'],rarity:'common',ac:4,hp:10,desc:'Standard iron helmet.'},
-  mage_hat:{id:'mage_hat',name:'Mage Hat',icon:'🎩',type:'armor',subtype:'hat',slot:'head',classes:['mage'],rarity:'common',int:4,mp:15,desc:'Traditional mage hat.'},
-  hood_of_shadows:{id:'hood_of_shadows',name:'Shadow Hood',icon:'🧢',type:'armor',subtype:'hood',slot:'head',classes:['ranger','monk','rogue'],rarity:'rare',ac:3,dex:4,spd:1,desc:'Grants stealth bonuses.'},
-  shadowmask:{id:'shadowmask',name:'Shadowmask',icon:'🎭',type:'armor',subtype:'mask',slot:'head',classes:['rogue'],rarity:'epic',ac:4,dex:8,spd:3,desc:'Grants invisibility in shadows.'},
-  knights_helm:{id:'knights_helm',name:"Knight's Helm",icon:'⛑️',type:'armor',subtype:'helmet',slot:'head',classes:['warrior'],rarity:'rare',ac:8,hp:20,desc:'Full-face knight\'s helmet.'},
-  arcane_crown:{id:'arcane_crown',name:'Arcane Crown',icon:'👑',type:'armor',subtype:'crown',slot:'head',classes:['mage'],rarity:'epic',int:6,mp:50,ac:3,desc:'Pulsing with arcane energy.'},
-  crown_of_thorns:{id:'crown_of_thorns',name:'Crown of Thorns',icon:'🌹',type:'armor',subtype:'crown',slot:'head',classes:['warrior','monk'],rarity:'epic',str:4,hp:40,ac:4,desc:'Thorns deal damage on being hit.'},
-  godking_crown:{id:'godking_crown',name:'Godking Crown',icon:'👸',type:'armor',subtype:'crown',slot:'head',classes:['mage','warrior','ranger','monk','rogue'],rarity:'legendary',str:5,int:5,dex:5,hp:30,ac:6,desc:'The crown of a fallen god-king.'},
+  leather_cap:{id:'leather_cap',name:'Leather Cap',icon:'🪖',type:'armor',subtype:'helmet',slot:'head',classes:['mage','warrior','ranger','monk','rogue'],rarity:1,ac:2,desc:'Basic head protection.'},
+  iron_helm:{id:'iron_helm',name:'Iron Helm',icon:'⛑️',type:'armor',subtype:'helmet',slot:'head',classes:['warrior','monk'],rarity:1,ac:4,hp:10,desc:'Standard iron helmet.'},
+  mage_hat:{id:'mage_hat',name:'Mage Hat',icon:'🎩',type:'armor',subtype:'hat',slot:'head',classes:['mage'],rarity:1,int:4,mp:15,desc:'Traditional mage hat.'},
+  hood_of_shadows:{id:'hood_of_shadows',name:'Shadow Hood',icon:'🧢',type:'armor',subtype:'hood',slot:'head',classes:['ranger','monk','rogue'],rarity:2,ac:3,dex:4,spd:1,desc:'Grants stealth bonuses.'},
+  shadowmask:{id:'shadowmask',name:'Shadowmask',icon:'🎭',type:'armor',subtype:'mask',slot:'head',classes:['rogue'],rarity:3,ac:4,dex:8,spd:3,desc:'Grants invisibility in shadows.'},
+  knights_helm:{id:'knights_helm',name:"Knight's Helm",icon:'⛑️',type:'armor',subtype:'helmet',slot:'head',classes:['warrior'],rarity:2,ac:8,hp:20,desc:'Full-face knight\'s helmet.'},
+  arcane_crown:{id:'arcane_crown',name:'Arcane Crown',icon:'👑',type:'armor',subtype:'crown',slot:'head',classes:['mage'],rarity:3,int:6,mp:50,ac:3,desc:'Pulsing with arcane energy.'},
+  crown_of_thorns:{id:'crown_of_thorns',name:'Crown of Thorns',icon:'🌹',type:'armor',subtype:'crown',slot:'head',classes:['warrior','monk'],rarity:3,str:4,hp:40,ac:4,desc:'Thorns deal damage on being hit.'},
+  godking_crown:{id:'godking_crown',name:'Godking Crown',icon:'👸',type:'armor',subtype:'crown',slot:'head',classes:['mage','warrior','ranger','monk','rogue'],rarity:4,str:5,int:5,dex:5,hp:30,ac:6,desc:'The crown of a fallen god-king.'},
   
   // Armor - Body
-  cloth_robe:{id:'cloth_robe',name:'Cloth Robe',icon:'👘',type:'armor',subtype:'robe',slot:'body',classes:['mage'],rarity:'common',int:2,mp:10,ac:2,desc:'Light robes.'},
-  leather_vest:{id:'leather_vest',name:'Leather Vest',icon:'🧥',type:'armor',subtype:'vest',slot:'body',classes:['ranger','monk','rogue'],rarity:'common',dex:2,ac:3,spd:1,desc:'Flexible leather armor.'},
-  chain_mail:{id:'chain_mail',name:'Chain Mail',icon:'🛡️',type:'armor',subtype:'mail',slot:'body',classes:['warrior'],rarity:'common',str:2,hp:15,ac:6,desc:'Interlocked steel rings.'},
-  enchanted_robe:{id:'enchanted_robe',name:'Enchanted Robe',icon:'🌀',type:'armor',subtype:'robe',slot:'body',classes:['mage'],rarity:'rare',int:4,mp:50,ac:4,desc:'Woven with protective spells.'},
-  ranger_vest:{id:'ranger_vest',name:"Ranger's Vest",icon:'🌿',type:'armor',subtype:'vest',slot:'body',classes:['ranger'],rarity:'rare',dex:5,ac:5,spd:4,desc:'Padded and reinforced.'},
-  monks_gi:{id:'monks_gi',name:"Monk's Gi",icon:'👕',type:'armor',subtype:'gi',slot:'body',classes:['monk'],rarity:'rare',str:2,dex:4,ac:5,desc:'Traditional monk combat wear.'},
-  plate_armor:{id:'plate_armor',name:'Plate Armor',icon:'🦺',type:'armor',subtype:'plate',slot:'body',classes:['warrior'],rarity:'epic',str:5,hp:40,ac:12,desc:'Nearly impenetrable.'},
-  mythril_robe:{id:'mythril_robe',name:'Mythril Robe',icon:'✨',type:'armor',subtype:'robe',slot:'body',classes:['mage'],rarity:'epic',int:8,mp:50,ac:6,desc:'Mythril-threaded robes.'},
-  shadow_leather:{id:'shadow_leather',name:'Shadow Leather',icon:'🌑',type:'armor',subtype:'vest',slot:'body',classes:['ranger','monk','rogue'],rarity:'epic',dex:6,ac:8,spd:3,desc:'Infused with shadow essence.'},
-  shadow_vest:{id:'shadow_vest',name:'Shadow Vest',icon:'🌒',type:'armor',subtype:'vest',slot:'body',classes:['rogue'],rarity:'rare',dex:5,ac:4,spd:4,desc:'Light armor of shadows.'},
-  nightweave:{id:'nightweave',name:'Nightweave',icon:'🌃',type:'armor',subtype:'vest',slot:'body',classes:['rogue'],rarity:'legendary',dex:10,ac:8,spd:6,desc:'Woven from midnight essence.'},
-  divine_plate:{id:'divine_plate',name:'Divine Plate',icon:'⭐',type:'armor',subtype:'plate',slot:'body',classes:['warrior'],rarity:'legendary',str:8,hp:80,ac:16,desc:'Forged by gods.'},
-  archmage_robe:{id:'archmage_robe',name:'Archmage Robe',icon:'🔯',type:'armor',subtype:'robe',slot:'body',classes:['mage'],rarity:'legendary',int:12,mp:80,ac:8,desc:'Worn by the greatest mages.'},
+  cloth_robe:{id:'cloth_robe',name:'Cloth Robe',icon:'👘',type:'armor',subtype:'robe',slot:'body',classes:['mage'],rarity:1,int:2,mp:10,ac:2,desc:'Light robes.'},
+  leather_vest:{id:'leather_vest',name:'Leather Vest',icon:'🧥',type:'armor',subtype:'vest',slot:'body',classes:['ranger','monk','rogue'],rarity:1,dex:2,ac:3,spd:1,desc:'Flexible leather armor.'},
+  chain_mail:{id:'chain_mail',name:'Chain Mail',icon:'🛡️',type:'armor',subtype:'mail',slot:'body',classes:['warrior'],rarity:1,str:2,hp:15,ac:6,desc:'Interlocked steel rings.'},
+  enchanted_robe:{id:'enchanted_robe',name:'Enchanted Robe',icon:'🌀',type:'armor',subtype:'robe',slot:'body',classes:['mage'],rarity:2,int:4,mp:50,ac:4,desc:'Woven with protective spells.'},
+  ranger_vest:{id:'ranger_vest',name:"Ranger's Vest",icon:'🌿',type:'armor',subtype:'vest',slot:'body',classes:['ranger'],rarity:2,dex:5,ac:5,spd:4,desc:'Padded and reinforced.'},
+  monks_gi:{id:'monks_gi',name:"Monk's Gi",icon:'👕',type:'armor',subtype:'gi',slot:'body',classes:['monk'],rarity:2,str:2,dex:4,ac:5,desc:'Traditional monk combat wear.'},
+  plate_armor:{id:'plate_armor',name:'Plate Armor',icon:'🦺',type:'armor',subtype:'plate',slot:'body',classes:['warrior'],rarity:3,str:5,hp:40,ac:12,desc:'Nearly impenetrable.'},
+  mythril_robe:{id:'mythril_robe',name:'Mythril Robe',icon:'✨',type:'armor',subtype:'robe',slot:'body',classes:['mage'],rarity:3,int:8,mp:50,ac:6,desc:'Mythril-threaded robes.'},
+  shadow_leather:{id:'shadow_leather',name:'Shadow Leather',icon:'🌑',type:'armor',subtype:'vest',slot:'body',classes:['ranger','monk','rogue'],rarity:3,dex:6,ac:8,spd:3,desc:'Infused with shadow essence.'},
+  shadow_vest:{id:'shadow_vest',name:'Shadow Vest',icon:'🌒',type:'armor',subtype:'vest',slot:'body',classes:['rogue'],rarity:2,dex:5,ac:4,spd:4,desc:'Light armor of shadows.'},
+  nightweave:{id:'nightweave',name:'Nightweave',icon:'🌃',type:'armor',subtype:'vest',slot:'body',classes:['rogue'],rarity:4,dex:10,ac:8,spd:6,desc:'Woven from midnight essence.'},
+  divine_plate:{id:'divine_plate',name:'Divine Plate',icon:'⭐',type:'armor',subtype:'plate',slot:'body',classes:['warrior'],rarity:4,str:8,hp:80,ac:16,desc:'Forged by gods.'},
+  archmage_robe:{id:'archmage_robe',name:'Archmage Robe',icon:'🔯',type:'armor',subtype:'robe',slot:'body',classes:['mage'],rarity:4,int:12,mp:80,ac:8,desc:'Worn by the greatest mages.'},
   
   // Armor - Feet
-  worn_boots:{id:'worn_boots',name:'Worn Boots',icon:'👞',type:'armor',subtype:'boots',slot:'feet',classes:['mage','warrior','ranger','monk','rogue'],rarity:'common',ac:1,desc:'Well-worn boots.'},
-  swift_boots:{id:'swift_boots',name:'Swift Boots',icon:'👟',type:'armor',subtype:'boots',slot:'feet',classes:['ranger','monk','rogue'],rarity:'rare',dex:2,ac:3,spd:3,desc:'Light boots.'},
-  heavy_greaves:{id:'heavy_greaves',name:'Heavy Greaves',icon:'🦶',type:'armor',subtype:'greaves',slot:'feet',classes:['warrior'],rarity:'rare',str:2,hp:15,ac:5,desc:'Iron leg armor.'},
-  arcane_slippers:{id:'arcane_slippers',name:'Arcane Slippers',icon:'🧦',type:'armor',subtype:'boots',slot:'feet',classes:['mage'],rarity:'rare',int:2,mp:20,ac:3,desc:'Enchanted slippers.'},
-  hermes_boots:{id:'hermes_boots',name:'Hermes Boots',icon:'🌪️',type:'armor',subtype:'boots',slot:'feet',classes:['mage','warrior','ranger','monk','rogue'],rarity:'epic',dex:4,ac:3,spd:5,desc:'Speed of Hermes.'},
-  infinity_boots:{id:'infinity_boots',name:'Infinity Boots',icon:'♾️',type:'armor',subtype:'boots',slot:'feet',classes:['mage','warrior','ranger','monk','rogue'],rarity:'legendary',dex:6,ac:5,spd:8,hp:40,mp:20,desc:'Limitless speed.'},
+  worn_boots:{id:'worn_boots',name:'Worn Boots',icon:'👞',type:'armor',subtype:'boots',slot:'feet',classes:['mage','warrior','ranger','monk','rogue'],rarity:1,ac:1,desc:'Well-worn boots.'},
+  swift_boots:{id:'swift_boots',name:'Swift Boots',icon:'👟',type:'armor',subtype:'boots',slot:'feet',classes:['ranger','monk','rogue'],rarity:2,dex:2,ac:3,spd:3,desc:'Light boots.'},
+  heavy_greaves:{id:'heavy_greaves',name:'Heavy Greaves',icon:'🦶',type:'armor',subtype:'greaves',slot:'feet',classes:['warrior'],rarity:2,str:2,hp:15,ac:5,desc:'Iron leg armor.'},
+  arcane_slippers:{id:'arcane_slippers',name:'Arcane Slippers',icon:'🧦',type:'armor',subtype:'boots',slot:'feet',classes:['mage'],rarity:2,int:2,mp:20,ac:3,desc:'Enchanted slippers.'},
+  hermes_boots:{id:'hermes_boots',name:'Hermes Boots',icon:'🌪️',type:'armor',subtype:'boots',slot:'feet',classes:['mage','warrior','ranger','monk','rogue'],rarity:3,dex:4,ac:3,spd:5,desc:'Speed of Hermes.'},
+  infinity_boots:{id:'infinity_boots',name:'Infinity Boots',icon:'♾️',type:'armor',subtype:'boots',slot:'feet',classes:['mage','warrior','ranger','monk','rogue'],rarity:4,dex:6,ac:5,spd:8,hp:40,mp:20,desc:'Limitless speed.'},
   
   // Accessories
-  iron_ring:{id:'iron_ring',name:'Iron Ring',icon:'💍',type:'accessory',slot:'accessory',classes:['mage','warrior','ranger','monk','rogue'],rarity:'common',str:2,desc:'Small strength boost.'},
-  sapphire_ring:{id:'sapphire_ring',name:'Sapphire Ring',icon:'💎',type:'accessory',slot:'accessory',classes:['mage','ranger'],rarity:'rare',int:5,mp:20,desc:'Enhances magic power.'},
-  warriors_band:{id:'warriors_band',name:"Warrior's Band",icon:'⚙️',type:'accessory',slot:'accessory',classes:['warrior','monk'],rarity:'rare',str:4,hp:20,desc:'Worn by veterans.'},
-  lucky_clover:{id:'lucky_clover',name:'Lucky Clover',icon:'🍀',type:'accessory',slot:'accessory',classes:['mage','warrior','ranger','monk','rogue'],rarity:'rare',rollBonus:1,desc:'+1 to all dice rolls.'},
-  phoenix_feather:{id:'phoenix_feather',name:'Phoenix Feather',icon:'🦅',type:'accessory',slot:'accessory',classes:['mage','warrior','ranger','monk','rogue'],rarity:'epic',revive:true,hp:50,desc:'Once: revive at full HP.'},
-  dragon_heart:{id:'dragon_heart',name:'Dragon Heart',icon:'❤️‍🔥',type:'accessory',slot:'accessory',classes:['mage','warrior','ranger','monk','rogue'],rarity:'legendary',str:6,int:6,hp:60,desc:'Radiates dragon power.'},
-  shadow_ring:{id:'shadow_ring',name:'Shadow Ring',icon:'💍',type:'accessory',slot:'accessory',classes:['rogue'],rarity:'rare',dex:6,ac:2,desc:'Grants shadowstep ability.'},
-  assassins_amulet:{id:'assassins_amulet',name:"Assassin's Amulet",icon:'🗡️',type:'accessory',slot:'accessory',classes:['rogue'],rarity:'epic',dex:10,spd:4,desc:'Increases critical strike chance.'},
-  void_walkers:{id:'void_walkers',name:'Void Walkers',icon:'🌀',type:'accessory',slot:'accessory',classes:['rogue'],rarity:'legendary',dex:15,ac:5,spd:8,desc:'Walk through shadows.'},
+  iron_ring:{id:'iron_ring',name:'Iron Ring',icon:'💍',type:'accessory',slot:'accessory',classes:['mage','warrior','ranger','monk','rogue'],rarity:1,str:2,desc:'Small strength boost.'},
+  sapphire_ring:{id:'sapphire_ring',name:'Sapphire Ring',icon:'💎',type:'accessory',slot:'accessory',classes:['mage','ranger'],rarity:2,int:5,mp:20,desc:'Enhances magic power.'},
+  warriors_band:{id:'warriors_band',name:"Warrior's Band",icon:'⚙️',type:'accessory',slot:'accessory',classes:['warrior','monk'],rarity:2,str:4,hp:20,desc:'Worn by veterans.'},
+  lucky_clover:{id:'lucky_clover',name:'Lucky Clover',icon:'🍀',type:'accessory',slot:'accessory',classes:['mage','warrior','ranger','monk','rogue'],rarity:2,rollBonus:1,desc:'+1 to all dice rolls.'},
+  phoenix_feather:{id:'phoenix_feather',name:'Phoenix Feather',icon:'🦅',type:'accessory',slot:'accessory',classes:['mage','warrior','ranger','monk','rogue'],rarity:3,revive:true,hp:50,desc:'Once: revive at full HP.'},
+  dragon_heart:{id:'dragon_heart',name:'Dragon Heart',icon:'❤️‍🔥',type:'accessory',slot:'accessory',classes:['mage','warrior','ranger','monk','rogue'],rarity:4,str:6,int:6,hp:60,desc:'Radiates dragon power.'},
+  shadow_ring:{id:'shadow_ring',name:'Shadow Ring',icon:'💍',type:'accessory',slot:'accessory',classes:['rogue'],rarity:2,dex:6,ac:2,desc:'Grants shadowstep ability.'},
+  assassins_amulet:{id:'assassins_amulet',name:"Assassin's Amulet",icon:'🗡️',type:'accessory',slot:'accessory',classes:['rogue'],rarity:3,dex:10,spd:4,desc:'Increases critical strike chance.'},
+  void_walkers:{id:'void_walkers',name:'Void Walkers',icon:'🌀',type:'accessory',slot:'accessory',classes:['rogue'],rarity:4,dex:15,ac:5,spd:8,desc:'Walk through shadows.'},
   
   // Consumables
-  hp_potion:{id:'hp_potion',name:'HP Potion',icon:'🧪',type:'consumable',subtype:'hp_pot',slot:null,classes:['mage','warrior','ranger','monk','rogue'],rarity:'common',healHp:40,desc:'Restores 40 HP.',price:40},
-  hi_hp_potion:{id:'hi_hp_potion',name:'Hi-HP Potion',icon:'💊',type:'consumable',subtype:'hp_pot',slot:null,classes:['mage','warrior','ranger','monk','rogue'],rarity:'rare',healHp:100,desc:'Restores 100 HP.',price:100},
-  mana_potion:{id:'mana_potion',name:'Mana Potion',icon:'🫙',type:'consumable',subtype:'mp_pot',slot:null,classes:['mage','warrior','ranger','monk','rogue'],rarity:'common',healMp:40,desc:'Restores 40 MP.',price:40},
-  hi_mana_potion:{id:'hi_mana_potion',name:'Hi-Mana Potion',icon:'🔵',type:'consumable',subtype:'mp_pot',slot:null,classes:['mage','warrior','ranger','monk','rogue'],rarity:'rare',healMp:100,desc:'Restores 100 MP.',price:100},
+  hp_potion:{id:'hp_potion',name:'HP Potion',icon:'🧪',type:'consumable',subtype:'hp_pot',slot:null,classes:['mage','warrior','ranger','monk','rogue'],rarity:1,healHp:40,desc:'Restores 40 HP.',price:40},
+  hi_hp_potion:{id:'hi_hp_potion',name:'Hi-HP Potion',icon:'💊',type:'consumable',subtype:'hp_pot',slot:null,classes:['mage','warrior','ranger','monk','rogue'],rarity:2,healHp:100,desc:'Restores 100 HP.',price:100},
+  mana_potion:{id:'mana_potion',name:'Mana Potion',icon:'🫙',type:'consumable',subtype:'mp_pot',slot:null,classes:['mage','warrior','ranger','monk','rogue'],rarity:1,healMp:40,desc:'Restores 40 MP.',price:40},
+  hi_mana_potion:{id:'hi_mana_potion',name:'Hi-Mana Potion',icon:'🔵',type:'consumable',subtype:'mp_pot',slot:null,classes:['mage','warrior','ranger','monk','rogue'],rarity:2,healMp:100,desc:'Restores 100 MP.',price:100},
 };
 
 const MINI_BOSSES = [
@@ -710,11 +808,11 @@ const MINI_BOSSES = [
 ];
 
 const FINAL_BOSSES = [
-  {name:'The Lich King',icon:'💀',sprite:'The lich King',hp:400,maxHp:400,mp:140,maxMp:140,str:14,int:15,dex:8,armorClass:18,reward:'Skull of the Lich',skills:[{name:'Soul Drain',cost:40,dmg:1.6,type:'magic',heal:0.3,desc:'Steals soul energy.'},{name:'Death Nova',cost:45,dmg:4.4,type:'magic',desc:'Explosion of death.'},{name:'Undying',cost:30,dmg:0,type:'buff',hp:60,desc:'Restores HP.'}]},
-  {name:'Balzaroth',icon:'😈',sprite:'Balzaroth',hp:450,maxHp:450,mp:80,maxMp:80,str:18,int:8,dex:6,armorClass:18,reward:'Horn of Balzaroth',skills:[{name:'Inferno Strike',cost:15,dmg:4.0,type:'physical',desc:'Flaming blow.'},{name:'Hellfire Rain',cost:45,dmg:1.5,type:'magic',hits:4,desc:'4 hellfire hits.'},{name:'Demonic Rage',cost:10,dmg:0,type:'buff',str:6,desc:'+6 STR.'}]},
-  {name:'Spider Queen',icon:'🕷️',sprite:'Spider Queen',hp:180,maxHp:180,mp:100,maxMp:100,str:10,int:14,dex:14,armorClass:18,reward:'Crown of Arachnia',skills:[{name:'Web Trap',cost:14,dmg:0.5,type:'physical',stun:1,desc:'May ensnare.'},{name:'Poison Flood',cost:40,dmg:1.4,type:'magic',poison:5,desc:'Heavy venom.'},{name:'Spiderlings',cost:8,dmg:0.8,type:'physical',hits:4,desc:'4 spiderling hits.'}]},
-  {name:'Frozen Titan',icon:'🧊',sprite:'Frozen Titan',hp:440,maxHp:440,mp:60,maxMp:60,str:15,int:10,dex:4,armorClass:18,reward:'Shard of the Titan',skills:[{name:'Glacier Slam',cost:14,dmg:4.4,type:'physical',desc:'Colossal hammer blow.'},{name:'Blizzard',cost:44,dmg:1.4,type:'magic',hits:4,desc:'Devastating blizzard.'},{name:'Frozen Heart',cost:15,dmg:0,type:'buff',ac:5,desc:'+5 AC.'}]},
-  {name:'Nyx the Dragon',icon:'🐉',sprite:'Nyx the dragon',hp:300,maxHp:300,mp:140,maxMp:140,str:16,int:14,dex:14,armorClass:18,reward:'Scale of Nyx',skills:[{name:'Shadow Breath',cost:45,dmg:1.8,type:'magic',hits:4,desc:'Shadow fire, 4 hits.'},{name:'Tail Sweep',cost:10,dmg:4.0,type:'physical',desc:'Sweeps everything.'},{name:'Dark Regen',cost:40,dmg:0,type:'buff',hp:80,desc:'Regenerates.'}]},
+  {name:'The Lich King',icon:'💀',sprite:'The lich King',hp:400,maxHp:400,mp:140,maxMp:140,str:14,int:15,dex:8,armorClass:18,reward:'Skull of the Lich',lore:'The undying monarch of the dead realm. Once a great sorcerer who sought immortality through dark magic. Now he rules over an army of skeletal warriors with an iron will.',skills:[{name:'Soul Drain',cost:40,dmg:1.6,type:'magic',heal:0.3,desc:'Steals soul energy.'},{name:'Death Nova',cost:45,dmg:4.4,type:'magic',desc:'Explosion of death.'},{name:'Undying',cost:30,dmg:0,type:'buff',hp:60,desc:'Restores HP.'}]},
+  {name:'Balzaroth',icon:'😈',sprite:'Balzaroth',hp:450,maxHp:450,mp:80,maxMp:80,str:18,int:8,dex:6,armorClass:18,reward:'Horn of Balzaroth',lore:'A demon prince exiled from the infernal planes. His horns drip with hellfire and his presence causes mortals to tremble in fear. He seeks to tear open the gateway to his homeland.',skills:[{name:'Inferno Strike',cost:15,dmg:4.0,type:'physical',desc:'Flaming blow.'},{name:'Hellfire Rain',cost:45,dmg:1.5,type:'magic',hits:4,desc:'4 hellfire hits.'},{name:'Demonic Rage',cost:10,dmg:0,type:'buff',str:6,desc:'+6 STR.'}]},
+  {name:'Spider Queen',icon:'🕷️',sprite:'Spider Queen',hp:180,maxHp:180,mp:100,maxMp:100,str:10,int:14,dex:14,armorClass:18,reward:'Crown of Arachnia',lore:'An ancient arachnid goddess who weaves destiny with her silk. Her lair is a palace of webs deep beneath the forest, where adventurers become her next meal.',skills:[{name:'Web Trap',cost:14,dmg:0.5,type:'physical',stun:1,desc:'May ensnare.'},{name:'Poison Flood',cost:40,dmg:1.4,type:'magic',poison:5,desc:'Heavy venom.'},{name:'Spiderlings',cost:8,dmg:0.8,type:'physical',hits:4,desc:'4 spiderling hits.'}]},
+  {name:'Frozen Titan',icon:'🧊',sprite:'Frozen Titan',hp:440,maxHp:440,mp:60,maxMp:60,str:15,int:10,dex:4,armorClass:18,reward:'Shard of the Titan',lore:'A colossus of living ice, awakened from millennial slumber in the frozen peaks. His heart beats with a cold,计算 relentless power that can freeze a warrior solid with a glance.',skills:[{name:'Glacier Slam',cost:14,dmg:4.4,type:'physical',desc:'Colossal hammer blow.'},{name:'Blizzard',cost:44,dmg:1.4,type:'magic',hits:4,desc:'Devastating blizzard.'},{name:'Frozen Heart',cost:15,dmg:0,type:'buff',ac:5,desc:'+5 AC.'}]},
+  {name:'Nyx the Dragon',icon:'🐉',sprite:'Nyx the dragon',hp:300,maxHp:300,mp:140,maxMp:140,str:16,int:14,dex:14,armorClass:18,reward:'Scale of Nyx',lore:'The shadow dragon of endless night. Her scales absorb light and her breath causes nightmares to manifest. She hoards not gold, but the dreams of mortals.',skills:[{name:'Shadow Breath',cost:45,dmg:1.8,type:'magic',hits:4,desc:'Shadow fire, 4 hits.'},{name:'Tail Sweep',cost:10,dmg:4.0,type:'physical',desc:'Sweeps everything.'},{name:'Dark Regen',cost:40,dmg:0,type:'buff',hp:80,desc:'Regenerates.'}]},
 ];
 
 const SIDE_QUESTS=[{star:1,name:'Lost Sheep',stat:'dex',dc:5,desc:"Find the farmer's lost sheep."},{star:1,name:'Herb Gathering',stat:'int',dc:4,desc:'Gather rare herbs.'},{star:4,name:'Bandit Camp',stat:'str',dc:10,desc:'Clear out bandits.'},{star:4,name:'Haunted Well',stat:'int',dc:10,desc:'Investigate the well.'},{star:3,name:'Dragon Cave',stat:'str',dc:16,desc:'Recover a stolen artifact.'},{star:3,name:'Cursed Forest',stat:'int',dc:16,desc:'Break an ancient curse.'},{star:4,name:'Demon Gate',stat:'int',dc:40,desc:'Seal the demon gate.'},{star:4,name:"Titan's Trial",stat:'str',dc:44,desc:'Prove your worth.'}];
@@ -807,7 +905,7 @@ const ROUTE_EVENTS=[
         success:()=>showOutcomeReward('Circled!','You manage to circle around it without provoking an attack.','🌿',()=>closeEndTurn()),
         fail:()=>{const p=cp();const dmg=pctDamage(p,0.10);p.hp=Math.max(1,p.hp-dmg);showOutcomeReward('Bitten!','The wolf takes this action as an attack and sinks its fangs into you. -'+dmg+' HP','💔',()=>closeEndTurn());}},
       {label:'III) Observe its behavior',stat:'int',CD:12,labelSuccess:'Tamed!',labelFail:'Angry!',
-        success:()=>{const p=cp();p.inventory.push({id:'wolf_inspiration',name:'Wolf Insight',icon:'🐺',rarity:'rare',type:'inspiration',desc:'+2 to your next roll',effect:2});showOutcomeReward('Discovered!','You discover that it is afraid to move because of its injury. Wolf Insight card added!','💡',()=>closeEndTurn());},
+        success:()=>{const p=cp();p.inventory.push({id:'wolf_inspiration',name:'Wolf Insight',icon:'🐺',rarity:2,type:'inspiration',desc:'+2 to your next roll',effect:2});showOutcomeReward('Discovered!','You discover that it is afraid to move because of its injury. Wolf Insight card added!','💡',()=>closeEndTurn());},
         fail:()=>{GS._combatMod=-3;showOutcomeReward('Angry!','Wolf gets angrier and attacks, trying to protect its territory.','😠',()=>resolveGoblinCombat());}},
     ]
   },
@@ -897,7 +995,7 @@ const ROUTE_EVENTS=[
   {id:'rare_herbs',type:'exploration',title:'Rare Herbs',desc:'You spot, by the side of the road, behind a small rock, a glowing blue plant, with red thorns. It captivates your sight.',icon:'🌿',
     options:[
       {label:'I) Cut it (DEX)',stat:'dex',CD:12,labelSuccess:'Collected!',labelFail:'Poisoned!',
-        success:()=>{const p=cp();p.inventory.push({id:'rare_herb',name:'Glowing Herb',icon:'💠',type:'consumable',rarity:'rare',desc:'Sellable for 80 gold',sellPrice:80});showOutcomeReward('Collected!','You cut the plant with a clean and swift movement and put it in your bag. Glowing Herb added!','💠',()=>closeEndTurn());},
+        success:()=>{const p=cp();p.inventory.push({id:'rare_herb',name:'Glowing Herb',icon:'💠',type:'consumable',rarity:2,desc:'Sellable for 80 gold',sellPrice:80});showOutcomeReward('Collected!','You cut the plant with a clean and swift movement and put it in your bag. Glowing Herb added!','💠',()=>closeEndTurn());},
         fail:()=>{
           const p=cp();
           const s=getBaseStats(p);
@@ -1037,24 +1135,71 @@ function showRunesLabyrinth(){
 function runesLabyrinthChoice(stat){
   if(stat==='leave'){closeModal();showOutcomeReward('Too dangerous...','You scan the labyrinth and note it\'s too big and complicated, you decide to continue your path without entering it.','🛤️',()=>closeEndTurn());return;}
   if(stat==='explore'){
-    const p=cp();const s=calcStats(p);const diff=14;
-    const roll=Math.floor(Math.random()*20)+1;const total=roll+s.int+s.dex;
-    if(total>=diff){
-      closeModal();
-      openModal('🏛️ Success!','You reach the end of the path. A Chest awaits you—take two item cards.',[{label:'Draw Deck 1!',fn:()=>{
-        closeModal();
-        GS._afterReward = () => {
-          openModal('🏛️ Second Card!','Take a Deck 2 card.',[{label:'Draw Deck 2!',fn:()=>{closeModal();drawCardReward(2);}}]);
-        };
-        drawCardReward(1);
-      }}]);
-    }else{
-      closeModal();
-      p.skipTurns=(p.skipTurns||0)+2;
-      openModal('🏛️ Lost!','You get lost, spending 2 turns to escape the labyrinth.',[{label:'Darn...',fn:closeEndTurn}]);
-    }
+    // Show dice roll for labyrinth exploration
+    const p = cp();
+    const s = calcStats(p);
+    const statVal = s.int + s.dex;
+    const diff = 14;
+    
+    const diceHtml = `
+      <div style="text-align:center">
+        <div style="font-size:18px;color:var(--gold);margin-bottom:15px">🏛️ Ancient Labyrinth</div>
+        <div style="font-size:13px;color:var(--dim);margin-bottom:10px">Explore the labyrinth</div>
+        <div style="font-size:12px;color:var(--text);margin-bottom:20px">INT + DEX: ${statVal}</div>
+        <div class="dice" id="eventDice" style="width:80px;height:80px;font-size:56px;cursor:pointer;margin:0 auto" onclick="rollLabyrinthDice()">🎲</div>
+        <div style="font-size:11px;color:var(--dim);margin-top:15px">Click dice to roll</div>
+      </div>`;
+    
+    closeModal();
+    GS._labyrinthDiff = diff;
+    openModal('🎲 Roll the Dice!', diceHtml, []);
     return;
   }
+}
+
+function rollLabyrinthDice(){
+  const p = cp();
+  const s = calcStats(p);
+  const statVal = s.int + s.dex;
+  const diff = GS._labyrinthDiff || 14;
+  
+  const de = document.getElementById('eventDice');
+  if(!de) return;
+  
+  de.classList.add('rolling');
+  let ticks = 0;
+  
+  const iv = setInterval(()=>{
+    de.textContent = Math.floor(Math.random()*20)+1;
+    if(++ticks > 12){
+      clearInterval(iv);
+      
+      const roll = Math.floor(Math.random()*20)+1;
+      const total = roll + statVal;
+      const success = total >= diff;
+      
+      de.textContent = roll;
+      de.classList.remove('rolling');
+      de.style.borderColor = success ? '#40a040' : '#a04040';
+      de.style.color = success ? '#40a040' : '#a04040';
+      
+      setTimeout(()=>{
+        closeModal();
+        if(success){
+          openModal('🏛️ Success!','You reach the end of the path. A Chest awaits you—take two item cards.',[{label:'Draw Deck 1!',fn:()=>{
+            closeModal();
+            GS._afterReward = () => {
+              openModal('🏛️ Second Card!','Take a Deck 2 card.',[{label:'Draw Deck 2!',fn:()=>{closeModal();drawCardReward(2);}}]);
+            };
+            drawCardReward(1);
+          }}]);
+        }else{
+          p.skipTurns=(p.skipTurns||0)+2;
+          openModal('🏛️ Lost!','You get lost, spending 2 turns to escape the labyrinth.',[{label:'Darn...',fn:closeEndTurn}]);
+        }
+      },600);
+    }
+  },70);
 }
 
 // Helper to lose random item
@@ -3090,9 +3235,64 @@ function selectInspirationCard(cardIdx){
   
   // Execute the callback
   if(GS._inspirationCallback){
-    GS._inspirationCallback();
+    const cb = GS._inspirationCallback;
     GS._inspirationCallback = null;
+    cb();
   }
+}
+
+function selectInspirationCardAndRoll(eventId, optIdx, cardIdx){
+  const p=cp();
+  const inspirations = getInspirationCards();
+  const card = inspirations[cardIdx];
+  if(!card){closeModal();return;}
+  
+  // Remove the card from inventory
+  const cardIndex = p.inventory.findIndex(i=>i.type==='inspiration' && i.id === card.id);
+  if(cardIndex > -1){
+    p.inventory.splice(cardIndex, 1);
+  }
+  
+  GS._inspirationBonus = card.effect || 2;
+  closeModal();
+  toast(`Used ${card.name}! +${GS._inspirationBonus} to roll`,'good');
+  
+  // Now show dice roll modal
+  showEventDiceRollWithBonus(eventId, optIdx);
+}
+
+function showEventDiceRollWithBonus(eventId, optIdx){
+  const event = ROUTE_EVENTS.find(e=>e.id===eventId);
+  const opt = event.options[optIdx];
+  const p = cp();
+  const s = getBaseStats(p);
+  let statVal;
+  if(opt.stat==='combat') statVal=getCombatStat(p);
+  else if(opt.stat==='avg_dex_str') statVal=Math.floor((s.dex + s.str)/2);
+  else if(opt.stat==='con_dex_str') statVal=Math.floor((s.con + s.dex + s.str)/3);
+  else if(opt.stat==='con') statVal=s.con;
+  else statVal=s[opt.stat]||0;
+  
+  const diff = opt.CD||10;
+  const statName = {int:'INT',dex:'DEX',str:'STR',combat:'Combat',avg_dex_str:'DEX+STR',con:'CON',con_dex_str:'CON+DEX+STR'}[opt.stat]||opt.stat;
+  
+  const hasDisadvantage = GS._helplessMaidenDisadvantage;
+  const hasAdvantage = GS._rareHerbsAdvantage;
+  const inspirationBonus = GS._inspirationBonus || 0;
+  
+  const advText = hasDisadvantage ? '<br><span style="color:#ff6b6b;font-size:11px">(DISADVANTAGE - roll 2, take lower)</span>' : (hasAdvantage ? '<br><span style="color:#4f4;font-size:11px">(ADVANTAGE - roll 2, take higher)</span>' : '');
+  const inspireText = '<br><span style="color:var(--gold);font-size:11px">(+' + inspirationBonus + ' Inspiration!)</span>';
+  
+  const diceHtml = `
+    <div style="text-align:center">
+      <div style="font-size:18px;color:var(--gold);margin-bottom:15px">${event.title}</div>
+      <div style="font-size:13px;color:var(--dim);margin-bottom:10px">${opt.label}</div>
+      <div style="font-size:12px;color:var(--text);margin-bottom:20px">${statName}: ${statVal}${advText}${inspireText}</div>
+      <div class="dice" id="eventDice" style="width:80px;height:80px;font-size:56px;cursor:pointer;margin:0 auto" onclick="rollEventDice('${eventId}',${optIdx})">🎲</div>
+      <div style="font-size:11px;color:var(--dim);margin-top:15px">Click dice to roll</div>
+    </div>`;
+  
+  openModal('🎲 Roll the Dice!', diceHtml, []);
 }
 
 function handleEventOption(eventId, optIdx){
@@ -3123,29 +3323,15 @@ function handleEventOption(eventId, optIdx){
     GS._rareHerbsAnalyzed = false;
   }
   
-  // Check for inspiration and show prompt
-  const inspirations = getInspirationCards();
-  if(inspirations.length > 0){
-    showInspirationPrompt(() => doEventRoll(eventId, optIdx));
-  } else {
-    doEventRoll(eventId, optIdx);
-  }
+  // Show dice roll modal instead of auto-rolling
+  showEventDiceRoll(eventId, optIdx);
 }
 
-function doEventRoll(eventId, optIdx){
+function showEventDiceRoll(eventId, optIdx){
   const event = ROUTE_EVENTS.find(e=>e.id===eventId);
   const opt = event.options[optIdx];
-  
-  // Check for disadvantage flag (Helpless Maiden trap)
-  const hasDisadvantage = GS._helplessMaidenDisadvantage;
-  
-  // Check for advantage flag (Rare Herbs after analysis)
-  const hasAdvantage = GS._rareHerbsAdvantage;
-  GS._rareHerbsAdvantage = false; // Clear after use
-  
-  // Perform stat check (no equipment bonuses for route events)
-  const p=cp();
-  const s=getBaseStats(p);
+  const p = cp();
+  const s = getBaseStats(p);
   let statVal;
   if(opt.stat==='combat') statVal=getCombatStat(p);
   else if(opt.stat==='avg_dex_str') statVal=Math.floor((s.dex + s.str)/2);
@@ -3153,44 +3339,122 @@ function doEventRoll(eventId, optIdx){
   else if(opt.stat==='con') statVal=s.con;
   else statVal=s[opt.stat]||0;
   
-  const diff=opt.CD||10;
-  
-  // Roll with disadvantage or advantage if needed
-  let roll, rollDisplay;
-  if(hasDisadvantage) {
-    const d1 = Math.floor(Math.random()*20)+1;
-    const d2 = Math.floor(Math.random()*20)+1;
-    roll = Math.min(d1, d2);
-    rollDisplay = `[${d1}, ${d2}] → ${roll} (DISADVANTAGE)`;
-    GS._helplessMaidenDisadvantage = false;
-  } else if(hasAdvantage) {
-    const d1 = Math.floor(Math.random()*20)+1;
-    const d2 = Math.floor(Math.random()*20)+1;
-    roll = Math.max(d1, d2);
-    rollDisplay = `[${d1}, ${d2}] → ${roll} (ADVANTAGE)`;
-  } else {
-    roll=Math.floor(Math.random()*20)+1;
-    rollDisplay = roll.toString();
-  }
-  
-  const inspirationBonus = GS._inspirationBonus || 0;
-  GS._inspirationBonus = 0;
-  const total=roll+statVal+inspirationBonus;
-  const success=total>=diff;
-  
-  // Show the roll result
+  const diff = opt.CD||10;
   const statName = {int:'INT',dex:'DEX',str:'STR',combat:'Combat',avg_dex_str:'DEX+STR',con:'CON',con_dex_str:'CON+DEX+STR'}[opt.stat]||opt.stat;
-  const bonusText = inspirationBonus > 0 ? `<span style="color:var(--gold)"> +${inspirationBonus} (Inspiration)</span>` : '';
-  const rollTypeText = hasDisadvantage ? `<br><span style="color:#ff6b6b;font-size:10px">(Rolled with DISADVANTAGE)</span>` : (hasAdvantage ? `<br><span style="color:#4f4;font-size:10px">(Rolled with ADVANTAGE)</span>` : '');
-  const outcomeHtml = `
+  
+  // Check advantage/disadvantage
+  const hasDisadvantage = GS._helplessMaidenDisadvantage;
+  const hasAdvantage = GS._rareHerbsAdvantage;
+  
+  const advText = hasDisadvantage ? '<br><span style="color:#ff6b6b;font-size:11px">(DISADVANTAGE - roll 2, take lower)</span>' : (hasAdvantage ? '<br><span style="color:#4f4;font-size:11px">(ADVANTAGE - roll 2, take higher)</span>' : '');
+  
+  const diceHtml = `
     <div style="text-align:center">
-      <div style="font-size:48px;margin-bottom:10px">${success?'✅':'❌'}</div>
-      <div style="font-size:16px;color:var(--gold);margin-bottom:10px">${success?opt.labelSuccess:opt.labelFail}</div>
-      <div style="font-size:12px;color:var(--dim)">Roll: ${rollDisplay} + ${statName}:${statVal}${bonusText} = ${total} vs CD:${diff}${rollTypeText}</div>
+      <div style="font-size:18px;color:var(--gold);margin-bottom:15px">${event.title}</div>
+      <div style="font-size:13px;color:var(--dim);margin-bottom:10px">${opt.label}</div>
+      <div style="font-size:12px;color:var(--text);margin-bottom:20px">Need ${diff}+ (${statName}: ${statVal})${advText}</div>
+      <div class="dice" id="eventDice" style="width:80px;height:80px;font-size:56px;cursor:pointer;margin:0 auto" onclick="rollEventDice('${eventId}',${optIdx})">🎲</div>
+      <div style="font-size:11px;color:var(--dim);margin-top:15px">Click dice to roll</div>
     </div>`;
   
   closeModal();
-  openModal(success ? '✅ Success' : '❌ Failure', outcomeHtml, [{label:'Continue', fn:()=>{closeModal();success?opt.success():opt.fail();}}]);
+  
+  // Check for inspiration
+  const inspirations = getInspirationCards();
+  if(inspirations.length > 0){
+    GS._inspirationCallback = () => {
+      openModal('🎲 Roll the Dice!', diceHtml, []);
+    };
+    const cardsHtml = inspirations.map((c,i)=>`
+      <div class="gcard" onclick="selectInspirationCardAndRoll('${eventId}',${optIdx},${i})" style="width:100px;cursor:pointer">
+        <div style="font-size:36px;margin-bottom:5px">${c.icon}</div>
+        <div style="font-size:9px;color:var(--gold)">${c.name}</div>
+        <div style="font-size:8px;color:var(--dim)">${c.desc}</div>
+      </div>
+    `).join('');
+    
+    openModal('💡 Inspiration Available!','Use an inspiration card for +2 to your roll?',[
+      {label:'Roll Normally',fn:()=>{closeModal();openModal('🎲 Roll the Dice!', diceHtml, []);}}
+    ],`<div style="text-align:center;margin-bottom:15px">${cardsHtml}</div>`);
+  } else {
+    openModal('🎲 Roll the Dice!', diceHtml, []);
+  }
+}
+
+function rollEventDice(eventId, optIdx){
+  const event = ROUTE_EVENTS.find(e=>e.id===eventId);
+  const opt = event.options[optIdx];
+  const p = cp();
+  const s = getBaseStats(p);
+  let statVal;
+  if(opt.stat==='combat') statVal=getCombatStat(p);
+  else if(opt.stat==='avg_dex_str') statVal=Math.floor((s.dex + s.str)/2);
+  else if(opt.stat==='con_dex_str') statVal=Math.floor((s.con + s.dex + s.str)/3);
+  else if(opt.stat==='con') statVal=s.con;
+  else statVal=s[opt.stat]||0;
+  
+  const diff = opt.CD||10;
+  const hasDisadvantage = GS._helplessMaidenDisadvantage;
+  const hasAdvantage = GS._rareHerbsAdvantage;
+  
+  const de = document.getElementById('eventDice');
+  if(!de) return;
+  
+  de.classList.add('rolling');
+  let ticks=0;
+  
+  const iv = setInterval(()=>{
+    if(hasDisadvantage || hasAdvantage){
+      de.textContent = Math.floor(Math.random()*20)+1 + ',' + Math.floor(Math.random()*20)+1;
+    } else {
+      de.textContent = Math.floor(Math.random()*20)+1;
+    }
+    if(++ticks > 12){
+      clearInterval(iv);
+      
+      // Final roll calculation
+      let roll, rollDisplay;
+      if(hasDisadvantage) {
+        const d1 = Math.floor(Math.random()*20)+1;
+        const d2 = Math.floor(Math.random()*20)+1;
+        roll = Math.min(d1, d2);
+        rollDisplay = `[${d1}, ${d2}] → ${roll}`;
+        GS._helplessMaidenDisadvantage = false;
+      } else if(hasAdvantage) {
+        const d1 = Math.floor(Math.random()*20)+1;
+        const d2 = Math.floor(Math.random()*20)+1;
+        roll = Math.max(d1, d2);
+        rollDisplay = `[${d1}, ${d2}] → ${roll}`;
+        GS._rareHerbsAdvantage = false;
+      } else {
+        roll = Math.floor(Math.random()*20)+1;
+        rollDisplay = roll.toString();
+      }
+      
+      // Get inspiration bonus if used
+      const inspirationBonus = GS._inspirationBonus || 0;
+      GS._inspirationBonus = 0;
+      
+      const total = roll + statVal + inspirationBonus;
+      const success = total >= diff;
+      
+      // Update dice display
+      de.textContent = rollDisplay.includes('[') ? rollDisplay.split('→')[1].trim() : roll;
+      de.classList.remove('rolling');
+      de.style.borderColor = success ? '#40a040' : '#a04040';
+      de.style.color = success ? '#40a040' : '#a04040';
+      
+      const statName = {int:'INT',dex:'DEX',str:'STR',combat:'Combat',avg_dex_str:'DEX+STR',con:'CON',con_dex_str:'CON+DEX+STR'}[opt.stat]||opt.stat;
+      const bonusText = inspirationBonus > 0 ? `<span style="color:var(--gold)"> +${inspirationBonus} (Inspiration)</span>` : '';
+      const rollTypeText = hasDisadvantage ? `<br><span style="color:#ff6b6b;font-size:10px">(Rolled with DISADVANTAGE)</span>` : (hasAdvantage ? `<br><span style="color:#4f4;font-size:10px">(Rolled with ADVANTAGE)</span>` : '');
+      
+      setTimeout(()=>{
+        closeModal();
+        // Directly show the outcome without an extra modal
+        success ? opt.success() : opt.fail();
+      },600);
+    }
+  },70);
 }
 function doVillage(){
   const p=cp();
@@ -3368,10 +3632,10 @@ function buyVillageDeck(star,cost){
 }
 function startVillageDeckDraw(star){
   const p=cp();
-  const poolCommon = Object.values(ITEMS).filter(it=>it.rarity==='common' && it.classes?.includes(p.class));
-  const poolRare   = Object.values(ITEMS).filter(it=>it.rarity==='rare'   && it.classes?.includes(p.class));
-  const poolEpic   = Object.values(ITEMS).filter(it=>it.rarity==='epic'   && it.classes?.includes(p.class));
-  const poolLegend = Object.values(ITEMS).filter(it=>it.rarity==='legendary' && it.classes?.includes(p.class));
+  const poolCommon = Object.values(ITEMS).filter(it=>it.rarity===1 && it.classes?.includes(p.class));
+  const poolRare   = Object.values(ITEMS).filter(it=>it.rarity===2 && it.classes?.includes(p.class));
+  const poolEpic   = Object.values(ITEMS).filter(it=>it.rarity===3 && it.classes?.includes(p.class));
+  const poolLegend = Object.values(ITEMS).filter(it=>it.rarity===4 && it.classes?.includes(p.class));
   function samplePool(pool,n){ const arr=[...pool]; const out=[]; for(let i=0;i<n && arr.length;i++){ out.push(arr.splice(Math.floor(Math.random()*arr.length),1)[0]); } return out; }
   let cards=[];
   if(star===1){
@@ -3418,7 +3682,7 @@ function pickVillageDeckCard(idx){
   const face=document.getElementById(`vFace${idx}`);
   if(face){
     face.innerHTML=`
-      <span style="position:absolute;top:4px;right:4px;font-size:6px;letter-spacing:1px;padding:1px 3px;text-transform:uppercase;color:${c.rarity==='legendary'?'#f0c060':c.rarity==='epic'?'#aa66ff':c.rarity==='rare'?'#4080d0':'#888'}">${c.rarity}</span>
+      <span style="position:absolute;top:4px;right:4px;font-size:6px;letter-spacing:1px;padding:1px 3px;color:${c.rarity===4?'#f0c060':c.rarity===3?'#aa66ff':c.rarity===2?'#4080d0':'#888'}">${c.rarity===4?'★★★★':c.rarity===3?'★★★':c.rarity===2?'★★':'★'}</span>
       <div style="font-size:46px;margin:14px 0 5px">${c.icon}</div>
       <div style="font-size:8px;color:#e8d5a0;font-weight:600;margin-bottom:3px">${c.name}</div>
       <div style="font-size:7px;color:#907850;font-family:'IM Fell English',serif;line-height:1.4">${itemStatLine(c)}</div>
@@ -3721,8 +3985,625 @@ function initCombat(enemy){
     return;
   }
   
+  // Check if this is a final boss - show epic intro
+  const isFinalBoss = FINAL_BOSSES.some(b => b.name === enemy.name) || enemy.isFinalBoss;
+  
+  // Use new battle screen for all combat (skip boss intro for now)
   GS.combat={enemy,log:[],phase:'player_choose',playerRoll:0,enemyRoll:0,defending:false,tempDefMult:0.5,fierceRecharge:0,wolf:null,fled:false};
-  GS.phase='combat';renderCombat();
+  if(isFinalBoss){
+    // Switch to boss music for final boss
+    const bgMusic = document.getElementById('bgMusic');
+    const bossMusic = document.getElementById('bossMusic');
+    if(bgMusic) bgMusic.pause();
+    if(bossMusic){
+      bossMusic.volume = 0.5;
+      bossMusic.play().catch(() => {});
+    }
+  }
+  GS.phase='combat';
+  showBattleScreen();
+}
+
+function showBossIntro(enemy){
+  // Switch to boss music
+  const bgMusic = document.getElementById('bgMusic');
+  const bossMusic = document.getElementById('bossMusic');
+  if(bgMusic) bgMusic.pause();
+  if(bossMusic){
+    bossMusic.volume = 0.5;
+    bossMusic.play().catch(() => {});
+  }
+  
+  // Flash screen effect
+  const flashEl = document.createElement('div');
+  flashEl.style.cssText = 'position:fixed;inset:0;background:white;z-index:9999;animation:screenFlash 0.5s ease forwards';
+  document.body.appendChild(flashEl);
+  setTimeout(() => flashEl.remove(), 500);
+  
+  const bossData = FINAL_BOSSES.find(b => b.name === enemy.name) || {};
+  const lore = bossData.lore || 'A terrifying enemy looms before you!';
+  
+  // Use boss sprite image instead of icon
+  const bossImage = enemy.sprite ? `<img src="assets/${enemy.sprite}.png" style="width:120px;height:120px;object-fit:contain;animation:bossEntrance 1s ease,bossGlow 2s ease infinite">` : `<div style="font-size:64px;animation:bossEntrance 1s ease,bossGlow 2s ease infinite">${enemy.icon}</div>`;
+  
+  const introHtml = `
+    <div style="text-align:center">
+      <div style="margin-bottom:10px;animation:bossEntrance 1s ease,bossGlow 2s ease infinite">${bossImage}</div>
+      <div style="font-size:24px;color:#ff4444;font-weight:bold;margin-bottom:10px;text-shadow:0 0 10px rgba(255,0,0,0.8)">⚠️ FINAL BOSS ⚠️</div>
+      <div style="font-size:22px;color:var(--gold);margin-bottom:15px">${enemy.name}</div>
+      <div style="font-size:14px;color:var(--dim);font-style:italic;margin-bottom:20px;line-height:1.5">${lore}</div>
+    </div>`;
+  
+  openModal('⚔️ BOSS BATTLE ⚔️', introHtml, [{label:'FIGHT!',fn:()=>{closeModal();startBossCombat(enemy);}}]);
+}
+
+function startBossCombat(enemy){
+  // Mark as final boss and apply entrance animation
+  enemy.isFinalBoss = true;
+  GS.combat={enemy,log:[],phase:'player_choose',playerRoll:0,enemyRoll:0,defending:false,tempDefMult:0.5,fierceRecharge:0,wolf:null,fled:false,_bossIntro:true};
+  GS.phase='combat';
+  showBattleScreen();
+}
+
+function showBattleScreen(){
+  console.log('showBattleScreen called');
+  try {
+    // Set background based on boss name
+    const c = GS.combat;
+    const enemyName = c?.enemy?.name?.toLowerCase() || '';
+    let bgUrl = 'assets/fondo/final_boss_hell.gif';
+    if(enemyName.includes('frozen') || enemyName.includes('titan')){
+      bgUrl = 'assets/fondo/final_boss_frozen_titan.gif';
+    } else if(enemyName.includes('balzaroth')){
+      bgUrl = 'assets/fondo/final_boss_balzaroth.gif';
+    } else if(enemyName.includes('hell') || enemyName.includes('demon')){
+      bgUrl = 'assets/fondo/final_boss_hell.gif';
+    }
+    const battleBg = document.querySelector('.battle-bg');
+    if(battleBg){
+      battleBg.style.background = `url('${bgUrl}')`;
+      battleBg.style.backgroundSize = 'cover';
+      battleBg.style.backgroundPosition = 'center';
+    }
+    
+    showS('battleScreen');
+    renderBattleScreen();
+  } catch(e) {
+    console.error('Battle screen error:', e);
+    alert('Error: ' + e.message);
+  }
+}
+
+function renderBattleScreen(){
+  const p=cp(),c=GS.combat,e=c.enemy;
+  if(!c || !p) return;
+  
+  const pHpP = Math.max(0, p.hp/p.maxHp*100);
+  const pMpP = Math.max(0, p.mp/p.maxMp*100);
+  const eHpP = Math.max(0, e.hp/e.maxHp*100);
+  const eMpP = Math.max(0, (e.mp||0)/(e.maxMp||1)*100);
+  
+  // Update battle title
+  const titleEl = document.getElementById('battleTitle');
+  if(titleEl){
+    titleEl.innerHTML = e.isFinalBoss ? '⚠️ FINAL BOSS ⚠️' : (e.isMiniBoss ? '👾 Mini Boss' : '⚔️ Combat');
+    titleEl.style.color = e.isFinalBoss ? '#ff4444' : 'var(--gold)';
+  }
+  
+  // Update player
+  document.getElementById('battlePlayerName').textContent = p.name;
+  document.getElementById('battlePlayerHp').style.width = pHpP + '%';
+  document.getElementById('battlePlayerMp').style.width = pMpP + '%';
+  
+  // Update enemy
+  document.getElementById('battleEnemyName').textContent = e.name;
+  document.getElementById('battleEnemyHp').style.width = eHpP + '%';
+  document.getElementById('battleEnemyMp').style.width = eMpP + '%';
+  
+  // Render player sprite
+  const playerSprite = document.getElementById('battlePlayerSprite');
+  if(playerSprite){
+    playerSprite.innerHTML = '';
+    const sprite = renderSprite(p.class, 102, p.color || CLASSES[p.class].color, p.race || 'human', p.gender || 'male');
+    playerSprite.appendChild(sprite);
+  }
+  
+  // Render enemy sprite
+  const enemySprite = document.getElementById('battleEnemySprite');
+  if(enemySprite){
+    enemySprite.innerHTML = '';
+    if(e.sprite){
+      const img = document.createElement('img');
+      img.src = 'assets/' + e.sprite + '.png';
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.objectFit = 'contain';
+      if(e.isFinalBoss) img.className = 'boss-idle';
+      enemySprite.appendChild(img);
+    } else {
+      enemySprite.textContent = e.icon || '❓';
+    }
+  }
+  
+  // Update battle log
+  const logEl = document.getElementById('battleLog');
+  if(logEl){
+    logEl.innerHTML = c.log.slice(-5).map(l => '<div>' + l + '</div>').join('') || '<span style="opacity:0.5">Combat begins...</span>';
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+  
+  // Render skill buttons - grouped by category
+  const actionsEl = document.getElementById('battleActions');
+  if(actionsEl){
+    const skills = CLASS_SKILLS[p.class] || CLASS_SKILLS.warrior;
+    const playerClass = p.class;
+    
+    // Categorize skills
+    const physicalSkills = skills.filter(sk => {
+      if(sk.id === 'defend' || sk.id === 'run' || sk.id === 'swift_retreat') return false;
+      if(sk.kind === 'mgk') return false; // magic skills go to magic tab
+      const type = sk.type || 'physical';
+      return type === 'physical' || !type;
+    });
+    
+    const magicSkills = skills.filter(sk => {
+      if(sk.id === 'defend' || sk.id === 'run' || sk.id === 'swift_retreat') return false;
+      const type = sk.type || 'physical';
+      const kind = sk.kind || '';
+      return type === 'magic' || kind === 'mgk' || sk.name === 'Magic Bolt';
+    });
+    
+    const consumables = (p.inventory || []).filter(i => i.type === 'consumable');
+    const runSkill = skills.find(sk => sk.id === 'run' || sk.id === 'swift_retreat');
+    const defendSkill = skills.find(sk => sk.id === 'defend');
+    
+    // Category icons
+    const physIcon = playerClass === 'ranger' ? '🏹' : (playerClass === 'rogue' ? '🗡️' : '⚔️');
+    const magIcon = '✨';
+    const consIcon = '🧪';
+    const runIcon = '🏃';
+    const defIcon = '🛡️';
+    
+    let buttonsHtml = `
+      <button class="act-btn" onclick="toggleBattleCategory('physical')">${physIcon} Attack</button>
+      <button class="act-btn" onclick="toggleBattleCategory('magic')">${magIcon} Magic</button>
+      <button class="act-btn" onclick="toggleBattleCategory('consumable')">${consIcon} Consumable</button>
+      <button class="act-btn" onclick="toggleBattleCategory('run')">${runIcon} Run</button>
+      ${defendSkill ? `<button class="act-btn" onclick="battleSkillByName('${defendSkill.name}')">${defIcon} Defend</button>` : ''}
+    `;
+    
+    // Store skills for category expansion
+    GS._battleSkills = { physical: physicalSkills, magic: magicSkills, consumables: consumables, run: runSkill, defend: defendSkill, playerClass: playerClass };
+    
+    actionsEl.innerHTML = buttonsHtml;
+  }
+}
+
+function battleSkill(idx){
+  const p = cp(), c = GS.combat, e = c.enemy;
+  const skills = CLASS_SKILLS[p.class] || CLASS_SKILLS.warrior;
+  const sk = skills[idx];
+  if(!sk) return;
+  
+  if(p.mp < sk.mpCost){toast('Not enough MP!','bad'); return;}
+  if(sk.id === 'fierce_atk' && c.fierceRecharge > 0){toast('Fierce Attack recharging!','bad'); return;}
+  
+  // Defend
+  if(sk.id === 'defend'){
+    p.mp = Math.max(0, p.mp - sk.mpCost);
+    c.defending = true;
+    c.log.push('🛡️ ' + p.name + ' takes a defensive stance!');
+    renderBattleScreen();
+    setTimeout(() => doEnemyTurn(), 800);
+    return;
+  }
+  
+  // Run
+  if(sk.id === 'run' || sk.id === 'swift_retreat'){
+    p.mp = Math.max(0, p.mp - sk.mpCost);
+    showEscapeBattle(sk.id);
+    return;
+  }
+  
+  // Animate attack and execute
+  animatePlayerAttack(sk, () => {
+    p.mp = Math.max(0, p.mp - sk.mpCost);
+    // Check if attack hit (set by animatePlayerAttack)
+    if(GS.combat._attackHit === false){
+      GS.combat._attackHit = null;
+      renderBattleScreen();
+      setTimeout(() => doEnemyTurn(), 1000);
+      return;
+    }
+    GS.combat._attackHit = null;
+    const dmg = sk.exec(p, e, c, 0);
+    if(dmg > 0){
+      c.log.push('⚔️ ' + p.name + ' uses ' + sk.name + ' for ' + Math.floor(dmg) + ' damage!');
+    }
+    renderBattleScreen();
+    
+    if(e.hp <= 0){
+      setTimeout(() => combatWin(), 500);
+    } else {
+      setTimeout(() => doEnemyTurn(), 1000);
+    }
+  });
+}
+
+function toggleBattleCategory(category){
+  const actionsEl = document.getElementById('battleActions');
+  const skillsData = GS._battleSkills;
+  const p = cp(), c = GS.combat, e = c.enemy;
+  
+  if(!skillsData) return;
+  
+  const { physical, magic, consumables, run, defend, playerClass } = skillsData;
+  
+  let optionsHtml = '';
+  
+  if(category === 'physical'){
+    const skills = CLASS_SKILLS[playerClass] || CLASS_SKILLS.warrior;
+    optionsHtml = physical.map(sk => {
+      const canAfford = p.mp >= sk.mpCost;
+      const isRecharging = sk.id === 'fierce_atk' && c.fierceRecharge > 0;
+      const disabled = !canAfford || isRecharging;
+      return `<button class="act-btn" data-desc="${sk.desc || ''}" ${disabled ? 'disabled' : ''} onclick="battleSkillByName('${sk.name}')">${sk.icon} ${sk.name} <span style="opacity:0.6">${sk.mpCost > 0 ? sk.mpCost + 'MP' : ''}</span></button>`;
+    }).join('');
+  } else if(category === 'magic'){
+    optionsHtml = magic.map(sk => {
+      const canAfford = p.mp >= sk.mpCost;
+      const disabled = !canAfford;
+      return `<button class="act-btn" data-desc="${sk.desc || ''}" ${disabled ? 'disabled' : ''} onclick="battleSkillByName('${sk.name}')">${sk.icon} ${sk.name} <span style="opacity:0.6">${sk.mpCost > 0 ? sk.mpCost + 'MP' : ''}</span></button>`;
+    }).join('');
+  } else if(category === 'consumable'){
+    if(consumables.length === 0){
+      toast('No consumables!', 'bad');
+      return;
+    }
+    optionsHtml = consumables.map(it => {
+      return `<button class="act-btn" data-desc="${it.desc || 'Use ' + it.name}" onclick="useBattleConsumable('${it.id}')">${it.icon} ${it.name}</button>`;
+    }).join('');
+  } else if(category === 'run'){
+    if(runSkill){
+      battleSkillByName(run.name);
+      return;
+    }
+  }
+  
+  // Show options with back button
+  actionsEl.innerHTML = `
+    <div style="width:100%;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:10px;background:rgba(0,0,0,0.7);border-radius:8px;">
+      <button class="act-btn" onclick="renderBattleScreen()">← Back</button>
+      ${optionsHtml}
+    </div>
+  `;
+}
+
+function battleSkillByName(skillName){
+  const p = cp(), c = GS.combat, e = c.enemy;
+  const skills = CLASS_SKILLS[p.class] || CLASS_SKILLS.warrior;
+  const sk = skills.find(s => s.name === skillName);
+  if(!sk) return;
+  
+  if(p.mp < sk.mpCost){toast('Not enough MP!','bad'); return;}
+  if(sk.id === 'fierce_atk' && c.fierceRecharge > 0){toast('Fierce Attack recharging!','bad'); return;}
+  
+  if(sk.id === 'defend'){
+    p.mp = Math.max(0, p.mp - sk.mpCost);
+    c.defending = true;
+    c.log.push('🛡️ ' + p.name + ' takes a defensive stance!');
+    renderBattleScreen();
+    setTimeout(() => doEnemyTurn(), 800);
+    return;
+  }
+  
+  if(sk.id === 'run' || sk.id === 'swift_retreat'){
+    p.mp = Math.max(0, p.mp - sk.mpCost);
+    showEscapeBattle(sk.id);
+    return;
+  }
+  
+  animatePlayerAttack(sk, () => {
+    p.mp = Math.max(0, p.mp - sk.mpCost);
+    // Check if attack hit (set by animatePlayerAttack)
+    if(GS.combat._attackHit === false){
+      GS.combat._attackHit = null;
+      renderBattleScreen();
+      setTimeout(() => doEnemyTurn(), 1000);
+      return;
+    }
+    GS.combat._attackHit = null;
+    const dmg = sk.exec(p, e, c, 0);
+    if(dmg > 0){
+      c.log.push('⚔️ ' + p.name + ' uses ' + sk.name + ' for ' + Math.floor(dmg) + ' damage!');
+    }
+    renderBattleScreen();
+    
+    if(e.hp <= 0){
+      setTimeout(() => combatWin(), 500);
+    } else {
+      setTimeout(() => doEnemyTurn(), 1000);
+    }
+  });
+}
+
+function useBattleConsumable(itemId){
+  const p = cp();
+  const item = p.inventory.find(i => i.id === itemId);
+  if(!item) return;
+  
+  const idx = p.inventory.indexOf(item);
+  if(idx > -1) p.inventory.splice(idx, 1);
+  
+  if(item.healHp){
+    const heal = Math.min(item.healHp, p.maxHp - p.hp);
+    p.hp += heal;
+    toast('+' + heal + ' HP!', 'good');
+  }
+  if(item.healMp){
+    const mana = Math.min(item.healMp, p.maxMp - p.mp);
+    p.mp += mana;
+    toast('+' + mana + ' MP!', 'good');
+  }
+  
+  renderBattleScreen();
+  setTimeout(() => doEnemyTurn(), 800);
+}
+
+function animatePlayerAttack(skill, callback){
+  const playerSide = document.getElementById('playerSide');
+  const enemySide = document.getElementById('enemySide');
+  const effects = document.getElementById('battleEffects');
+  const p = cp();
+  const e = GS.combat.enemy;
+  const c = GS.combat;
+  const s = calcStats(p);
+  
+  // Calculate hit roll - D20 + appropriate modifier based on class
+  let hitMod = 0;
+  const playerClass = p.class;
+  if(playerClass === 'warrior' || playerClass === 'monk') hitMod = s.str;
+  else if(playerClass === 'ranger' || playerClass === 'rogue') hitMod = s.dex;
+  else if(playerClass === 'mage') hitMod = s.int;
+  else hitMod = Math.max(s.str, s.dex);
+  
+  const d20Roll = Math.floor(Math.random() * 20) + 1;
+  const hitRoll = d20Roll + hitMod;
+  const enemyAC = e.armorClass || 12;
+  const isHit = hitRoll >= enemyAC;
+  
+  // Roll skill dice if any
+  const skillDice = skill.dice || [];
+  const diceRolls = skillDice.map(d => {
+    const sides = parseInt(d.slice(1));
+    return Math.floor(Math.random() * sides) + 1;
+  });
+  c._skillDiceRolls = diceRolls;
+  
+  // Log hit roll to battle log
+  c.log.push(`🎲 Attack roll: ${d20Roll}+${hitMod}=${hitRoll} ${isHit ? '- Hit!' : '- Miss!'}`);
+  
+  // Show dice popup(s) - show skill damage dice only on HIT (never on miss)
+  if(isHit && skillDice.length > 0){
+    skillDice.forEach((die, idx) => {
+      const roll = diceRolls[idx];
+      const dicePopup = document.createElement('div');
+      dicePopup.textContent = roll;
+      const offsetX = idx * 70;
+      dicePopup.style.cssText = `position:absolute;left:calc(35% + ${offsetX}px);top:30%;width:60px;height:60px;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:bold;color:#fff;background:linear-gradient(145deg,#8B4513,#654321);border:3px solid #fff;border-radius:10px;box-shadow:0 4px 8px rgba(0,0,0,0.5);z-index:200;animation:dicePop 2s forwards`;
+      effects.appendChild(dicePopup);
+      setTimeout(() => dicePopup.remove(), 2000);
+    });
+  }
+  
+  // Get skill type
+  const skillType = skill.type || 'physical';
+  
+  if(skillType === 'magic'){
+    const projectile = document.createElement('div');
+    projectile.textContent = '✨';
+    projectile.style.cssText = 'position:absolute;left:30%;top:50%;font-size:40px;animation:magicProjectile 0.5s forwards';
+    effects.appendChild(projectile);
+    setTimeout(() => projectile.remove(), 500);
+  } else if(playerClass === 'ranger' || skill.id === 'shoot_arrow' || skill.id === 'double_arrow'){
+    const arrow = document.createElement('div');
+    arrow.textContent = '🏹';
+    arrow.style.cssText = 'position:absolute;left:30%;top:45%;font-size:35px;animation:arrowFly 0.4s forwards';
+    effects.appendChild(arrow);
+    setTimeout(() => arrow.remove(), 400);
+  }
+  
+  if(skillType === 'physical'){
+    playerSide.classList.add('player-attack');
+    setTimeout(() => {
+      playerSide.classList.remove('player-attack');
+      if(isHit){
+        enemySide.classList.add('hit-flash');
+        // Show HIT popup with damage number
+        const damagePopup = document.createElement('div');
+        damagePopup.className = 'damage-popup';
+        damagePopup.textContent = 'HIT!';
+        damagePopup.style.left = '50%';
+        damagePopup.style.top = '20%';
+        damagePopup.style.transform = 'translateX(-50%)';
+        enemySide.appendChild(damagePopup);
+        setTimeout(() => damagePopup.remove(), 2000);
+        setTimeout(() => enemySide.classList.remove('hit-flash'), 200);
+      } else {
+        // Show MISS popup
+        const missPopup = document.createElement('div');
+        missPopup.textContent = 'MISS!';
+        missPopup.style.cssText = 'position:absolute;left:50%;top:30%;transform:translateX(-50%);font-size:32px;font-weight:bold;color:#ff3333;text-shadow:2px 2px 0 #000;z-index:300;animation:damagePopup 2s forwards';
+        effects.appendChild(missPopup);
+        setTimeout(() => missPopup.remove(), 2000);
+      }
+    }, 300);
+  }
+  
+  // If miss, skip damage but still do callback after animation
+  if(!isHit){
+    GS.combat._attackHit = false;
+    setTimeout(() => {
+      GS.combat.log.push(`❌ ${p.name}'s ${skill.name} missed! (Roll: ${hitRoll} vs AC ${enemyAC})`);
+      callback();
+    }, skillType === 'physical' ? 400 : 600);
+  } else {
+    GS.combat._attackHit = true;
+    setTimeout(callback, skillType === 'physical' ? 300 : 500);
+  }
+}
+
+function showDamagePopup(target, text){
+  const popup = document.createElement('div');
+  popup.className = 'damage-popup';
+  popup.textContent = text;
+  popup.style.left = '50%';
+  popup.style.top = '20%';
+  popup.style.transform = 'translateX(-50%)';
+  target.appendChild(popup);
+  setTimeout(() => popup.remove(), 2000);
+}
+
+function animateEnemyAttack(damage, type, callback){
+  const playerSide = document.getElementById('playerSide');
+  const enemySide = document.getElementById('enemySide');
+  const effects = document.getElementById('battleEffects');
+  
+  // Enemy attacks player
+  enemySide.classList.add('enemy-attack');
+  
+  if(type === 'magic'){
+    const projectile = document.createElement('div');
+    projectile.textContent = '💥';
+    projectile.style.cssText = 'position:absolute;right:30%;top:50%;font-size:40px;animation:magicProjectile 0.5s forwards';
+    effects.appendChild(projectile);
+    setTimeout(() => projectile.remove(), 500);
+  }
+  
+  setTimeout(() => {
+    enemySide.classList.remove('enemy-attack');
+    playerSide.classList.add('hit-flash');
+    showDamagePopup(playerSide, '-' + Math.floor(damage));
+    setTimeout(() => playerSide.classList.remove('hit-flash'), 200);
+    callback();
+  }, 300);
+}
+
+function exitBattle(){
+  // Stop boss music when exiting
+  const bossMusic = document.getElementById('bossMusic');
+  if(bossMusic) bossMusic.pause();
+  
+  if(confirm('Exit combat? You will flee from battle.')){
+    const p = cp();
+    p.hp = Math.max(1, Math.floor(p.hp * 0.5));
+    closeCombatFled();
+    showS('gameScreen');
+  }
+}
+
+function toggleBattleMusic(){
+  const bossMusic = document.getElementById('bossMusic');
+  const bgMusic = document.getElementById('bgMusic');
+  const btn = document.getElementById('battleMusicBtn');
+  
+  // Check if boss music is playing or regular music
+  if(bossMusic && !bossMusic.paused){
+    bossMusic.pause();
+    if(btn) btn.textContent = '🔇';
+  } else if(GS.combat && GS.combat.enemy && (GS.combat.enemy.isFinalBoss || FINAL_BOSSES.some(b => b.name === GS.combat.enemy.name))){
+    // Boss battle - play boss music
+    if(bossMusic){
+      bossMusic.volume = 0.5;
+      bossMusic.play().catch(() => {});
+      if(btn) btn.textContent = '🎵';
+    }
+  } else {
+    // Regular battle - play bg music
+    if(bgMusic && musicPlaying){
+      bgMusic.volume = 0.4;
+      bgMusic.play().catch(() => {});
+      if(btn) btn.textContent = '🎵';
+    }
+  }
+}
+
+function showEscapeBattle(skillId){
+  const p = cp();
+  const s = calcStats(p);
+  const needed = skillId === 'swift_retreat' ? 14 - Math.floor(s.dex * 1.5) : 14 - s.dex;
+  
+  const diceHtml = `
+    <div style="text-align:center;padding:20px">
+      <div style="font-size:14px;margin-bottom:15px">Need ${needed}+ to escape!</div>
+      <div class="dice" id="escapeDice" style="width:80px;height:80px;font-size:56px;cursor:pointer;margin:0 auto" onclick="rollEscapeBattleDice(${needed})">🎲</div>
+      <div style="font-size:12px;color:var(--dim);margin-top:15px">Click to roll</div>
+    </div>`;
+  
+  openModal('🏃 Escape Attempt', diceHtml, []);
+}
+
+function rollEscapeBattleDice(needed){
+  const p = cp(), c = GS.combat, e = c.enemy;
+  const skills = CLASS_SKILLS[p.class] || CLASS_SKILLS.warrior;
+  const sk = skills.find(s => s.id === 'run' || s.id === 'swift_retreat') || skills[0];
+  const de = document.getElementById('escapeDice');
+  if(!de) return;
+  
+  de.classList.add('rolling');
+  let ticks = 0;
+  
+  const iv = setInterval(() => {
+    de.textContent = Math.floor(Math.random() * 20) + 1;
+    if(++ticks > 14){
+      clearInterval(iv);
+      const roll = Math.floor(Math.random() * 20) + 1;
+      de.textContent = roll;
+      de.classList.remove('rolling');
+      const success = roll >= needed;
+      de.style.borderColor = success ? '#40a040' : '#a04040';
+      de.style.color = success ? '#40a040' : '#a04040';
+      
+      const fleeSuccess = roll + (p.class === 'ranger' || p.class === 'rogue' ? Math.floor(p.dex * 1.5) : p.dex) > 14;
+      
+      setTimeout(() => {
+        closeModal();
+        if(fleeSuccess){
+          c.fled = true;
+          closeCombatFled();
+        } else {
+          c.log.push('Escape failed!');
+          renderBattleScreen();
+          doEnemyTurn();
+        }
+      }, 800);
+    }
+  }, 70);
+}
+
+function doPlayerTurn(){
+  renderBattleScreen();
+  updPlayers();
+}
+
+function useConsumableInBattle(){
+  const p = cp();
+  const consumables = (p.inventory || []).filter(i => i.type === 'consumable');
+  if(consumables.length === 0){
+    toast('No consumables!', 'bad');
+    return;
+  }
+  // For now, just use HP potion if available
+  const hpPot = consumables.find(i => i.healHp);
+  if(hpPot){
+    const idx = p.inventory.indexOf(hpPot);
+    if(idx > -1) p.inventory.splice(idx, 1);
+    const heal = Math.min(hpPot.healHp, p.maxHp - p.hp);
+    p.hp += heal;
+    toast('+' + heal + ' HP!', 'good');
+    renderBattleScreen();
+    setTimeout(() => doEnemyTurn(), 800);
+  }
 }
 
 function renderCombat(){
@@ -3773,7 +4654,7 @@ function renderCombat(){
       </div>
       <div class="vs-txt">VS</div>
       <div class="combatant">
-        <div class="c-sprite" id="enemyCombatSprite"></div>
+        <div class="c-sprite ${c._bossIntro ? 'boss-intro' : ''}" id="enemyCombatSprite"></div>
         <div class="c-name">${e.name}</div>
         <div class="c-hp">${e.hp}/${e.maxHp} HP · ${e.mp}/${e.maxMp} MP</div>
         <div class="c-bar"><div class="c-fill c-ehp" style="width:${eHpP}%"></div></div>
@@ -4407,19 +5288,20 @@ function doEnemyTurn(){
 
 function executeEnemySkill(sk){
   const p=cp(),c=GS.combat,e=c.enemy;
-  const html=`
-    <div class="mo-title">👾 ${e.name} acts!</div>
-    <div class="mo-text">${e.name} uses: <strong style="color:var(--gold)">${sk.name}</strong><br><span style="font-size:10px;color:var(--dim)">${sk.desc||''}</span></div>
-    <div style="text-align:center;padding:40px;">
-      <div style="font-size:44px;margin-bottom:10px">⚔️</div>
-      <div style="color:var(--dim);font-size:11px">Enemy attacks...</div>
-    </div>`;
-  openModal(null,null,[],html);
+  
+  // Log enemy action
+  c.log.push('👾 ' + e.name + ' uses ' + sk.name + '!');
+  renderBattleScreen();
+  
   setTimeout(()=>{
     const roll = Math.floor(Math.random() * 40) + 1;
     c.enemyRoll = roll;
-    resolveEnemyAttack(sk,roll);
-  },500);
+    
+    // Animate enemy attack
+    animateEnemyAttack(0, sk.type || 'physical', () => {
+      resolveEnemyAttack(sk, roll);
+    });
+  },800);
 }
 
 function resolveEnemyAttack(sk,roll){
@@ -4465,13 +5347,17 @@ function resolveEnemyAttack(sk,roll){
   
   // Check fire immunity (Son of the Sun)
   if(p.status && p.status.son_of_sun && sk.element === 'fire'){
-    openModal('☀️ Blocked!','Your Son of the Sun buff makes you immune to fire damage!',[{label:'OK',fn:()=>{closeModal();c.log.push('☀️ Fire attack blocked by immunity!');renderCombat();doPlayerTurn();}}]);
+    c.log.push('☀️ Fire attack blocked by immunity!');
+    renderBattleScreen();
+    setTimeout(() => doPlayerTurn(), 500);
     return;
   }
   
   // Check lightning immunity (Raiden)
   if(p.status && p.status.raiden && sk.element === 'lightning'){
-    openModal('⚡ Blocked!','Your Raiden buff makes you immune to lightning damage!',[{label:'OK',fn:()=>{closeModal();c.log.push('⚡ Lightning attack blocked by immunity!');renderCombat();doPlayerTurn();}}]);
+    c.log.push('⚡ Lightning attack blocked by immunity!');
+    renderBattleScreen();
+    setTimeout(() => doPlayerTurn(), 500);
     return;
   }
   
@@ -4484,6 +5370,8 @@ function resolveEnemyAttack(sk,roll){
     c.log.push(`💪 ${e.name} uses ${sk.name}! (self buff)`);
     if(e.mp!==undefined)e.mp=Math.max(0,e.mp-(sk.cost||0));
     spawnPtc(window.innerWidth*.63,window.innerHeight*.35,'#8a4aaa',4);
+    renderBattleScreen();
+    setTimeout(() => doPlayerTurn(), 800);
   }else{
     const hits=sk.hits||1;let total=0;let hitCount=0;
     for(let h=0;h<hits;h++){
@@ -4514,30 +5402,50 @@ function resolveEnemyAttack(sk,roll){
   }
   if(p.hp<=0){
     const fi=p.inventory.find(i=>i.id==='phoenix_feather'&&!i.used);
-    if(fi){fi.used=true;p.hp=p.maxHp;c.log.push(`✦ Phoenix Feather! ${p.name} revives at full HP!`);spawnPtc(window.innerWidth*.35,window.innerHeight*.35,'#ff9900',14);renderCombat();return;}
+    if(fi){fi.used=true;p.hp=p.maxHp;c.log.push(`✦ Phoenix Feather! ${p.name} revives at full HP!`);spawnPtc(window.innerWidth*.35,window.innerHeight*.35,'#ff9900',14);renderBattleScreen();return;}
     combatLose();return;
   }
   
-  // Show enemy attack result with OK button
-  const dmgIcon = dmg > 0 ? '⚔️' : (sk.type === 'buff' ? '✨' : '💨');
-  openModal(`${e.icon} ${e.name} attacks!`, 
-    `<div style="text-align:center;padding:15px">
-      <div style="font-size:14px;margin-bottom:5px">Used: <strong>${sk.name}</strong></div>
-      <div style="font-size:36px;margin-bottom:10px">${dmgIcon}</div>
-      <div style="font-size:40px;color:${dmg > 0 ? '#ff6060' : '#60c060'};font-weight:bold">
-        ${dmg > 0 ? `-${dmg} HP to ${p.name}` : (sk.type === 'buff' ? 'Buff applied!' : 'No damage')}
-      </div>
-      <div style="font-size:11px;color:var(--dim);margin-top:10px">Your HP: ${p.hp}/${p.maxHp}</div>
-    </div>`,
-    [{label:'OK', fn:()=>{closeModal();renderCombat();updPlayers();}}]
-  );
+  // Update battle screen and continue to player turn
+  renderBattleScreen();
+  setTimeout(() => doPlayerTurn(), 800);
 }
 
 function closeCombatFled(){
-  closeModal();toast(`${cp().name} escaped!`,'good');GS.combat=null;closeEndTurn();
+  closeModal();
+  // Restore music after combat
+  const bossMusic = document.getElementById('bossMusic');
+  const bgMusic = document.getElementById('bgMusic');
+  if(bossMusic) bossMusic.pause();
+  if(bgMusic && musicPlaying){
+    bgMusic.volume = 0.4;
+    bgMusic.play().catch(() => {});
+  }
+  // Return to game screen from battle
+  if(document.getElementById('battleScreen').style.display === 'block'){
+    showS('gameScreen');
+  }
+  toast(`${cp().name} escaped!`,'good');
+  GS.combat=null;
+  closeEndTurn();
 }
 function combatWin(){
   const p=cp(),e=GS.combat.enemy;closeModal();spawnPtc(window.innerWidth/4,window.innerHeight/4,'#f0c060',40);
+  
+  // Stop boss music on victory
+  const bossMusic = document.getElementById('bossMusic');
+  const bgMusic = document.getElementById('bgMusic');
+  if(bossMusic) bossMusic.pause();
+  if(bgMusic && musicPlaying){
+    bgMusic.volume = 0.4;
+    bgMusic.play().catch(() => {});
+  }
+  
+  // Return to game screen from battle
+  const battleScreen = document.getElementById('battleScreen');
+  if(battleScreen && battleScreen.classList.contains('active')){
+    showS('gameScreen');
+  }
   
   // Special: Helpless Maiden trap - win gives 20 gold
   if(GS._maidenTrap){
@@ -4795,7 +5703,7 @@ function drawCardReward(star){
   let pool;
   if(isExtra){pool=Object.values(ITEMS).filter(it=>(it.type==='consumable'||it.type==='accessory')&&it.rarity===rar&&it.classes.includes(p.class));}
   else{pool=Object.values(ITEMS).filter(it=>it.type!=='consumable'&&it.rarity===rar&&it.classes.includes(p.class));}
-  if(!pool.length)pool=Object.values(ITEMS).filter(it=>it.rarity==='common'&&it.classes.includes(p.class));
+  if(!pool.length)pool=Object.values(ITEMS).filter(it=>it.rarity===1&&it.classes.includes(p.class));
   if(!pool.length){closeEndTurn();return;}
   const cards=[...pool].sort(()=>Math.random()-.5).slice(0,Math.min(3,pool.length));
   GS.currentCards=cards;
@@ -4813,7 +5721,7 @@ function drawCardReward(star){
               <div class="card-back-text">?</div>
             </div>
             <div class="card-face ${c.rarity}" id="cardFace${i}">
-              <span style="position:absolute;top:4px;right:4px;font-size:6px;letter-spacing:1px;padding:1px 3px;text-transform:uppercase;color:${c.rarity==='legendary'?'#f0c060':c.rarity==='epic'?'#aa66ff':c.rarity==='rare'?'#4080d0':'#888'}">${c.rarity}</span>
+              <span style="position:absolute;top:4px;right:4px;font-size:6px;letter-spacing:1px;padding:1px 3px;color:${c.rarity===4?'#f0c060':c.rarity===3?'#aa66ff':c.rarity===2?'#4080d0':'#888'}">${c.rarity===4?'★★★★':c.rarity===3?'★★★':c.rarity===2?'★★':'★'}</span>
               <div style="font-size:46px;margin:14px 0 5px">${c.icon}</div>
               <div style="font-size:8px;color:#e8d5a0;font-weight:600;margin-bottom:3px">${c.name}</div>
               <div style="font-size:7px;color:#907850;font-family:'IM Fell English',serif;line-height:1.4">${itemStatLine(c)}</div>
@@ -4832,7 +5740,7 @@ function revealCard(idx){
   if(face){
     face.className=`card-face ${c.rarity}`;
     face.innerHTML=`
-      <span style="position:absolute;top:4px;right:4px;font-size:6px;letter-spacing:1px;padding:1px 3px;text-transform:uppercase;color:${c.rarity==='legendary'?'#f0c060':c.rarity==='epic'?'#aa66ff':c.rarity==='rare'?'#4080d0':'#888'}">${c.rarity}</span>
+      <span style="position:absolute;top:4px;right:4px;font-size:6px;letter-spacing:1px;padding:1px 3px;color:${c.rarity===4?'#f0c060':c.rarity===3?'#aa66ff':c.rarity===2?'#4080d0':'#888'}">${c.rarity===4?'★★★★':c.rarity===3?'★★★':c.rarity===2?'★★':'★'}</span>
       <div style="font-size:46px;margin:14px 0 5px">${c.icon}</div>
       <div style="font-size:8px;color:#e8d5a0;font-weight:600;margin-bottom:3px">${c.name}</div>
       <div style="font-size:7px;color:#907850;font-family:'IM Fell English',serif;line-height:1.4">${itemStatLine(c)}</div>
@@ -4860,7 +5768,7 @@ function pickCard(idx){
   if(face){
     face.className=`card-face ${c.rarity}`;
     face.innerHTML=`
-      <span style="position:absolute;top:4px;right:4px;font-size:6px;letter-spacing:1px;padding:1px 3px;text-transform:uppercase;color:${c.rarity==='legendary'?'#f0c060':c.rarity==='epic'?'#aa66ff':c.rarity==='rare'?'#4080d0':'#888'}">${c.rarity}</span>
+      <span style="position:absolute;top:4px;right:4px;font-size:6px;letter-spacing:1px;padding:1px 3px;color:${c.rarity===4?'#f0c060':c.rarity===3?'#aa66ff':c.rarity===2?'#4080d0':'#888'}">${c.rarity===4?'★★★★':c.rarity===3?'★★★':c.rarity===2?'★★':'★'}</span>
       <div style="font-size:46px;margin:14px 0 5px">${c.icon}</div>
       <div style="font-size:8px;color:#e8d5a0;font-weight:600;margin-bottom:3px">${c.name}</div>
       <div style="font-size:7px;color:#907850;font-family:'IM Fell English',serif;line-height:1.4">${itemStatLine(c)}</div>
@@ -4877,7 +5785,7 @@ function pickCard(idx){
   // Wait a moment then close
   setTimeout(()=>{
     p.inventory.push({...c});toast(`${p.name} obtained ${c.name}!`,'good');
-    spawnPtc(window.innerWidth/4,window.innerHeight/4,c.rarity==='legendary'?'#f0c060':c.rarity==='epic'?'#aa6aff':c.rarity==='rare'?'#4080d0':'#aaa',14);
+    spawnPtc(window.innerWidth/4,window.innerHeight/4,c.rarity===4?'#f0c060':c.rarity===3?'#aa6aff':c.rarity===2?'#4080d0':'#aaa',14);
     closeModal();
     if(GS._afterReward){
       const fn=GS._afterReward; GS._afterReward=null; fn();
@@ -5326,6 +6234,21 @@ function endTurn(){
     if(p.curses.paralysis>0){p.curses.paralysis--;}
   }
   
+  // Restore normal music after boss fight
+  const bossMusic = document.getElementById('bossMusic');
+  const bgMusic = document.getElementById('bgMusic');
+  if(bossMusic) bossMusic.pause();
+  if(bgMusic && musicPlaying){
+    bgMusic.volume = 0.4;
+    bgMusic.play().catch(() => {});
+  }
+  
+  // Return to game screen from battle
+  const battleScreen = document.getElementById('battleScreen');
+  if(battleScreen && battleScreen.style.display === 'block'){
+    showS('gameScreen');
+  }
+  
   GS.phase='roll';GS.highlightedTiles=[];GS.combat=null;
   const order=GS.initOrder,pos=order.indexOf(GS.curP);
   GS.curP=order[(pos+1)%order.length];
@@ -5550,7 +6473,6 @@ function renderActs(){
   else if(GS.phase==='move'){c.innerHTML=`<div style="font-size:8px;color:var(--dim);text-align:center;padding:4px">Click a highlighted tile<br><span style="color:var(--gold)">${GS.diceVal} moves — drag to pan</span></div>`;}
   else{c.innerHTML=`<div style="font-size:8px;color:var(--dim);text-align:center;font-style:italic;padding:4px">Resolving...</div>`;}
 }
-let musicPlaying = false;
 function toggleMusic(){
   const activeScreen = document.querySelector('.screen.active');
   if(activeScreen && activeScreen.id !== 'menuScreen' && activeScreen.id !== 'charCreation'){

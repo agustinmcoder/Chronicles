@@ -1,0 +1,85 @@
+id;name;icon;type;subtype;slot;classes;rarity;str;int;dex;con;hp;ac;description;price;specialfeat;typeofdamage1;typeofdamage2
+apprentice_staff;Apprentice Staff;🪄;weapon;staff;weapon;any;1;-1;2;0;0;0;0;A simple wooden staff, faintly humming with beginner's magic.;;int+2;magic;
+oak_wand;Oak Wand;✨;weapon;wand;weapon;any;1;-1;2;0;0;0;0;Carved from sturdy oak, it channels nature's raw energy.;;int+2;magic;
+crystal_orb;Crystal Orb;🔮;weapon;orb;weapon;any;1;-1;2;0;0;0;0;A dull sphere that glows faintly with stored arcane light.;;int+2;magic;
+silver_staff;Silver Staff;⚗️;weapon;staff;weapon;any;2;-2;4;0;0;0;0;Elegant and gleaming, it enhances spell precision.;;int+4;magic;
+runic_wand;Runic Wand;💫;weapon;wand;weapon;any;2;-2;4;0;0;0;0;A Wand carved from mystic runes. When used, the runes glow up in a vibrant green color.;;int+4;magic;
+void_orb;Void Orb;🌀;weapon;orb;weapon;any;3;-2;6;-1;0;0;0;The souls of a thousand magic creatures empower this Orb.;;int+6;magic;
+moonstaff;Moonstaff;🌙;weapon;staff;weapon;any;3;-3;6;-1;0;0;30;A staff capable of channeling the full power of the moon.;;int+6 mp+30;magic;
+staff_of_ages;Staff of Ages;🌟;weapon;staff;weapon;any;4;-4;10;-3;0;0;75;Worn yet timeless, it holds echoes of forgotten sorcery.;;int+10 mp+75;magic;
+archmage_orb;Archmage Orb;💎;weapon;orb;weapon;any;4;-4;10;-2;0;0;60;Radiant with immense energy, only masters can boost all elemental attacks by 10%.;;int+10 mp+60;magic;
+short_sword;Short Sword;🗡️;weapon;sword_shield;weapon;any;1;2;0;0;0;0;0;A reliable blade, quick and versatile. Restores 12% max MP at the end of each turn.;;str+2;Slashing;
+wooden_shield;Wooden Shield;🛡️;weapon;sword_shield;shield;warrior;1;0;0;0;0;0;1;An improvised shield.;;ac+1;
+claymore;Claymore;⚔️;weapon;twohander;weapon;any;1;3;0;0;0;0;0;A heavy two-handed sword, devastating in wide arcs.;;str+3;Slashing;
+twin_daggers;Twin Daggers;🔪;weapon;dual;weapon;any;1;1;0;0;0;0;0;Balanced for speed, perfect for dual strikes.;;str+1;Slashing;
+war_sword;War Sword;🗡️;weapon;sword_shield;weapon;any;2;4;0;0;0;0;0;Forged for battle, sturdy and lethal.;;str+4;Slashing;
+steel_shield;Steel Shield;🛡️;weapon;sword_shield;weapon;warrior;2;0;-3;0;0;30;2;Solid defense, dependable in any fight.;ac+2 hp+30;
+zweihander;Zweihänder;⚔️;weapon;twohander;weapon;any;2;5;0;0;0;0;0;A colossal blade, requiring great strength to wield.;;str+5;Slashing;
+chaos_blades;Chaos Blades;🔪;weapon;dual;weapon;any;3;2;0;1;0;0;0;Twisted steel infused with unstable energy.;;str+2;Slashing;
+dragon_blade;Dragonblade;🐉;weapon;twohander;weapon;any;3;7;0;0;0;0;0;Forged in dragonfire, scales shimmer along its blade. Does an extra 2 damage to all draconic enemies.;;str+7;Slashing;Fire
+excalibur;Excalibur;⚡;weapon;sword_shield;weapon;any;4;9;0;0;0;0;0;Legendary sword of kings. Makes the enemy loose 3 STR for the full fight.;;str+9;Slashing;Holy
+ragnarok;Ragnarök;🌩️;weapon;twohander;weapon;any;4;13;0;0;0;0;0;Mythic weapon said to herald the world's end. 10% to make the enemy flinch.;;str+13;Slashing;
+short_bow;Short Bow;🏹;weapon;bow;weapon;any;1;0;0;2;0;0;0;Compact and swift, ideal for close skirmishes.;;dex+2;Piercing;
+hunters_bow;Hunter's Bow;🏹;weapon;bow;weapon;any;2;0;0;3;0;0;0;Crafted for precision in the wild. Deals 5% extra damage to Beast enemies.;;dex+3;Piercing;
+elven_bow;Elven Bow;🌿;weapon;bow;weapon;any;2;0;0;4;0;0;0;Graceful and enchanted, arrows fly true.;;dex+4;Piercing;
+phantom_bow;Phantom Bow;👻;weapon;bow;weapon;any;3;0;0;6;0;0;0;Ethereal, its arrows pierce both flesh and spirit.;;dex+6;Piercing;Magic
+artemis_bow;Artemis Bow;🌠;weapon;bow;weapon;any;4;0;0;10;0;0;0;Blessed by the huntress, unmatched in accuracy. Adds +6 to attack roll.;;dex+10;Piercing;Holy
+iron_knuckles;Iron Knuckles;🥊;weapon;knuckles;weapon;any;1;1;0;1;0;0;0;Heavy strikes, brutal and direct.;;str+1;Piercing;
+monks_staff;Monk's Staff;🪨;weapon;monk_staff;weapon;any;1;1;0;1;0;0;0;Balanced weapon of discipline and flow.;;str+1;Piercing;
+jade_knuckles;Jade Knuckles;💚;weapon;knuckles;weapon;any;2;2;0;2;0;0;0;Gleaming green, infused with spiritual energy.;;str+2;Piercing;
+iron_staff;Iron Staff;⚒️;weapon;monk_staff;weapon;any;2;2;0;2;0;0;0;Simple but strong, a monk's trusted tool.;;str+2;Piercing;
+dragon_fists;Dragon Fists;🔥;weapon;knuckles;weapon;any;3;2;0;3;0;0;0;Gloves imbued with draconic fury. Does an extra 2 damage to all draconic enemies.;;str+2;Piercing;Fire
+heaven_staff;Heaven Staff;☁️;weapon;monk_staff;weapon;any;4;5;0;5;0;0;0;Radiant staff channeling divine harmony. Deals an extra 3 damage to all undead enemies.;;str+5;Piercing;Holy
+rusty_dagger;Rusty Dagger;🔪;weapon;dagger;weapon;any;1;0;0;2;0;0;0;Old and worn, but still sharp enough.;;dex+2;Piercing;
+sharp_knife;Sharp Knife;🔪;weapon;dagger;weapon;any;1;0;0;2;0;0;0;Quick and precise, perfect for assassins.;;dex+2;Piercing;
+twin_shadows;Twin Shadows;🌑;weapon;dual;weapon;any;1;0;0;2;0;0;0;Dual blades that vanish into darkness.;;dex+2;Piercing;Shadow
+venom_fang;Venom Fang;🐍;weapon;dagger;weapon;any;2;0;0;4;0;0;0;Coated in poison, deadly with a single cut. Adds 1 poison damage each turn.;;dex+4;Piercing;Poison
+shadow_claws;Shadow Claws;💅;weapon;dual;weapon;any;2;0;0;4;0;0;0;Jagged weapons that tear silently.;;dex+4;Piercing;Shadow
+assassin_bow;Assassin Bow;🎯;weapon;bow;weapon;any;2;0;0;3;0;0;0;Silent and deadly, favored by killers. Deals 5 more damage in the first turn.;;dex+3;Piercing;
+blade_of_whispers;Blade of Whispers;🤫;weapon;dagger;weapon;any;3;0;0;6;0;0;0;A cursed dagger that murmurs secrets.;;dex+6;Piercing;Shadow
+nightstalker;Nightstalker;🌙;weapon;dual;weapon;any;3;0;0;6;0;0;0;A weapon forged for silent killers.;;dex+6;Piercing;Shadow
+deathmark;Deathmark;💀;weapon;dagger;weapon;any;4;0;0;10;0;0;0;A dagger that seals its victim's fate. 50% chance of dealing an extra 7 damage when opponent is below half HP.;;dex+10;Piercing;Death
+eclipse_twin;Eclipse Twin;🌑;weapon;dual;weapon;any;4;0;0;10;0;0;0;Paired blades, one light, one dark. 15% chance to land a 3rd attack.;;dex+10;Piercing;Void
+leather_cap;Leather Cap;🪖;armor;helmet;head;any;1;0;0;0;0;0;1;Simple protection, light and flexible.;;ac+1;
+iron_helm;Iron Helm;⛑️;armor;helmet;head;any;1;0;0;0;0;0;1;Sturdy metal helm, reliable defense.;;ac+1;
+mage_hat;Mage Hat;🎩;armor;hat;head;any;1;0;0;0;0;0;1;Pointed cap infused with arcane charm.;;ac+1;
+hood_of_shadows;Shadow Hood;🧢;armor;hood;head;any;2;0;0;0;0;0;3;Conceals identity, cloaked in mystery.;;ac+3;
+shadowmask;Shadowmask;🎭;armor;mask;head;any;3;0;0;0;0;0;5;Mask of secrecy, feared by assassins.;;ac+5;
+knights_helm;Knight's Helm;⛑️;armor;helmet;head;any;2;0;0;0;0;0;3;Noble helm, symbol of honor.;;ac+3;
+arcane_crown;Arcane Crown;👑;armor;crown;head;any;3;0;2;0;0;0;5;Regal circlet, brimming with magic.;int+2 ac+5;
+crown_of_thorns;Crown of Thorns;🌹;armor;crown;head;any;3;0;0;0;0;0;5;Painful yet powerful, a cursed relic. If user is attacked by a physical attack, 10% of damage dealt is done to the attacker.;;ac+5;
+godking_crown;Godking Crown;👸;armor;crown;head;any;4;0;0;0;0;0;8;Worn by rulers who command divinity. Enemy loses 15 of all their combat skills (STR, INT, DEX, CON).;;ac+8;
+cloth_robe;Cloth Robe;👘;armor;robe;body;any;1;0;1;0;0;0;1;Light garment, favored by spellcasters.;;int+1 ac+1;
+leather_vest;Leather Vest;🧥;armor;vest;body;any;1;0;0;1;0;0;1;Flexible armor, offering modest protection.;;dex+1 ac+1;
+chain_mail;Chain Mail;🛡️;armor;mail;body;any;1;0;0;0;0;0;2;Interlocked rings, durable and dependable.;;ac+2;
+enchanted_robe;Enchanted Robe;🌀;armor;robe;body;any;2;0;3;0;0;0;2;Woven with spells, enhancing magic.;int+3 ac+2;
+ranger_vest;Ranger's Vest;🌿;armor;vest;body;any;2;0;0;2;0;0;3;Lightweight, built for agility in the wild.;dex+2 ac+3;
+monks_gi;Monk's Gi;👕;armor;gi;body;any;2;0;0;3;0;0;2;Traditional garb, symbol of discipline.;dex+3 ac+2;
+plate_armor;Plate Armor;🦺;armor;plate;body;any;3;0;0;0;0;0;3;Heavy steel, unmatched in defense. Physical damage is reduced by 8%.;;ac+3;
+mythril_robe;Mythril Robe;✨;armor;robe;body;any;3;0;3;0;0;0;4;Shimmering fabric, strong yet weightless. Mana potions recover 25% more mana.;int+3 ac+4;
+shadow_leather;Shadow Leather;🌑;armor;vest;body;any;3;0;0;3;0;0;3;Dark hide, silent and stealthy.;dex+3 ac+3;
+shadow_vest;Shadow Vest;🌒;armor;vest;body;any;2;0;0;2;0;0;2;Conceals the wearer in twilight.;dex+2 ac+2;
+nightweave;Nightweave;🌃;armor;vest;body;any;4;0;0;3;0;0;4;Armor woven from shadow threads.;dex+3 ac+4;
+divine_plate;Divine Plate;⭐;armor;plate;body;any;4;2;0;0;0;0;9;Blessed steel, radiant with holy power.;str+2 ac+9;
+archmage_robe;Archmage Robe;🔯;armor;robe;body;any;4;0;5;0;0;0;9;Garment of supreme sorcery, glowing with runes. Spells cost 15% less mana.;int+5 ac+9;
+worn_boots;Worn Boots;👞;armor;boots;feet;any;1;0;0;0;0;0;1;Old but serviceable, well-traveled.;;ac+1;
+swift_boots;Swift Boots;👟;armor;boots;feet;any;2;0;0;0;0;0;2;Light shoes that enhance speed.;;ac+2;
+heavy_greaves;Heavy Greaves;🦶;armor;greaves;feet;any;2;0;0;0;0;0;2;Thick steel, protecting legs in battle.;;ac+2;
+arcane_slippers;Arcane Slippers;🧦;armor;boots;feet;any;2;0;0;0;0;0;2;Soft footwear infused with magic.;;ac+2;
+hermes_boots;Hermes Boots;🌪️;armor;boots;feet;any;3;0;0;0;0;0;3;Winged sandals, swift as the wind. Movement dice +1;;ac+3;
+infinity_boots;Infinity Boots;♾️;armor;boots;feet;any;4;0;0;0;0;0;4;Timeless footwear, said to walk beyond worlds. Always attacks first.;;ac+4;
+iron_ring;Iron Ring;💍;accessory;accessory;accessory;any;1;0;0;0;0;0;1;Small strength boost.;;str+1 ac+1;
+sapphire_ring;Sapphire Ring;💎;accessory;accessory;accessory;any;2;0;0;0;0;0;2;Enhances magic power.;int+2 ac+2;
+warriors_band;Warrior's Band;⚙️;accessory;accessory;accessory;any;2;0;0;0;0;0;2;Worn by veterans.;str+2 ac+2;
+lucky_clover;Lucky Clover;🍀;accessory;accessory;accessory;any;2;0;0;0;0;0;2;+1 to all dice rolls.;rollBonus+1 ac+2;
+phoenix_feather;Phoenix Feather;🦅;accessory;accessory;accessory;any;3;0;0;0;0;0;3;Once: revive at full HP.;reviveOnce hp+50 ac+3;
+dragon_heart;Dragon Heart;❤️‍🔥;accessory;accessory;accessory;any;4;0;0;0;0;0;6;Radiates dragon power.;str+6 int+6 hp+60 ac+6;
+shadow_ring;Shadow Ring;💍;accessory;accessory;accessory;any;2;0;0;0;0;0;2;Grants shadowstep ability.;dex+2 ac+2;
+assassins_amulet;Assassin's Amulet;🗡️;accessory;accessory;accessory;any;3;0;0;0;0;0;3;Increases critical strike chance.;dex+3 ac+3;
+void_walkers;Void Walkers;🌀;accessory;accessory;accessory;any;4;0;0;0;0;0;6;Walk through shadows.;dex+6 ac+6;
+hp_potion;HP Potion;🧪;consumable;hp_pot;null;any;1;0;0;0;0;0;0;Restores 40 HP.;40;Heals 40 HP;;
+hi_hp_potion;Hi-HP Potion;💊;consumable;hp_pot;null;any;2;0;0;0;0;0;0;Restores 100 HP.;100;Heals 100 HP;;
+mana_potion;Mana Potion;🫙;consumable;mp_pot;null;any;1;0;0;0;0;0;0;Restores 40 MP.;40;Restores 40 MP;;
+hi_mana_potion;Hi-Mana Potion;🔵;consumable;mp_pot;null;any;2;0;0;0;0;0;0;Restores 100 MP.;100;Restores 100 MP;;
+rare_herb;Glowing Herb;💠;consumable;herb;null;any;2;0;0;0;0;0;0;Sellable for 80 gold.;80;Sell for 80 gold;;
+wolf_inspiration;Wolf Insight;🐺;inspiration;inspiration;null;any;2;0;0;0;0;0;0;+2 to your next roll;;+2 to next roll;;
