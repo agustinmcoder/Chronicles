@@ -318,6 +318,9 @@ canvas{display:block}
 .body-slot.chest{width:55px;height:45px}
 .boss-tracker{text-align:center;margin-top:auto;padding-top:10px;border-top:1px solid var(--border);width:100%}
 </style>
+<!-- Three.js + GLTFLoader (r128) -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 </head>
 <body>
 <audio id="bgMusic" loop>
@@ -425,6 +428,25 @@ document.addEventListener('click', function() {
     </div>
     </div>
     <div class="battle-arena">
+      <!-- Dice roll area — sits above #playerSide (top-left of the arena) -->
+      <div id="battleDiceArea"
+           style="position:absolute;top:8px;left:0;width:30%;
+                  display:flex;justify-content:center;align-items:center;
+                  z-index:300;pointer-events:none;">
+        <!-- Single row: all dice phases share this container -->
+        <div id="battleDiceD20Wrap" style="display:flex;align-items:center;gap:8px;">
+          <div id="battleDiceSlotD20"
+               style="width:72px;height:72px;position:relative;overflow:hidden;border-radius:8px;flex-shrink:0;"></div>
+          <div id="battleDiceD20Mod"
+               style="font-family:'Cinzel',serif;font-size:14px;font-weight:bold;
+                      text-shadow:0 1px 6px #000;opacity:0;transition:opacity .3s;
+                      white-space:nowrap;"></div>
+          <div id="battleDiceSlotDmg"
+               style="width:72px;height:72px;position:relative;overflow:hidden;border-radius:8px;flex-shrink:0;display:none;"></div>
+          <div id="battleDiceSlotDmg2"
+               style="width:72px;height:72px;position:relative;overflow:hidden;border-radius:8px;flex-shrink:0;display:none;"></div>
+        </div>
+      </div>
       <div class="combatant-side player-side" id="playerSide">
         <div class="combatant-sprite" id="battlePlayerSprite"></div>
         <div class="combatant-name" id="battlePlayerName"></div>
@@ -2881,28 +2903,13 @@ function rollInit(){
     const bonus=document.getElementById(`initBonus${i}`);
     if(!die) return;
 
-    // Disable further clicks
-    die.onclick=null;
-    die.style.cursor='default';
-    die.classList.add('rolling');
-
-    let ticks=0;
-    const iv=setInterval(()=>{
-      die.textContent=Math.floor(Math.random()*20)+1;
-      if(++ticks>14){
-        clearInterval(iv);
-        die.classList.remove('rolling');
-        die.textContent=rv.r;
-        die.style.fontSize='44px';
-        // Colour feedback
-        if(rv.r>=15){die.style.color='#f0c060';die.style.borderColor='var(--gold)';}
-        else if(rv.r<=4){die.style.color='#e05050';die.style.borderColor='var(--red)';}
-        if(bonus) bonus.textContent=`${rv.r} + ${rv.dex} DEX = ${rv.score}`;
-
-        // Once everyone has rolled, reveal the turn order
-        if(rolls.every(r=>r.revealed)) _showInitOrder(rolls);
-      }
-    },70);
+    roll3D(`initDie${i}`, 'd20', rv.r, ()=>{
+      // Colour feedback on the container border
+      if(rv.r>=15){ die.style.borderColor='var(--gold)'; }
+      else if(rv.r<=4){ die.style.borderColor='var(--red)'; }
+      if(bonus) bonus.textContent=`${rv.r} + ${rv.dex} DEX = ${rv.score}`;
+      if(rolls.every(r=>r.revealed)) _showInitOrder(rolls);
+    }, 0.9);  // 90% fill for the initiative die box
   };
 
   function _showInitOrder(rolls){
@@ -3045,21 +3052,19 @@ function rollDice(){
   
   GS.diceVal=finalMove;
   const de=document.getElementById('mainDice');
-  de.classList.add('rolling');de.textContent='?';
-  let ticks=0;
-  const iv=setInterval(()=>{
-    de.textContent=Math.floor(Math.random()*6)+1;
-    if(++ticks>8){
-      clearInterval(iv);de.textContent=finalMove;de.classList.remove('rolling');
-      const swiftMsg = p.status && p.status.swiftness ? ` (${roll} x2 swiftness)` : '';
-      toast(`${p.name} rolled ${finalMove}!${swiftMsg}`);
-      GS.phase='move';
-      const reach=getReach(p.tileIdx,finalMove).filter(t=>!wasVisitedRecently(p,t));
-      GS.highlightedTiles=reach;
-      if(reach.length===0){toast(`No valid tiles (all visited recently). Skipped.`,'bad');endTurn();return;}
-      renderActs();
-    }
-  },80);
+  roll3D('mainDice', 'd6', finalMove, ()=>{
+    // Restore normal HUD die appearance after 3-D animation clears itself
+    de.style.width=''; de.style.height='';
+    de.textContent=finalMove;
+    const swiftMsg = p.status && p.status.swiftness ? ` (${roll} x2 swiftness)` : '';
+    toast(`${p.name} rolled ${finalMove}!${swiftMsg}`);
+    GS.phase='move';
+    const reach=getReach(p.tileIdx,finalMove).filter(t=>!wasVisitedRecently(p,t));
+    GS.highlightedTiles=reach;
+    if(reach.length===0){toast(`No valid tiles (all visited recently). Skipped.`,'bad');endTurn();return;}
+    renderActs();
+    de.onclick=rollDice;
+  });
 }
 
 function rollEscapeDice(needed){
@@ -3068,30 +3073,24 @@ function rollEscapeDice(needed){
   const sk = skills.find(s => s.id === 'run' || s.id === 'swift_retreat') || skills[0];
   const de=document.getElementById('escapeDice');
   if(!de) return;
-  de.classList.add('rolling');
-  let ticks=0;
-  const iv=setInterval(()=>{
-    de.textContent=Math.floor(Math.random()*20)+1;
-    if(++ticks>14){
-      clearInterval(iv);
-      const roll=Math.floor(Math.random()*20)+1;
-      de.textContent=roll;
-      de.classList.remove('rolling');
-      const success=roll>=needed;
-      de.style.borderColor=success?'#40a040':'#a04040';
-      de.style.color=success?'#40a040':'#a04040';
-      const s=calcStats(p);
-      const fleeSuccess = roll + s.dex > 14;
-      toast(`🎲 Rolled ${roll}! ${fleeSuccess?'SUCCESS!':'FAILED!'}`,fleeSuccess?'good':'bad');
-      setTimeout(()=>{
-        closeModal();
-        const dmg=sk.exec(p,e,c,roll);
-        if(c.fled){closeCombatFled();return;}
-        if(e.hp<=0){combatWin();return;}
-        doEnemyTurn();
-      },800);
-    }
-  },70);
+
+  // Pre-compute result so 3-D animation and logic use the same value
+  const roll=Math.floor(Math.random()*20)+1;
+
+  roll3D('escapeDice', 'd20', roll, ()=>{
+    const s=calcStats(p);
+    const success=roll>=needed;
+    const fleeSuccess=roll+s.dex>14;
+    de.style.borderColor=success?'#40a040':'#a04040';
+    toast(`🎲 Rolled ${roll}! ${fleeSuccess?'SUCCESS!':'FAILED!'}`,fleeSuccess?'good':'bad');
+    setTimeout(()=>{
+      closeModal();
+      const dmg=sk.exec(p,e,c,roll);
+      if(c.fled){closeCombatFled();return;}
+      if(e.hp<=0){combatWin();return;}
+      doEnemyTurn();
+    },800);
+  });
 }
 
 function getReach(from,steps){
@@ -3399,62 +3398,36 @@ function rollEventDice(eventId, optIdx){
   
   const de = document.getElementById('eventDice');
   if(!de) return;
-  
-  de.classList.add('rolling');
-  let ticks=0;
-  
-  const iv = setInterval(()=>{
-    if(hasDisadvantage || hasAdvantage){
-      de.textContent = Math.floor(Math.random()*20)+1 + ',' + Math.floor(Math.random()*20)+1;
-    } else {
-      de.textContent = Math.floor(Math.random()*20)+1;
-    }
-    if(++ticks > 12){
-      clearInterval(iv);
-      
-      // Final roll calculation
-      let roll, rollDisplay;
-      if(hasDisadvantage) {
-        const d1 = Math.floor(Math.random()*20)+1;
-        const d2 = Math.floor(Math.random()*20)+1;
-        roll = Math.min(d1, d2);
-        rollDisplay = `[${d1}, ${d2}] → ${roll}`;
-        GS._helplessMaidenDisadvantage = false;
-      } else if(hasAdvantage) {
-        const d1 = Math.floor(Math.random()*20)+1;
-        const d2 = Math.floor(Math.random()*20)+1;
-        roll = Math.max(d1, d2);
-        rollDisplay = `[${d1}, ${d2}] → ${roll}`;
-        GS._rareHerbsAdvantage = false;
-      } else {
-        roll = Math.floor(Math.random()*20)+1;
-        rollDisplay = roll.toString();
-      }
-      
-      // Get inspiration bonus if used
-      const inspirationBonus = GS._inspirationBonus || 0;
-      GS._inspirationBonus = 0;
-      
-      const total = roll + statVal + inspirationBonus;
-      const success = total >= diff;
-      
-      // Update dice display
-      de.textContent = rollDisplay.includes('[') ? rollDisplay.split('→')[1].trim() : roll;
-      de.classList.remove('rolling');
-      de.style.borderColor = success ? '#40a040' : '#a04040';
-      de.style.color = success ? '#40a040' : '#a04040';
-      
-      const statName = {int:'INT',dex:'DEX',str:'STR',combat:'Combat',avg_dex_str:'DEX+STR',con:'CON',con_dex_str:'CON+DEX+STR'}[opt.stat]||opt.stat;
-      const bonusText = inspirationBonus > 0 ? `<span style="color:var(--gold)"> +${inspirationBonus} (Inspiration)</span>` : '';
-      const rollTypeText = hasDisadvantage ? `<br><span style="color:#ff6b6b;font-size:10px">(Rolled with DISADVANTAGE)</span>` : (hasAdvantage ? `<br><span style="color:#4f4;font-size:10px">(Rolled with ADVANTAGE)</span>` : '');
-      
-      setTimeout(()=>{
-        closeModal();
-        // Directly show the outcome without an extra modal
-        success ? opt.success() : opt.fail();
-      },600);
-    }
-  },70);
+
+  // Pre-compute result before animation starts
+  let roll, rollDisplay;
+  if(hasDisadvantage){
+    const d1=Math.floor(Math.random()*20)+1, d2=Math.floor(Math.random()*20)+1;
+    roll=Math.min(d1,d2);
+    rollDisplay=`${d1}|${d2}→${roll}`;
+    GS._helplessMaidenDisadvantage=false;
+  } else if(hasAdvantage){
+    const d1=Math.floor(Math.random()*20)+1, d2=Math.floor(Math.random()*20)+1;
+    roll=Math.max(d1,d2);
+    rollDisplay=`${d1}|${d2}→${roll}`;
+    GS._rareHerbsAdvantage=false;
+  } else {
+    roll=Math.floor(Math.random()*20)+1;
+    rollDisplay=roll.toString();
+  }
+
+  const inspirationBonus=GS._inspirationBonus||0;
+  GS._inspirationBonus=0;
+  const total=roll+statVal+inspirationBonus;
+  const success=total>=diff;
+
+  roll3D('eventDice', 'd20', rollDisplay, ()=>{
+    de.style.borderColor=success?'#40a040':'#a04040';
+    setTimeout(()=>{
+      closeModal();
+      success ? opt.success() : opt.fail();
+    }, 600);
+  });
 }
 function doVillage(){
   const p=cp();
@@ -4352,105 +4325,160 @@ function useBattleConsumable(itemId){
 
 function animatePlayerAttack(skill, callback){
   const playerSide = document.getElementById('playerSide');
-  const enemySide = document.getElementById('enemySide');
-  const effects = document.getElementById('battleEffects');
-  const p = cp();
-  const e = GS.combat.enemy;
-  const c = GS.combat;
-  const s = calcStats(p);
-  
-  // Calculate hit roll - D20 + appropriate modifier based on class
+  const enemySide  = document.getElementById('enemySide');
+  const effects    = document.getElementById('battleEffects');
+  const d20Wrap    = document.getElementById('battleDiceD20Wrap');
+  const modEl      = document.getElementById('battleDiceD20Mod');
+  const dmgSlot    = document.getElementById('battleDiceSlotDmg');
+  const dmg2Slot   = document.getElementById('battleDiceSlotDmg2');
+  const p = cp(), e = GS.combat.enemy, c = GS.combat, s = calcStats(p);
+
+  // ── Pre-compute all rolls ──
   let hitMod = 0;
   const playerClass = p.class;
   if(playerClass === 'warrior' || playerClass === 'monk') hitMod = s.str;
   else if(playerClass === 'ranger' || playerClass === 'rogue') hitMod = s.dex;
   else if(playerClass === 'mage') hitMod = s.int;
   else hitMod = Math.max(s.str, s.dex);
-  
+
   const d20Roll = Math.floor(Math.random() * 20) + 1;
   const hitRoll = d20Roll + hitMod;
   const enemyAC = e.armorClass || 12;
-  const isHit = hitRoll >= enemyAC;
-  
-  // Roll skill dice if any
+  const isHit   = hitRoll >= enemyAC;
+
   const skillDice = skill.dice || [];
-  const diceRolls = skillDice.map(d => {
-    const sides = parseInt(d.slice(1));
-    return Math.floor(Math.random() * sides) + 1;
-  });
+  const diceRolls = skillDice.map(d => Math.floor(Math.random() * parseInt(d.slice(1))) + 1);
   c._skillDiceRolls = diceRolls;
-  
-  // Log hit roll to battle log
+
   c.log.push(`🎲 Attack roll: ${d20Roll}+${hitMod}=${hitRoll} ${isHit ? '- Hit!' : '- Miss!'}`);
-  
-  // Show dice popup(s) - show skill damage dice only on HIT (never on miss)
-  if(isHit && skillDice.length > 0){
-    skillDice.forEach((die, idx) => {
-      const roll = diceRolls[idx];
-      const dicePopup = document.createElement('div');
-      dicePopup.textContent = roll;
-      const offsetX = idx * 70;
-      dicePopup.style.cssText = `position:absolute;left:calc(35% + ${offsetX}px);top:30%;width:60px;height:60px;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:bold;color:#fff;background:linear-gradient(145deg,#8B4513,#654321);border:3px solid #fff;border-radius:10px;box-shadow:0 4px 8px rgba(0,0,0,0.5);z-index:200;animation:dicePop 2s forwards`;
-      effects.appendChild(dicePopup);
-      setTimeout(() => dicePopup.remove(), 2000);
-    });
-  }
-  
-  // Get skill type
-  const skillType = skill.type || 'physical';
-  
-  if(skillType === 'magic'){
-    const projectile = document.createElement('div');
-    projectile.textContent = '✨';
-    projectile.style.cssText = 'position:absolute;left:30%;top:50%;font-size:40px;animation:magicProjectile 0.5s forwards';
-    effects.appendChild(projectile);
-    setTimeout(() => projectile.remove(), 500);
-  } else if(playerClass === 'ranger' || skill.id === 'shoot_arrow' || skill.id === 'double_arrow'){
-    const arrow = document.createElement('div');
-    arrow.textContent = '🏹';
-    arrow.style.cssText = 'position:absolute;left:30%;top:45%;font-size:35px;animation:arrowFly 0.4s forwards';
-    effects.appendChild(arrow);
-    setTimeout(() => arrow.remove(), 400);
-  }
-  
-  if(skillType === 'physical'){
-    playerSide.classList.add('player-attack');
+
+  // ── Reset wrap state ──
+  if(d20Wrap){ d20Wrap.style.opacity = '1'; d20Wrap.style.transition = ''; }
+  if(dmgSlot)  dmgSlot.style.display  = 'none';
+  if(dmg2Slot) dmg2Slot.style.display = 'none';
+  if(modEl){ modEl.style.opacity = '0'; modEl.textContent = ''; modEl.style.color = ''; }
+
+  // ── Helper: fade out a wrapper, dispose controllers, clear slots, then call onDone ──
+  function fadeOutWrap(wrapEl, slotIds, ctrls, onDone){
+    if(!wrapEl){ slotIds.forEach((id,i)=>{ if(ctrls[i]) ctrls[i].dispose(); const el=document.getElementById(id); if(el) el.innerHTML=''; }); if(onDone) onDone(); return; }
+    wrapEl.style.transition = 'opacity 0.35s';
+    wrapEl.style.opacity    = '0';
     setTimeout(() => {
-      playerSide.classList.remove('player-attack');
-      if(isHit){
+      slotIds.forEach((id, i) => {
+        if(ctrls[i]) ctrls[i].dispose();
+        const el = document.getElementById(id);
+        if(el) el.innerHTML = '';
+      });
+      wrapEl.style.opacity   = '1';
+      wrapEl.style.transition = '';
+      if(onDone) onDone();
+    }, 380);
+  }
+
+  // ── Helper: fire attack visuals then call onDone ──
+  function doAttackVisuals(hit, onDone){
+    const skillType = skill.type || 'physical';
+    if(skillType === 'magic'){
+      const proj = document.createElement('div');
+      proj.textContent = '✨';
+      proj.style.cssText = 'position:absolute;left:30%;top:50%;font-size:40px;animation:magicProjectile 0.5s forwards';
+      effects.appendChild(proj);
+      setTimeout(() => proj.remove(), 500);
+    } else if(playerClass === 'ranger' || skill.id === 'shoot_arrow' || skill.id === 'double_arrow'){
+      const arrow = document.createElement('div');
+      arrow.textContent = '🏹';
+      arrow.style.cssText = 'position:absolute;left:30%;top:45%;font-size:35px;animation:arrowFly 0.4s forwards';
+      effects.appendChild(arrow);
+      setTimeout(() => arrow.remove(), 400);
+    }
+    if(skillType === 'physical' && playerSide){
+      playerSide.classList.add('player-attack');
+      setTimeout(() => playerSide.classList.remove('player-attack'), 300);
+    }
+    if(!hit){
+      GS.combat._attackHit = false;
+      c.log.push(`❌ ${p.name}'s ${skill.name} missed! (Roll: ${hitRoll} vs AC ${enemyAC})`);
+      const missPopup = document.createElement('div');
+      missPopup.textContent = 'MISS!';
+      missPopup.style.cssText = 'position:absolute;left:50%;top:30%;transform:translateX(-50%);' +
+        'font-size:32px;font-weight:bold;color:#ff3333;text-shadow:2px 2px 0 #000;' +
+        'z-index:300;animation:damagePopup 2s forwards';
+      effects.appendChild(missPopup);
+      setTimeout(() => missPopup.remove(), 2000);
+    } else {
+      GS.combat._attackHit = true;
+      if(enemySide){
         enemySide.classList.add('hit-flash');
-        // Show HIT popup with damage number
-        const damagePopup = document.createElement('div');
-        damagePopup.className = 'damage-popup';
-        damagePopup.textContent = 'HIT!';
-        damagePopup.style.left = '50%';
-        damagePopup.style.top = '20%';
-        damagePopup.style.transform = 'translateX(-50%)';
-        enemySide.appendChild(damagePopup);
-        setTimeout(() => damagePopup.remove(), 2000);
         setTimeout(() => enemySide.classList.remove('hit-flash'), 200);
-      } else {
-        // Show MISS popup
-        const missPopup = document.createElement('div');
-        missPopup.textContent = 'MISS!';
-        missPopup.style.cssText = 'position:absolute;left:50%;top:30%;transform:translateX(-50%);font-size:32px;font-weight:bold;color:#ff3333;text-shadow:2px 2px 0 #000;z-index:300;animation:damagePopup 2s forwards';
-        effects.appendChild(missPopup);
-        setTimeout(() => missPopup.remove(), 2000);
+        const hitPopup = document.createElement('div');
+        hitPopup.className = 'damage-popup';
+        hitPopup.textContent = 'HIT!';
+        hitPopup.style.cssText += ';left:50%;top:20%;transform:translateX(-50%)';
+        enemySide.appendChild(hitPopup);
+        setTimeout(() => hitPopup.remove(), 2000);
       }
-    }, 300);
+    }
+    setTimeout(onDone, 400);
   }
-  
-  // If miss, skip damage but still do callback after animation
-  if(!isHit){
-    GS.combat._attackHit = false;
+
+  // ── Step 1: Roll D20 ──
+  roll3DBattle('battleDiceSlotD20', 'd20', d20Roll, (d20Ctrl) => {
+
+    // ── Step 2: Show modifier + color the overlay ──
+    const hitColor = isHit ? '#4dff88' : '#ff4444';
+    const d20Overlay = document.querySelector('#battleDiceSlotD20 .dice3d-result');
+    if(d20Overlay) d20Overlay.style.color = hitColor;
+    if(modEl){
+      modEl.textContent = `+${hitMod} = ${hitRoll}`;
+      modEl.style.color  = hitColor;
+      modEl.style.opacity = '1';
+    }
+
+    // ── Step 3: Pause so player can read, then fade out D20 row ──
     setTimeout(() => {
-      GS.combat.log.push(`❌ ${p.name}'s ${skill.name} missed! (Roll: ${hitRoll} vs AC ${enemyAC})`);
-      callback();
-    }, skillType === 'physical' ? 400 : 600);
-  } else {
-    GS.combat._attackHit = true;
-    setTimeout(callback, skillType === 'physical' ? 300 : 500);
-  }
+      if(modEl) modEl.style.opacity = '0';
+      fadeOutWrap(d20Wrap, ['battleDiceSlotD20'], [d20Ctrl], () => {
+        if(modEl) modEl.textContent = '';
+
+        if(!isHit){
+          // ── Miss path ──
+          doAttackVisuals(false, callback);
+
+        } else {
+          // ── Hit path: roll damage dice (parallel if 2) in the same row ──
+          const hasTwoDice = skillDice.length >= 2;
+          if(dmgSlot)  dmgSlot.style.display  = '';
+          if(dmg2Slot) dmg2Slot.style.display = hasTwoDice ? '' : 'none';
+
+          let settled = 0;
+          const needed   = hasTwoDice ? 2 : (skillDice.length > 0 ? 1 : 0);
+          const dmgCtrls = [null, null];
+
+          if(needed === 0){
+            doAttackVisuals(true, callback);
+            return;
+          }
+
+          function onDmgSettled(idx, ctrl){
+            dmgCtrls[idx] = ctrl;
+            if(++settled < needed) return;
+            // All damage dice settled → pause → fade out wrap → attack visuals
+            setTimeout(() => {
+              const slots = hasTwoDice
+                ? ['battleDiceSlotDmg', 'battleDiceSlotDmg2']
+                : ['battleDiceSlotDmg'];
+              fadeOutWrap(d20Wrap, slots, dmgCtrls, () => doAttackVisuals(true, callback));
+            }, 600);
+          }
+
+          roll3DBattle('battleDiceSlotDmg',  skillDice[0], diceRolls[0], ctrl => onDmgSettled(0, ctrl));
+          if(hasTwoDice){
+            roll3DBattle('battleDiceSlotDmg2', skillDice[1], diceRolls[1], ctrl => onDmgSettled(1, ctrl));
+          }
+        }
+      });
+    }, 700);
+  });
 }
 
 function showDamagePopup(target, text){
@@ -4885,10 +4913,304 @@ function rollAttackHit(skillIdx, hitMod, targetAC){
   }
 }
 
+// ── Dice faces & utility ─────────────────────────────────────────────────────
+const DICE_FACES = {
+  d4:  ['⚀','⚁','⚂','⚃'],
+  d6:  ['⚀','⚁','⚂','⚃','⚄','⚅'],
+  d8:  ['1','2','3','4','5','6','7','8'],
+  d10: ['1','2','3','4','5','6','7','8','9','10'],
+  d12: ['1','2','3','4','5','6','7','8','9','10','11','12'],
+  d20: Array.from({length:20},(_,i)=>String(i+1)),
+  d100:Array.from({length:100},(_,i)=>String(i+1))
+};
+// Roll a die by type string ('d4','d6','d8','d10','d12','d20','d100').
+// Returns a numeric result [1, sides].
+function rollDie(type){
+  const faces = DICE_FACES[type];
+  if(!faces) return 1;
+  return Math.floor(Math.random()*faces.length)+1;
+}
+// ── 3D Dice model paths ───────────────────────────────────────────────────────
+const DICE_MODELS = {
+  d4:   'assets/dice/D4.glb',
+  d6:   'assets/dice/D6.glb',
+  d8:   'assets/dice/D8.glb',
+  d10:  'assets/dice/D10.glb',
+  d12:  'assets/dice/D12.glb',
+  d20:  'assets/dice/D20.glb',
+  d100: 'assets/dice/D100.glb'
+};
+
+// ── DiceRenderer ──────────────────────────────────────────────────────────────
+// Mounts a spinning 3D die into any container element.
+// Usage:
+//   const ctrl = DiceRenderer.mount(containerEl, 'd20');
+//   ctrl.spin();          // starts/resumes spinning
+//   ctrl.settle(result);  // slows to a stop, shows numeric overlay
+//   ctrl.dispose();       // cleans up canvas + RAF
+const DiceRenderer = (function(){
+  const _cache = {};   // modelPath → THREE.Group (cloned per use)
+  const _loader = (typeof THREE !== 'undefined') ? new THREE.GLTFLoader() : null;
+
+  function _loadModel(path){
+    return new Promise((resolve, reject) => {
+      if(!_loader){ reject('THREE not loaded'); return; }
+      if(_cache[path]){ resolve(_cache[path].clone()); return; }
+      _loader.load(path, gltf => {
+        _cache[path] = gltf.scene;
+        resolve(gltf.scene.clone());
+      }, undefined, reject);
+    });
+  }
+
+  function mount(container, dieType, forceW, forceH){
+    const modelPath = DICE_MODELS[dieType];
+    if(!modelPath || typeof THREE === 'undefined') return null;
+
+    const w = forceW || container.clientWidth  || 120;
+    const h = forceH || container.clientHeight || 120;
+
+    // Scene — camera sits slightly above the table plane for a realistic view
+    const scene  = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(42, w / h, 0.1, 100);
+    camera.position.set(0, 2.2, 4.2);
+    camera.lookAt(0, 0, 0);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(w, h);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+    renderer.shadowMap.enabled = true;
+    container.appendChild(renderer.domElement);
+
+    // Lighting — warm key light from upper-right, cold fill from lower-left
+    scene.add(new THREE.AmbientLight(0xffeedd, 0.5));
+    const keyLight = new THREE.DirectionalLight(0xffd090, 1.6);
+    keyLight.position.set(5, 8, 6);
+    scene.add(keyLight);
+    const fillLight = new THREE.DirectionalLight(0x8090ff, 0.35);
+    fillLight.position.set(-4, -1, 3);
+    scene.add(fillLight);
+
+    // Physics state
+    let mesh     = null;
+    let spinning = false;
+    let settling = false;
+    let vx = 0, vy = 0, vz = 0;
+    let rafId    = null;
+
+    const FRICTION  = 0.978; // per frame — at 60 fps die nearly stops after 2 s
+    const SETTLE_F  = 0.80;  // fast wobble-decay after landing (~0.4 s to stop)
+
+    // Load & add model
+    _loadModel(modelPath).then(group => {
+      const box    = new THREE.Box3().setFromObject(group);
+      const center = box.getCenter(new THREE.Vector3());
+      const size   = box.getSize(new THREE.Vector3());
+
+      // Pivot sits at the world origin (0,0,0).
+      // The loaded group is offset so its geometry center lands exactly on
+      // the pivot's local origin — rotation then happens around that center.
+      const pivot = new THREE.Group();
+      group.position.sub(center);          // geometry center → pivot origin
+      pivot.scale.setScalar(2.2 / Math.max(size.x, size.y, size.z));
+      pivot.position.set(0, 0, 0);         // pivot stays at world origin always
+
+      // Transparent-borders mode: hide faces, show glowing edges only
+      if(DICE_TRANSPARENT){
+        group.traverse(child => {
+          if(!child.isMesh) return;
+          const mats = Array.isArray(child.material) ? child.material : [child.material];
+          mats.forEach(m => {
+            m.transparent = true;
+            m.opacity      = 0;
+            m.depthWrite   = false;
+          });
+          const edges = new THREE.EdgesGeometry(child.geometry, 35);
+          const lines = new THREE.LineSegments(
+            edges,
+            new THREE.LineBasicMaterial({ color: 0xf0c060, linewidth: 1 })
+          );
+          child.add(lines);
+        });
+      }
+
+      pivot.add(group);
+      scene.add(pivot);
+      mesh = pivot;                        // we rotate the pivot, not the group
+      if(spinning || settling) _startRAF();
+    }).catch(err => console.warn('DiceRenderer: could not load', modelPath, err));
+
+    function _startRAF(){
+      if(rafId) return;
+      (function loop(){
+        rafId = requestAnimationFrame(loop);
+        if(mesh){
+          if(spinning){
+            // Friction decelerates the die — starts fast, near-stops at 2 s
+            vx *= FRICTION; vy *= FRICTION; vz *= FRICTION;
+            mesh.rotation.x += vx;
+            mesh.rotation.y += vy;
+            mesh.rotation.z += vz;
+          }
+
+          if(settling){
+            // Brief natural wobble as the die "lands", rotation only
+            vx *= SETTLE_F; vy *= SETTLE_F; vz *= SETTLE_F;
+            mesh.rotation.x += vx;
+            mesh.rotation.y += vy;
+            mesh.rotation.z += vz;
+
+            if(Math.abs(vx) < 0.0006 && Math.abs(vy) < 0.0006){
+              settling = false;
+              vx = vy = vz = 0;
+            }
+          }
+        }
+        renderer.render(scene, camera);
+      })();
+    }
+
+    const ctrl = {
+      spin(){
+        spinning = true;
+        settling = false;
+        // One dominant tumble axis (like a real throw) + small wobble on the others
+        const axis = Math.floor(Math.random() * 3);
+        const d    = [Math.random()<0.5?1:-1, Math.random()<0.5?1:-1, Math.random()<0.5?1:-1];
+        const hiV  = 0.30 + Math.random() * 0.14;  // primary roll velocity
+        const loV  = 0.04 + Math.random() * 0.05;  // secondary wobble
+        vx = (axis===0 ? hiV : loV) * d[0];
+        vy = (axis===1 ? hiV : loV) * d[1];
+        vz = (axis===2 ? hiV : loV) * d[2];
+        _startRAF();
+      },
+      settle(result){
+        spinning = false;
+        settling = true;
+        // Counter-nudge: die clips a face and briefly reverses before locking still
+        vx = -vx * 0.25 + (Math.random()-0.5) * 0.012;
+        vy = -vy * 0.25 + (Math.random()-0.5) * 0.012;
+        vz = -vz * 0.25 + (Math.random()-0.5) * 0.012;
+        // Result overlay — font is 1.1× the canvas width so it reads clearly
+        let overlay = container.querySelector('.dice3d-result');
+        if(!overlay){
+          overlay = document.createElement('div');
+          overlay.className = 'dice3d-result';
+          overlay.style.cssText = 'position:absolute;inset:0;display:flex;align-items:center;' +
+            'justify-content:center;font-family:"Cinzel",serif;font-weight:bold;' +
+            `font-size:${Math.round(w * 1.1)}px;` +
+            'color:#f0c060;text-shadow:0 2px 10px #000,0 0 4px #000;' +
+            'pointer-events:none;opacity:0;transition:opacity .4s .2s';
+          container.style.position = 'relative';
+          container.appendChild(overlay);
+        }
+        overlay.textContent = result;
+        requestAnimationFrame(()=>{ overlay.style.opacity = '1'; });
+      },
+      dispose(){
+        if(rafId){ cancelAnimationFrame(rafId); rafId = null; }
+        renderer.dispose();
+        if(renderer.domElement.parentNode)
+          renderer.domElement.parentNode.removeChild(renderer.domElement);
+      }
+    };
+
+    return ctrl;
+  }
+
+  return { mount };
+})();
+// ── roll3D ────────────────────────────────────────────────────────────────────
+// Mounts a 3-D die in `elementId`, spins it for SPIN_MS, then freezes it for
+// SETTLE_MS showing `result` as an overlay, then calls onDone(result).
+// Falls back to onDone immediately if Three.js is not available.
+const SPIN_MS   = 2000;
+const SETTLE_MS = 2000;
+// Set to false to revert to solid dice
+const DICE_TRANSPARENT = false;
+
+// roll3D(elementId, dieType, result, onDone, fillRatio=0.8)
+// Canvas is sized to fillRatio of the container's rendered dimensions and
+// centered inside it, so the die never overflows nor looks lost in the box.
+function roll3D(elementId, dieType, result, onDone, fillRatio){
+  fillRatio = fillRatio || 0.8;
+  const el = document.getElementById(elementId);
+  if(!el || typeof THREE === 'undefined'){
+    if(onDone) onDone(result);
+    return;
+  }
+
+  // Read the container's natural rendered size BEFORE touching it
+  const cw = el.offsetWidth  || 100;
+  const ch = el.offsetHeight || 100;
+  const sz = Math.round(Math.min(cw, ch) * fillRatio);
+
+  el.innerHTML = '';
+  el.style.overflow = 'hidden';
+  el.style.position = 'relative';
+  el.style.cursor   = 'default';
+  el.onclick        = null;
+
+  const ctrl = DiceRenderer.mount(el, dieType, sz, sz);
+  if(!ctrl){ if(onDone) onDone(result); return; }
+
+  // Center the canvas inside the container regardless of size difference
+  const canvas = el.querySelector('canvas');
+  if(canvas){
+    canvas.style.cssText += ';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)';
+  }
+
+  ctrl.spin();
+
+  setTimeout(()=>{
+    ctrl.settle(result);
+    setTimeout(()=>{
+      ctrl.dispose();
+      if(onDone) onDone(result);
+    }, SETTLE_MS);
+  }, SPIN_MS);
+}
+// ── roll3DBattle ──────────────────────────────────────────────────────────────
+// Shows a 3-D die over #playerSide during combat. Runs at 1.3× normal speed.
+const BATTLE_SPIN   = Math.round(SPIN_MS   / 1.5);   // ≈ 1333 ms
+const BATTLE_SETTLE = Math.round(SETTLE_MS / 1.5);   // ≈ 1333 ms
+const BATTLE_DIE_PX = Math.round(120 * 0.6);         // 72 px  (0.6× base size)
+
+// Mounts a 3-D die in a named slot inside #battleDiceArea.
+// Calls onSettled(ctrl) when the die finishes settling — caller is responsible
+// for calling ctrl.dispose() and clearing the slot's innerHTML when done.
+function roll3DBattle(slotId, dieType, result, onSettled){
+  const slot = document.getElementById(slotId);
+  if(!slot || typeof THREE === 'undefined'){
+    if(onSettled) onSettled(null);
+    return;
+  }
+
+  slot.innerHTML = '';   // clear any leftover from a previous roll
+
+  const sz   = Math.round(BATTLE_DIE_PX * 0.8);
+  const ctrl = DiceRenderer.mount(slot, dieType, sz, sz);
+  if(!ctrl){ if(onSettled) onSettled(null); return; }
+
+  const canvas = slot.querySelector('canvas');
+  if(canvas) canvas.style.cssText += ';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)';
+
+  ctrl.spin();
+
+  setTimeout(()=>{
+    ctrl.settle(result);
+    setTimeout(()=>{
+      if(onSettled) onSettled(ctrl);   // die is now still and showing result
+    }, BATTLE_SETTLE);
+  }, BATTLE_SPIN);
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 function rollFuriousBlows(skillIdx, numHits){
   const p=cp(),c=GS.combat,e=c.enemy;
   const s=calcStats(p);
-  const d4Faces = ['⚀','⚁','⚂','⚃'];
+  const d4Faces = DICE_FACES.d4;
   
   // Show all D4 dice at once (number of hits was determined secretly)
   let diceHtml = `
@@ -4912,7 +5234,7 @@ function rollFuriousBlows(skillIdx, numHits){
 function animateAndRollFurious(skillIdx, numHits){
   const p=cp(),c=GS.combat,e=c.enemy;
   const s=calcStats(p);
-  const d4Faces = ['⚀','⚁','⚂','⚃'];
+  const d4Faces = DICE_FACES.d4;
   
   let ticks = 0;
   const diceEls = [];
@@ -4934,7 +5256,7 @@ function animateAndRollFurious(skillIdx, numHits){
 function executeFuriousBlows(skillIdx, numHits){
   const p=cp(),c=GS.combat,e=c.enemy;
   const s=calcStats(p);
-  const d4Faces = ['⚀','⚁','⚂','⚃'];
+  const d4Faces = DICE_FACES.d4;
   const strBonus = Math.floor(s.str * 0.33);
   const intBonus = Math.floor(s.int * 0.33);
   
@@ -5059,8 +5381,8 @@ function animateAndRollDamage(skillIdx){
   const sk=skills[skillIdx];
   const isD6 = sk.id === 'lightning' || sk.id === 'fireball' || sk.id === 'fierce_atk';
   const isFierce = sk.id === 'fierce_atk';
-  const d4Faces = ['⚀','⚁','⚂','⚃'];
-  const d6Faces = ['⚀','⚁','⚂','⚃','⚄','⚅'];
+  const d4Faces = DICE_FACES.d4;
+  const d6Faces = DICE_FACES.d6;
   
   // Animate dice
   let ticks = 0;
@@ -5086,8 +5408,8 @@ function executeDamageRoll(skillIdx){
   const sk=skills[skillIdx];
   const isD6 = sk.id === 'lightning' || sk.id === 'fireball' || sk.id === 'fierce_atk';
   const isFierce = sk.id === 'fierce_atk';
-  const d4Faces = ['⚀','⚁','⚂','⚃'];
-  const d6Faces = ['⚀','⚁','⚂','⚃','⚄','⚅'];
+  const d4Faces = DICE_FACES.d4;
+  const d6Faces = DICE_FACES.d6;
   
   // Animate dice
   let ticks = 0;
