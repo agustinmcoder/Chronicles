@@ -4465,32 +4465,51 @@ function animatePlayerAttack(skill, callback){
       const SNEAK_DUR = 700;
       const SLASH_DUR = 700;
 
+      // Full-screen blackout — everything dark except the enemy sprite
+      const blackout = document.createElement('div');
+      blackout.style.cssText = 'position:fixed;inset:0;background:#000;opacity:0;transition:opacity 0.25s;z-index:9000;pointer-events:none';
+      document.body.appendChild(blackout);
+      // Lift enemy side above the blackout
+      enemySide.style.position = 'relative';
+      enemySide.style.zIndex   = '9001';
+      requestAnimationFrame(() => { blackout.style.opacity = '1'; });
+
       // Player vanishes
       playerSide.style.transition = 'opacity 0.2s';
       playerSide.style.opacity = '0';
 
-      // Sneak animation at the bottom of the player sprite
+      // Sneak animation at the bottom of the player sprite (above blackout)
       const sneakEl = document.createElement('div');
       sneakEl.className = 'effect-sneak';
-      sneakEl.style.left = (playerRect.left + playerRect.width / 2 - arenaRect.left) + 'px';
-      sneakEl.style.top  = (playerRect.top  + playerRect.height * 0.75 - arenaRect.top) + 'px';
-      arena.appendChild(sneakEl);
+      sneakEl.style.position = 'fixed';
+      sneakEl.style.zIndex = '9002';
+      sneakEl.style.left = (playerRect.left + playerRect.width / 2) + 'px';
+      sneakEl.style.top  = (playerRect.top  + playerRect.height * 0.75) + 'px';
+      document.body.appendChild(sneakEl);
 
-      // After sneak: slash at enemy's near edge
+      // After sneak: slash at enemy's near edge (above blackout)
       setTimeout(() => {
         sneakEl.remove();
         if(hit){
           const slashEl = document.createElement('div');
           slashEl.className = 'effect-slash-warrior';
-          slashEl.style.left = (enemyRect.left - arenaRect.left) + 'px';
-          slashEl.style.top  = (enemyRect.top + enemyRect.height / 2 - arenaRect.top) + 'px';
-          arena.appendChild(slashEl);
+          slashEl.style.position = 'fixed';
+          slashEl.style.zIndex = '9002';
+          slashEl.style.left = (enemyRect.left) + 'px';
+          slashEl.style.top  = (enemyRect.top + enemyRect.height / 2) + 'px';
+          document.body.appendChild(slashEl);
           setTimeout(() => slashEl.remove(), SLASH_DUR);
         }
       }, SNEAK_DUR);
 
-      // Player reappears after ~60% of slash
+      // Player reappears after ~60% of slash; blackout lifts at the same time
       setTimeout(() => {
+        blackout.style.opacity = '0';
+        setTimeout(() => {
+          blackout.remove();
+          enemySide.style.zIndex   = '';
+          enemySide.style.position = '';
+        }, 250);
         playerSide.style.transition = 'opacity 0.3s';
         playerSide.style.opacity = '1';
         setTimeout(() => { playerSide.style.transition = ''; }, 300);
