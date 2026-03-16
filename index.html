@@ -79,6 +79,64 @@ canvas{display:block}
 .hit-flash{animation:hitShake 0.2s ease}
 @keyframes bossIdle{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
 .boss-idle{animation:bossIdle 3s ease-in-out infinite}
+
+/* ── Battle Effects ── */
+@keyframes slashTrail{0%{opacity:0;transform:translate(-50%,-50%) scale(0.5) rotate(0deg)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.2) rotate(-10deg)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.5) rotate(-20deg)}}
+.effect-slash{position:absolute;font-size:80px;animation:slashTrail 0.6s forwards;pointer-events:none;z-index:500}
+@keyframes fireProjectile{0%{opacity:1;transform:translate(-50%,-50%) scale(0.5)}50%{transform:translate(-50%,-50%) scale(1.2)}100%{opacity:0.8;transform:translate(-50%,-50%) scale(0.8)}}
+.effect-fire{position:absolute;font-size:70px;animation:fireProjectile 0.7s forwards;pointer-events:none;z-index:500}
+.effect-fire::after{content:'🔥';position:absolute;top:-10px;left:10px;font-size:40px;animation:fireGlow 0.3s infinite}
+@keyframes fireGlow{0%,100%{opacity:1}50%{opacity:0.5}}
+@keyframes iceShatter{0%{opacity:1;transform:translate(-50%,-50%) scale(0)}50%{opacity:0.8;transform:translate(-50%,-50%) scale(1.3)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.5)}}
+.effect-ice{position:absolute;font-size:70px;animation:iceShatter 0.7s forwards;pointer-events:none;z-index:500}
+.effect-ice::after{content:'❄️';position:absolute;top:5px;left:15px;font-size:35px;animation:iceGlow 0.5s infinite}
+@keyframes iceGlow{0%,100%{filter:brightness(1)}50%{filter:brightness(1.5)}}
+@keyframes lightningSheet{from{background-position:0 0}to{background-position:-1024px 0}}
+.effect-lightning-sprite{position:absolute;width:256px;height:128px;background:url('assets/animation/lighting_bolt/lighting_bolt.png') 0 0 no-repeat;background-size:1024px 128px;animation:lightningSheet 0.4s steps(4) forwards;pointer-events:none;z-index:500}
+@keyframes energyBallSheet{from{background-position:0 0}to{background-position:-1152px 0}}
+.effect-energy-ball{position:absolute;width:128px;height:128px;background:url('assets/animation/EnergyBall/EnergyBall.png') 0 0 no-repeat;background-size:1152px 128px;animation:energyBallSheet 0.6s steps(9) forwards;pointer-events:none;z-index:500}
+@keyframes energyBallImpact{from{background-position:0 0}to{background-position:0 -1024px}}
+.effect-energy-impact{position:absolute;width:128px;height:128px;transform:translate(-50%,-50%);background:url('assets/animation/EnergyBall/EnergyBallImpact.png') 0 0 no-repeat;background-size:128px 1024px;animation:energyBallImpact 0.4s steps(8) forwards;pointer-events:none;z-index:500}
+@keyframes buffSpriteSheet{0%{background-position:0 0}6.67%{background-position:-128px 0}13.33%{background-position:-256px 0}20%{background-position:-384px 0}26.67%{background-position:-512px 0}33.33%{background-position:0 -128px}40%{background-position:-128px -128px}46.67%{background-position:-256px -128px}53.33%{background-position:-384px -128px}60%{background-position:-512px -128px}66.67%{background-position:0 -256px}73.33%{background-position:-128px -256px}80%{background-position:-256px -256px}86.67%{background-position:-384px -256px}93.33%,100%{background-position:-512px -256px}}
+.effect-buff-sprite{position:absolute;width:128px;height:128px;transform:translate(-50%,-50%);background:url('assets/animation/Buff/Buff.png') 0 0 no-repeat;background-size:640px 384px;animation:buffSpriteSheet 0.9s step-end forwards;pointer-events:none;z-index:500}
+@keyframes healSpriteSheet{0%{background-position:0 0}6.67%{background-position:-128px 0}13.33%{background-position:-256px 0}20%{background-position:-384px 0}26.67%{background-position:-512px 0}33.33%{background-position:0 -128px}40%{background-position:-128px -128px}46.67%{background-position:-256px -128px}53.33%{background-position:-384px -128px}60%{background-position:-512px -128px}66.67%{background-position:0 -256px}73.33%{background-position:-128px -256px}80%{background-position:-256px -256px}86.67%{background-position:-384px -256px}93.33%,100%{background-position:-512px -256px}}
+.effect-heal-sprite{position:absolute;width:128px;height:128px;transform:translate(-50%,-50%);background:url('assets/animation/Heal/Heal.png') 0 0 no-repeat;background-size:640px 384px;animation:healSpriteSheet 0.9s step-end forwards;pointer-events:none;z-index:500}
+@keyframes rogueBasicSheet{0%{background-position:0 0}10%{background-position:-128px 0}20%{background-position:-256px 0}30%{background-position:-384px 0}40%{background-position:-512px 0}50%{background-position:0 -128px}60%{background-position:-128px -128px}70%{background-position:-256px -128px}80%{background-position:-384px -128px}90%,100%{background-position:-512px -128px}}
+.effect-rogue-basic{position:absolute;width:128px;height:128px;transform:translate(-50%,-50%);background:url('assets/animation/Rogue/RogueBasic.png') 0 0 no-repeat;background-size:640px 256px;animation:rogueBasicSheet 0.7s step-end forwards;pointer-events:none;z-index:500}
+@keyframes backstabSheet{0%{background-position:0 0}10%{background-position:-192px 0}20%{background-position:-384px 0}30%{background-position:-576px 0}40%{background-position:-768px 0}50%{background-position:0 -128px}60%{background-position:-192px -128px}70%{background-position:-384px -128px}80%{background-position:-576px -128px}90%,100%{background-position:-768px -128px}}
+.effect-backstab{position:absolute;width:192px;height:128px;transform:translate(-50%,-50%);background:url('assets/animation/Rogue/BackStab.png') 0 0 no-repeat;background-size:960px 256px;animation:backstabSheet 0.8s step-end forwards;pointer-events:none;z-index:500}
+@keyframes slashWarriorSheet{0%{background-position:0 0}10%{background-position:-128px 0}20%{background-position:-256px 0}30%{background-position:-384px 0}40%{background-position:-512px 0}50%{background-position:0 -128px}60%{background-position:-128px -128px}70%{background-position:-256px -128px}80%{background-position:-384px -128px}90%,100%{background-position:-512px -128px}}
+.effect-slash-warrior{position:absolute;width:128px;height:128px;transform:translate(-50%,-50%);background:url('assets/animation/Slash/Slash.png') 0 0 no-repeat;background-size:640px 256px;animation:slashWarriorSheet 0.7s step-end forwards;pointer-events:none;z-index:500}
+@keyframes fistSheet{from{background-position:0 0}to{background-position:-640px 0}}
+.effect-fist-sprite{position:absolute;width:128px;height:128px;transform:translate(-50%,-50%);background:url('assets/animation/Fist/Fist.png') 0 0 no-repeat;background-size:640px 128px;animation:fistSheet 0.4s steps(5) forwards;pointer-events:none;z-index:500}
+@keyframes arrowSheet{from{background-position:0 0}to{background-position:-300px 0}}
+.effect-arrow{position:absolute;width:50px;height:94px;background:url('assets/animation/Arrow/Arrow.png') 0 0 no-repeat;background-size:300px 94px;animation:arrowSheet 0.5s steps(6) forwards;pointer-events:none;z-index:500}
+@keyframes arrowImpactSheet{from{background-position:0 0}to{background-position:-768px 0}}
+.effect-arrow-impact{position:absolute;width:77px;height:141px;transform:translate(-50%,-50%);background:url('assets/animation/Arrow/ArrowImpact.png') 0 0 no-repeat;background-size:768px 141px;animation:arrowImpactSheet 0.4s steps(10) forwards;pointer-events:none;z-index:500}
+@keyframes fireballSheet{0%{background-position:0 0}2.5%{background-position:-128px 0}5%{background-position:-256px 0}7.5%{background-position:-384px 0}10%{background-position:0 -96px}12.5%{background-position:-128px -96px}15%{background-position:-256px -96px}17.5%{background-position:-384px -96px}20%{background-position:0 -192px}22.5%{background-position:-128px -192px}25%{background-position:-256px -192px}27.5%{background-position:-384px -192px}30%{background-position:0 -288px}32.5%{background-position:-128px -288px}35%{background-position:-256px -288px}37.5%{background-position:-384px -288px}40%{background-position:0 -384px}42.5%{background-position:-128px -384px}45%{background-position:-256px -384px}47.5%{background-position:-384px -384px}50%{background-position:0 -480px}52.5%{background-position:-128px -480px}55%{background-position:-256px -480px}57.5%{background-position:-384px -480px}60%{background-position:0 -576px}62.5%{background-position:-128px -576px}65%{background-position:-256px -576px}67.5%{background-position:-384px -576px}70%{background-position:0 -672px}72.5%{background-position:-128px -672px}75%{background-position:-256px -672px}77.5%{background-position:-384px -672px}80%{background-position:0 -768px}82.5%{background-position:-128px -768px}85%{background-position:-256px -768px}87.5%{background-position:-384px -768px}90%{background-position:0 -864px}92.5%{background-position:-128px -864px}95%{background-position:-256px -864px}97.5%,100%{background-position:-384px -864px}}
+.effect-fireball{position:absolute;width:128px;height:96px;background:url('assets/animation/Fireball/Fireball.png') 0 0 no-repeat;background-size:512px 960px;animation:fireballSheet 0.8s step-end forwards;pointer-events:none;z-index:500}
+@keyframes fierceSheet{from{background-position:0 0}to{background-position:-640px 0}}
+.effect-fierce{position:absolute;width:128px;height:128px;transform:translate(-50%,-50%);background:url('assets/animation/Slash/Fierce.png') 0 0 no-repeat;background-size:640px 128px;animation:fierceSheet 0.6s steps(5) forwards;pointer-events:none;z-index:500}
+@keyframes sneakSheet{from{background-position:0 0}to{background-position:-896px 0}}
+.effect-sneak{position:absolute;width:128px;height:128px;transform:translate(-50%,-50%);background:url('assets/animation/Sneak/Sneak.png') 0 0 no-repeat;background-size:896px 128px;animation:sneakSheet 0.7s steps(7) forwards;pointer-events:none;z-index:500}
+@keyframes poisonBubbles{0%{opacity:0;transform:translate(-50%,-50%) scale(0.5)}30%{opacity:1}100%{opacity:0;transform:translate(-50%,calc(-50% - 40px)) scale(1)}}
+.effect-poison{position:absolute;font-size:40px;animation:poisonBubbles 0.8s forwards;pointer-events:none;z-index:100}
+.effect-poison::before{content:'☠️';position:absolute;top:5px;left:10px;font-size:20px}
+@keyframes healParticles{0%{opacity:0;transform:translate(-50%,calc(-50% + 10px)) scale(0)}30%{opacity:1}100%{opacity:0;transform:translate(-50%,calc(-50% - 30px)) scale(1)}}
+.effect-heal{position:absolute;font-size:50px;animation:healParticles 0.7s forwards;pointer-events:none;z-index:100}
+.effect-heal::after{content:'💚';position:absolute;top:5px;left:15px;font-size:25px;animation:pulse 0.4s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+@keyframes buffAura{0%{box-shadow:0 0 0 0 rgba(100,200,255,0.7)}50%{box-shadow:0 0 30px 10px rgba(100,200,255,0.5)}100%{box-shadow:0 0 0 0 rgba(100,200,255,0)}}
+.buff-aura{animation:buffAura 2s ease-in-out;box-shadow:0 0 20px 5px rgba(100,200,255,0.6)}
+@keyframes debuffAura{0%{box-shadow:0 0 0 0 rgba(180,50,200,0.7)}50%{box-shadow:0 0 30px 10px rgba(180,50,200,0.5)}100%{box-shadow:0 0 0 0 rgba(180,50,200,0)}}
+.debuff-aura{animation:debuffAura 2s ease-in-out;box-shadow:0 0 20px 5px rgba(180,50,200,0.6)}
+@keyframes floatIconUp{0%{transform:translateY(0) scale(0.5);opacity:0}20%{transform:translateY(-5px) scale(1.2);opacity:1}100%{transform:translateY(-30px) scale(1);opacity:0}}
+.floating-icon{position:absolute;left:45%;top:10%;font-size:30px;animation:floatIconUp 1.5s forwards;pointer-events:none;z-index:200}
+.buff-icon{color:#64c8ff;text-shadow:0 0 10px #64c8ff}
+.debuff-icon{color:#b832c8;text-shadow:0 0 10px #b832c8}
+@keyframes bleedEffect{0%{opacity:0.8}100%{opacity:0;transform:translateY(20px)}}
+.effect-slash::after{content:'💥';position:absolute;top:10px;left:20px;font-size:30px;filter:brightness(2)}
+
 #gameScreen{background:url('assets/fondo/fondo.gif');background-size:cover;background-position:center}
 .title{font-family:'Cinzel Decorative',serif;font-size:clamp(52px,4.5vw,65px);font-weight:900;color:var(--gold);
   text-shadow:0 0 14px rgba(440,194,96,.9),0 0 35px rgba(440,194,96,.4),4px 4px 0 #5a3800;
@@ -483,7 +541,7 @@ document.addEventListener('click', function() {
     <h3>Objective</h3><p>First player to defeat 3 Final Bosses wins the game.</p>
     <h3>Movement</h3><p>Roll D6, click a highlighted tile to move. You cannot revisit a tile you stood on in the last 8 turns. Drag to pan the map.</p>
     <h3>Classes & Skills</h3>
-    <p>🧙 Mage: Basic Attack, Lightning Bolt, Fireball, Curse, Healing Beam, Defend, Run</p>
+    <p>🧙 Mage: Basic Attack, Lighting Bolt, Fireball, Curse, Healing Beam, Defend, Run</p>
     <p>🏹 Ranger: Shoot Arrow, Double Arrow, Healing Beam, Defend, Swift Retreat, Call of the Nature</p>
     <p>⚔️ Warrior: Basic Attack, Fierce Attack (recharges 1 turn), Magic Bolt, Defend (75% with shield), Run</p>
     <p>🥊 Monk: Basic Attack, Furious Blows (1–6 rapid hits), Magic Bolt, Defensive Stance (75% next hit), Run</p>
@@ -632,15 +690,15 @@ function hasStatus(target, statusKey){
 // ── CLASS SKILL DEFINITIONS ──
 const CLASS_SKILLS = {
   mage: [
-    {id:'basic_atk',    name:'Basic Attack',   icon:'⚡',kind:'atk',mpCost:0,dice:['d4'],desc:'D4 + 25% INT. Magic damage.',
-      exec:(p,e,c,r)=>{const s=calcStats(p);const d4=c._playerDiceRoll||Math.floor(Math.random()*4)+1;const dmgBase=d4+Math.floor(s.int*0.25);const hitRoll=Math.floor(Math.random()*20)+1+s.int;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s attack missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.log.push(`⚡ Basic Attack — ${dmg} magic dmg (D4:${d4}+${Math.floor(s.int*0.25)} INT)`);return dmg;}},
-    {id:'lightning',   name:'Lightning Bolt', icon:'🌩️',kind:'mgk',mpCost:18,dice:['d6'],desc:'D6 + 50% INT. Electric damage.',
-      exec:(p,e,c,r)=>{const s=calcStats(p);const d6=c._playerDiceRoll||Math.floor(Math.random()*6)+1;const dmgBase=d6+Math.floor(s.int*0.5);const hitRoll=Math.floor(Math.random()*20)+1+s.int;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Lightning Bolt missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.log.push(`🌩️ Lightning Bolt — ${dmg} electric dmg (D6:${d6}+${Math.floor(s.int*0.5)} INT)`);return dmg;}},
-    {id:'fireball',    name:'Fireball',       icon:'🔥',kind:'mgk',mpCost:44,dice:['d6'],desc:'D6 + 50% INT. Fire damage.',
-      exec:(p,e,c,r)=>{const s=calcStats(p);const d6=c._playerDiceRoll||Math.floor(Math.random()*6)+1;const dmgBase=d6+Math.floor(s.int*0.5);const hitRoll=Math.floor(Math.random()*20)+1+s.int;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Fireball missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.log.push(`🔥 Fireball — ${dmg} fire dmg (D6:${d6}+${Math.floor(s.int*0.5)} INT)`);return dmg;}},
+    {id:'basic_atk',    name:'Basic Attack',   icon:'⚡',kind:'atk',mpCost:0,dice:['d4'],desc:'D4 + 50% INT. Magic damage.',
+      exec:(p,e,c,r)=>{const s=calcStats(p);const d4=c._playerDiceRoll||Math.floor(Math.random()*4)+1;const dmgBase=d4+Math.floor(s.int*0.5);const hitRoll=Math.floor(Math.random()*20)+1+s.int;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s attack missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.log.push(`⚡ Basic Attack — ${dmg} magic dmg (D4:${d4}+${Math.floor(s.int*0.5)} INT)`);return dmg;}},
+    {id:'lightning',   name:'Lighting Bolt', icon:'🌩️',kind:'mgk',mpCost:18,dice:['d6'],desc:'D6 + 50% INT. Electric damage.',
+      exec:(p,e,c,r)=>{const s=calcStats(p);const d6=c._playerDiceRoll||Math.floor(Math.random()*6)+1;const dmgBase=d6+Math.floor(s.int*0.5);const hitRoll=Math.floor(Math.random()*20)+1+s.int;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Lighting Bolt missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.log.push(`🌩️ Lighting Bolt — ${dmg} electric dmg (D6:${d6}+${Math.floor(s.int*0.5)} INT)`);return dmg;}},
+    {id:'fireball',    name:'Fireball',       icon:'🔥',kind:'mgk',mpCost:44,dice:['d8'],desc:'D8 + 75% INT. Fire damage + burning (5/turn × 2 turns).',
+      exec:(p,e,c,r)=>{const s=calcStats(p);const d8=c._playerDiceRoll||Math.floor(Math.random()*8)+1;const dmgBase=d8+Math.floor(s.int*0.75);const hitRoll=Math.floor(Math.random()*20)+1+s.int;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Fireball missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);e._burningTurns=(e._burningTurns||0)+2;e._burnDmg=5;c.log.push(`🔥 Fireball — ${dmg} fire dmg (D8:${d8}+${Math.floor(s.int*0.75)} INT) + burning (5/turn × 2)`);return dmg;}},
     {id:'curse',       name:'Curse',          icon:'💀',kind:'mgk',mpCost:15,desc:'Reduces enemy STR by 50% for 3 turns.',
       exec:(p,e,c,r)=>{const s=calcStats(p);const hitRoll=Math.floor(Math.random()*20)+1+s.int;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Curse missed!`);return 0;}e._cursedTurns=(e._cursedTurns||0)+3;const originalStr=e.str;e.str=Math.max(1,Math.floor(e.str*0.5));c.log.push(`💀 Curse applied! Enemy STR ${originalStr}→${e.str} (3 turns)`);return 0;}},
-    {id:'heal_beam',   name:'Healing Beam',   icon:'💚',kind:'def',mpCost:40,desc:'D4 + 50% INT heal.',
+    {id:'heal_beam',   name:'Healing Beam',   icon:'💚',kind:'def',mpCost:25,desc:'D4 + 50% INT heal.',
       exec:(p,e,c,r)=>{const s=calcStats(p);const d4=c._playerDiceRoll||Math.floor(Math.random()*4)+1;const heal=d4+Math.ceil(s.int*0.5);p.hp=Math.min(p.maxHp,p.hp+heal);c.log.push(`💚 Healing Beam — restored ${heal} HP! (D4:${d4}+${Math.ceil(s.int*0.5)} INT)`);return 0;}},
     {id:'defend',      name:'Defend',         icon:'🛡️',kind:'def',mpCost:0, desc:'Reduce next hit by 50%.',
       exec:(p,e,c,r)=>{c.defending=true;c.log.push(`🛡️ ${p.name} enters a defensive stance.`);return 0;}},
@@ -654,8 +712,8 @@ const CLASS_SKILLS = {
       exec:(p,e,c,r)=>{const s=calcStats(p);const d6=c._skillDiceRolls?c._skillDiceRolls[0]:Math.floor(Math.random()*6)+1;const dmgBase=d6+Math.floor(s.str*0.5);const hitRoll=Math.floor(Math.random()*20)+1+s.str;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s attack missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.log.push(`⚔️ Basic Attack — ${dmg} slash dmg (D6:${d6}+${Math.floor(s.str*0.5)} STR)`);return dmg;}},
     {id:'fierce_atk',  name:'Fierce Attack', icon:'💥',kind:'atk',mpCost:0, dice:['d4','d6'],desc:'D4 + D6 + 50% STR (round down). 2 turn cooldown. Slash.',
       exec:(p,e,c,r)=>{if(c.fierceRecharge>0){c.log.push(`💥 Fierce Attack still recharging (${c.fierceRecharge} turns left)!`);return 0;}const s=calcStats(p);const d4=c._playerDiceRoll||Math.floor(Math.random()*4)+1;const d6=Math.floor(Math.random()*6)+1;const dmgBase=d4+d6+Math.floor(s.str*0.5);const hitRoll=Math.floor(Math.random()*20)+1+s.str;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Fierce Attack missed!`);c.fierceRecharge=2;return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.fierceRecharge=2;c.log.push(`💥 Fierce Attack — ${dmg} slash dmg! (D4:${d4}+D6:${d6}+${Math.floor(s.str*0.5)} STR, recharging 2 turns)`);return dmg;}},
-    {id:'magic_bolt',  name:'Magic Bolt',    icon:'✨',kind:'mgk',mpCost:14,dice:['d4'],desc:'D4 + 50% INT (round down). Magic damage.',
-      exec:(p,e,c,r)=>{const s=calcStats(p);const d4=c._playerDiceRoll||Math.floor(Math.random()*4)+1;const dmgBase=d4+Math.floor(s.int*0.5);const hitRoll=Math.floor(Math.random()*20)+1+s.str;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Magic Bolt missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.log.push(`✨ Magic Bolt — ${dmg} magic dmg (D4:${d4}+${Math.floor(s.int*0.5)} INT)`);return dmg;}},
+    {id:'magic_bolt',  name:'Magic Bolt',    icon:'✨',kind:'mgk',mpCost:14,dice:['d4'],desc:'D4 + 50% STR (round down). Magic damage.',
+      exec:(p,e,c,r)=>{const s=calcStats(p);const d4=c._playerDiceRoll||Math.floor(Math.random()*4)+1;const dmgBase=d4+Math.floor(s.str*0.5);const hitRoll=Math.floor(Math.random()*20)+1+s.str;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Magic Bolt missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.log.push(`✨ Magic Bolt — ${dmg} magic dmg (D4:${d4}+${Math.floor(s.str*0.5)} STR)`);return dmg;}},
     {id:'defend',      name:'Defend',         icon:'🛡️',kind:'def',mpCost:0, desc:'65% damage reduction.',
       exec:(p,e,c,r)=>{c.tempDefMult=0.35;c.defending=true;c.log.push(`🛡️ ${p.name} defends! 65% dmg reduction.`);return 0;}},
     {id:'run',         name:'Run',            icon:'🏃',kind:'esc',mpCost:0, desc:'Attempt to flee. DEX based.',
@@ -666,22 +724,22 @@ const CLASS_SKILLS = {
       exec:(p,e,c,r)=>{const s=calcStats(p);const d4=c._playerDiceRoll||Math.floor(Math.random()*4)+1;const dmgBase=d4+Math.floor(s.dex*0.5);const hitRoll=Math.floor(Math.random()*20)+1+s.dex;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s arrow missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.log.push(`🏹 Shoot Arrow — ${dmg} piercing dmg (D4:${d4}+${Math.floor(s.dex*0.5)} DEX)`);return dmg;}},
     {id:'double_arrow',name:'Double Arrow',   icon:'🪃',kind:'atk',mpCost:14,dice:['d4','d4'],desc:'D4 + 50% DEX per arrow (2 arrows). Piercing.',
       exec:(p,e,c,r)=>{const s=calcStats(p);let total=0;let hits=0;for(let i=0;i<2;i++){const d4=c._playerDiceRoll?c._playerDiceRoll:Math.floor(Math.random()*4)+1;const dmgBase=d4+Math.floor(s.dex*0.5);const hitRoll=Math.floor(Math.random()*20)+1+s.dex;c.log.push(`🎲 Arrow ${i+1} Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll>=(e.armorClass||12)){const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);total+=dmg;hits++;}}c.log.push(`🪃 Double Arrow — ${total} piercing dmg (${hits}/2 hits)`);return total;}},
-    {id:'heal_beam',   name:'Healing Beam',   icon:'💚',kind:'def',mpCost:40,desc:'D4 + 50% INT (round down) heal.',
+    {id:'heal_beam',   name:'Healing Beam',   icon:'💚',kind:'def',mpCost:25,desc:'D4 + 50% INT (round down) heal.',
       exec:(p,e,c,r)=>{const s=calcStats(p);const d4=c._playerDiceRoll||Math.floor(Math.random()*4)+1;const heal=d4+Math.floor(s.int*0.5);p.hp=Math.min(p.maxHp,p.hp+heal);c.log.push(`💚 Healing Beam — restored ${heal} HP! (D4:${d4}+${Math.floor(s.int*0.5)} INT)`);return 0;}},
     {id:'defend',      name:'Defend',         icon:'🛡️',kind:'def',mpCost:0, desc:'50% damage reduction.',
       exec:(p,e,c,r)=>{c.defending=true;c.log.push(`🛡️ ${p.name} takes cover!`);return 0;}},
     {id:'swift_retreat',name:'Swift Retreat',icon:'💨',kind:'esc',mpCost:8,desc:'D4 bonus to escape roll.',
       exec:(p,e,c,r)=>{const s=calcStats(p);const d4=c._playerDiceRoll||Math.floor(Math.random()*4)+1;const flee=r+d4+s.dex>14;if(flee){c.fled=true;c.log.push(`💨 Swift Retreat! ${p.name} vanishes! (roll:${r}+D4:${d4}+DEX:${s.dex})`);}else{c.log.push(`💨 Retreat failed. (roll:${r}+D4:${d4}+DEX:${s.dex})`);}return 0;}},
-    {id:'call_nature', name:'Call of Nature', icon:'🐺',kind:'mgk',mpCost:35,desc:'Summons wolf for 7 turns. Wolf does 25% of ranger damage.',
-      exec:(p,e,c,r)=>{c.wolf={hp:40,maxHp:40,turns:7,strMult:0.25};c.log.push(`🐺 A wolf answers the call! (7 turns, 25% of ranger damage)`);return 0;}},
+    {id:'call_nature', name:'Call of Nature', icon:'🐺',kind:'mgk',mpCost:35,desc:'Summons wolf for 7 turns. Wolf does 60% of ranger DEX per turn.',
+      exec:(p,e,c,r)=>{c.wolf={hp:40,maxHp:40,turns:7,dexMult:0.6};c.log.push(`🐺 A wolf answers the call! (7 turns, 60% DEX damage)`);return 0;}},
   ],
   monk: [
     {id:'basic_atk',   name:'Basic Attack',   icon:'🥊',kind:'atk',mpCost:0,dice:['d4'],desc:'D4 + 50% DEX + 50% STR (both round down). Blunt damage.',
-      exec:(p,e,c,r)=>{const s=calcStats(p);const d4=c._playerDiceRoll||Math.floor(Math.random()*4)+1;const dmgBase=d4+Math.floor(s.dex*0.5)+Math.floor(s.str*0.5);const hitMod=Math.floor(s.str*0.5)+Math.floor(s.dex*0.5);const hitRoll=Math.floor(Math.random()*20)+1+hitMod;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s attack missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.log.push(`🥊 Basic Attack — ${dmg} blunt dmg (D4:${d4}+${Math.floor(s.dex*0.5)} DEX+${Math.floor(s.str*0.5)} STR)`);return dmg;}},
-    {id:'furious_blows',name:'Furious Blows', icon:'👊',kind:'atk',mpCost:14,dice:['d4'],desc:'D4 + 33% DEX + 33% STR per hit (1-6 hits). Blunt.',
-      exec:(p,e,c,r)=>{const s=calcStats(p);const hits=Math.max(1,Math.floor(Math.random()*6)+1);let total=0;let hitCount=0;const hitMod=Math.floor(s.str*0.33)+Math.floor(s.dex*0.33);for(let i=0;i<hits;i++){const d4=c._playerDiceRoll?c._playerDiceRoll:Math.floor(Math.random()*4)+1;const dmgBase=d4+Math.floor(s.dex*0.33)+Math.floor(s.str*0.33);const hitRoll=Math.floor(Math.random()*20)+1+hitMod;if(hitRoll>=(e.armorClass||12)){const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);total+=dmg;hitCount++;}}c.log.push(`👊 Furious Blows — ${hits} hits, ${hitCount} landed = ${total} blunt dmg`);return total;}},
-    {id:'magic_bolt',  name:'Magic Bolt',    icon:'⚡',kind:'mgk',mpCost:14,desc:'D4 + 50% INT (round down). Magic damage.',
-      exec:(p,e,c,r)=>{const s=calcStats(p);const d4=c._playerDiceRoll||Math.floor(Math.random()*4)+1;const dmgBase=d4+Math.floor(s.int*0.5);const hitMod=Math.floor(s.str*0.5)+Math.floor(s.dex*0.5);const hitRoll=Math.floor(Math.random()*20)+1+hitMod;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Magic Bolt missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.log.push(`⚡ Magic Bolt — ${dmg} magic dmg (D4:${d4}+${Math.floor(s.int*0.5)} INT)`);return dmg;}},
+      exec:(p,e,c,r)=>{const s=calcStats(p);const d4=c._playerDiceRoll||Math.floor(Math.random()*4)+1;const dmgBase=d4+Math.floor(s.dex*0.5)+Math.floor(s.str*0.5);const hitMod=Math.max(s.str,s.dex);const hitRoll=Math.floor(Math.random()*20)+1+hitMod;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s attack missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.log.push(`🥊 Basic Attack — ${dmg} blunt dmg (D4:${d4}+${Math.floor(s.dex*0.5)} DEX+${Math.floor(s.str*0.5)} STR)`);return dmg;}},
+    {id:'furious_blows',name:'Furious Blows', icon:'👊',kind:'atk',mpCost:14,dice:['d4'],desc:'D4 + 20% DEX + 20% STR per hit (1-5 hits). Blunt.',
+      exec:(p,e,c,r)=>{const s=calcStats(p);const hits=Math.min(5,Math.max(1,Math.floor(Math.random()*5)+1));let total=0;let hitCount=0;const hitMod=Math.max(s.str,s.dex);for(let i=0;i<hits;i++){const d4=c._playerDiceRoll?c._playerDiceRoll:Math.floor(Math.random()*4)+1;const dmgBase=d4+Math.floor(s.dex*0.2)+Math.floor(s.str*0.2);const hitRoll=Math.floor(Math.random()*20)+1+hitMod;if(hitRoll>=(e.armorClass||12)){const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);total+=dmg;hitCount++;}}c.log.push(`👊 Furious Blows — ${hits} hits, ${hitCount} landed = ${total} blunt dmg`);return total;}},
+    {id:'magic_bolt',  name:'Magic Bolt',    icon:'⚡',kind:'mgk',mpCost:14,desc:'D4 + 50% STR (round down). Magic damage.',
+      exec:(p,e,c,r)=>{const s=calcStats(p);const d4=c._playerDiceRoll||Math.floor(Math.random()*4)+1;const dmgBase=d4+Math.floor(s.str*0.5);const hitMod=Math.max(s.str,s.dex);const hitRoll=Math.floor(Math.random()*20)+1+hitMod;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Magic Bolt missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.log.push(`⚡ Magic Bolt — ${dmg} magic dmg (D4:${d4}+${Math.floor(s.str*0.5)} STR)`);return dmg;}},
     {id:'def_stance',  name:'Defensive Stance',icon:'🧘',kind:'def',mpCost:10,desc:'Blocks 75% of next hit.',
       exec:(p,e,c,r)=>{c.tempDefMult=0.25;c.defending=true;c.log.push(`🧘 ${p.name} enters Defensive Stance! 75% dmg reduction.`);return 0;}},
     {id:'run',         name:'Run',            icon:'🏃',kind:'esc',mpCost:0, desc:'DEX based escape.',
@@ -690,16 +748,16 @@ const CLASS_SKILLS = {
   rogue: [
     {id:'basic_atk',   name:'Basic Attack',   icon:'🗡️',kind:'atk',mpCost:0,dice:['d4'],desc:'D4 + 50% DEX + 50% STR. Piercing damage.',
       exec:(p,e,c,r)=>{const s=calcStats(p);const d4=c._playerDiceRoll||Math.floor(Math.random()*4)+1;const dmgBase=d4+Math.floor(s.dex*0.5)+Math.floor(s.str*0.5);const hitMod=Math.floor(s.str*0.5)+Math.floor(s.dex*0.5);const hitRoll=Math.floor(Math.random()*20)+1+hitMod;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s attack missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.log.push(`🗡️ Basic Attack — ${dmg} piercing dmg (D4:${d4}+${Math.floor(s.dex*0.5)} DEX+${Math.floor(s.str*0.5)} STR)`);return dmg;}},
-    {id:'backstab',   name:'Backstab',       icon:'🔪',kind:'atk',mpCost:12,dice:['d6'],desc:'D6 + 75% DEX. 2 turn cooldown. Must hit.',
-      exec:(p,e,c,r)=>{if(c.backstabCd>0){c.log.push(`🔪 Backstab still recharging (${c.backstabCd} turns left)!`);return 0;}const s=calcStats(p);const d6=c._playerDiceRoll||Math.floor(Math.random()*6)+1;const dmgBase=d6+Math.floor(s.dex*0.75);const hitRoll=Math.floor(Math.random()*20)+1+s.dex;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Backstab missed!`);c.backstabCd=2;return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.backstabCd=2;c.log.push(`🔪 Backstab — ${dmg} piercing dmg! (D6:${d6}+${Math.floor(s.dex*0.75)} DEX, recharging 2 turns)`);return dmg;}},
-    {id:'poison_blade',name:'Poison Blade',  icon:'☠️',kind:'atk',mpCost:18,dice:['d6'],desc:'D6 + 50% DEX + 50% STR. Poison deals 30 dmg/turn for 3 turns.',
-      exec:(p,e,c,r)=>{const s=calcStats(p);const d6=c._playerDiceRoll||Math.floor(Math.random()*6)+1;const dmgBase=d6+Math.floor(s.dex*0.5)+Math.floor(s.str*0.5);const hitRoll=Math.floor(Math.random()*20)+1+s.dex;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Poison Blade missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);e._poisonedTurns=(e._poisonedTurns||0)+3;e._poisonDmg=30;c.log.push(`☠️ Poison Blade — ${dmg} dmg + poison (30/turn for 3 turns)`);return dmg;}},
+    {id:'backstab',   name:'Backstab',       icon:'🔪',kind:'atk',mpCost:6,dice:['d8'],desc:'D8 + 100% DEX. 1 turn cooldown. Must hit.',
+      exec:(p,e,c,r)=>{if(c.backstabCd>0){c.log.push(`🔪 Backstab still recharging (${c.backstabCd} turns left)!`);return 0;}const s=calcStats(p);const d8=c._playerDiceRoll||Math.floor(Math.random()*8)+1;const dmgBase=d8+Math.floor(s.dex);const hitRoll=Math.floor(Math.random()*20)+1+s.dex;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Backstab missed!`);c.backstabCd=1;return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);c.backstabCd=1;c.log.push(`🔪 Backstab — ${dmg} piercing dmg! (D8:${d8}+${Math.floor(s.dex)} DEX, recharging 1 turn)`);return dmg;}},
+    {id:'poison_blade',name:'Poison Blade',  icon:'☠️',kind:'atk',mpCost:18,dice:['d6'],desc:'D6 + 50% DEX + 50% STR. Poison deals DEX×3 dmg/turn for 3 turns.',
+      exec:(p,e,c,r)=>{const s=calcStats(p);const d6=c._playerDiceRoll||Math.floor(Math.random()*6)+1;const dmgBase=d6+Math.floor(s.dex*0.5)+Math.floor(s.str*0.5);const hitRoll=Math.floor(Math.random()*20)+1+s.dex;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Poison Blade missed!`);return 0;}const dmg=dmgBase;e.hp=Math.max(0,e.hp-dmg);const poisonDmg=Math.floor(s.dex*3);e._poisonedTurns=(e._poisonedTurns||0)+3;e._poisonDmg=poisonDmg;c.log.push(`☠️ Poison Blade — ${dmg} dmg + poison (${poisonDmg}/turn for 3 turns)`);return dmg;}},
     {id:'smoke_bomb',  name:'Smoke Bomb',     icon:'💨',kind:'esc',mpCost:15,dice:['d6'],desc:'D6 + DEX bonus to escape. Guaranteed escape if roll > 8.',
       exec:(p,e,c,r)=>{const s=calcStats(p);const d6=c._playerDiceRoll||Math.floor(Math.random()*6)+1;const roll=r+d6+s.dex;const flee=roll>8;if(flee){c.fled=true;c.log.push(`💨 Smoke Bomb! ${p.name} vanishes in smoke! (roll:${r}+D6:${d6}+DEX:${s.dex})`);}else{c.log.push(`💨 Smoke Bomb failed. (roll:${roll}>8 needed)`);}return 0;}},
     {id:'evasion',     name:'Evasion',        icon:'👻',kind:'def',mpCost:10,desc:'50% chance to dodge next attack.',
       exec:(p,e,c,r)=>{c.evading=true;c.log.push(`👻 ${p.name} enters Evasion stance! 50% dodge chance.`);return 0;}},
-    {id:'sneak_attack',name:'Sneak Attack',  icon:'💀',kind:'atk',mpCost:25,dice:['d8'],desc:'D8 + 100% DEX. Extra 100 dmg if enemy not yet acted.',
-      exec:(p,e,c,r)=>{const s=calcStats(p);const d8=c._playerDiceRoll||Math.floor(Math.random()*8)+1;const dmgBase=d8+Math.floor(s.dex);const hitRoll=Math.floor(Math.random()*20)+1+s.dex;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Sneak Attack missed!`);return 0;}let dmg=dmgBase;if(!e._hasActed){dmg+=100;c.log.push(`💀 Sneak Attack from shadows — ${dmg} piercing dmg (D8:${d8}+${Math.floor(s.dex)} DEX + 100 ambush bonus)`);}else{c.log.push(`💀 Sneak Attack — ${dmg} piercing dmg (D8:${d8}+${Math.floor(s.dex)} DEX)`);}e.hp=Math.max(0,e.hp-dmg);return dmg;}},
+    {id:'sneak_attack',name:'Sneak Attack',  icon:'💀',kind:'atk',mpCost:25,dice:['d8'],desc:'D8 + 100% DEX. ×2.5 multiplier if enemy has not yet acted.',
+      exec:(p,e,c,r)=>{const s=calcStats(p);const d8=c._playerDiceRoll||Math.floor(Math.random()*8)+1;const dmgBase=d8+Math.floor(s.dex);const hitRoll=Math.floor(Math.random()*20)+1+s.dex;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Sneak Attack missed!`);return 0;}let dmg=dmgBase;if(!e._hasActed){dmg=Math.floor(dmg*2.5);c.log.push(`💀 Sneak Attack from shadows — ${dmg} piercing dmg (D8:${d8}+${Math.floor(s.dex)} DEX ×2.5 ambush)`);}else{c.log.push(`💀 Sneak Attack — ${dmg} piercing dmg (D8:${d8}+${Math.floor(s.dex)} DEX)`);}e.hp=Math.max(0,e.hp-dmg);return dmg;}},
     {id:'shadow_cloak',name:'Shadow Cloak',  icon:'🌑',kind:'def',mpCost:30,desc:'Become invisible for 2 turns. 75% dodge, enemies can\'t target.',
       exec:(p,e,c,r)=>{c.shadowCloak=2;c.log.push(`🌑 ${p.name} vanishes into shadow! Invisible for 2 turns, 75% dodge.`);return 0;}},
     {id:'run',         name:'Run',            icon:'🏃',kind:'esc',mpCost:0, desc:'DEX based escape.',
@@ -2573,18 +2631,29 @@ function getBaseStats(p){
 function setEventBackground(eventId){
   const bg=document.getElementById('eventBg');
   if(!bg)return;
-  console.log('Loading event background:', 'assets/event/'+eventId+'.jpeg');
-  const img=new Image();
-  img.onload=function(){
-    console.log('Event background loaded!');
-    bg.style.backgroundImage=`url('assets/event/${eventId}.jpeg')`;
-    bg.style.display='block';
+  
+  const tryLoad = (ext) => {
+    const path = `assets/event/${eventId}.${ext}`;
+    console.log('Loading event background:', path);
+    const img = new Image();
+    img.onload = function(){
+      console.log('Event background loaded!');
+      bg.style.backgroundImage = `url('${path}')`;
+      bg.style.display = 'block';
+    };
+    img.onerror = function(){
+      if(ext === 'jpeg'){
+        console.log('Event background NOT found:', path, '- trying PNG');
+        tryLoad('png');
+      } else {
+        console.log('Event background NOT found:', path);
+        bg.style.display = 'none';
+      }
+    };
+    img.src = path;
   };
-  img.onerror=function(){
-    console.log('Event background NOT found:', 'assets/event/'+eventId+'.jpeg');
-    bg.style.display='none';
-  };
-  img.src=`assets/event/${eventId}.jpeg`;
+  
+  tryLoad('jpeg');
 }
 function clearEventBackground(){
   const bg=document.getElementById('eventBg');
@@ -2825,7 +2894,7 @@ function startGame(){
     const race = pf.race || 'human';
     const gender = pf.gender || 'male';
     const pColor = pf.color || base.color;
-    const armorClass = {warrior:14, monk:13, ranger:11, mage:10}[cls] || 12;
+    const armorClass = {warrior:14, monk:13, ranger:11, mage:10, rogue:13}[cls] || 12;
     GS.players.push({name:nm,class:cls,race:race,gender:gender,color:pColor,armorClass:armorClass,allocStr:pf.alloc.str||0,allocInt:pf.alloc.int||0,allocDex:pf.alloc.dex||0,level:1,exp:0,statPoints:0,maxHp:base.hp+(pf.alloc.hp||0)*10,hp:base.hp+(pf.alloc.hp||0)*10,maxMp:base.mp,mp:base.mp,gold:80,inventory:[],equipped:{weapon:null,head:null,body:null,feet:null,shield:null,accessory:null},bossesDefeated:0,tileIdx:0,skipTurns:0,moveBonus:0,rollBonus:0,visitHistory:[],poison:0,curses:{suffocate:0,blindness:0,paralysis:0}});
   }
   // Preload region images (removed - using solid colors now)
@@ -4115,12 +4184,14 @@ function renderBattleScreen(){
     const physicalSkills = skills.filter(sk => {
       if(sk.id === 'defend' || sk.id === 'run' || sk.id === 'swift_retreat') return false;
       if(sk.kind === 'mgk') return false; // magic skills go to magic tab
+      if(playerClass === 'mage' && (sk.id === 'heal_beam' || sk.id === 'teleport')) return false;
       const type = sk.type || 'physical';
       return type === 'physical' || !type;
     });
-    
+
     const magicSkills = skills.filter(sk => {
       if(sk.id === 'defend' || sk.id === 'run' || sk.id === 'swift_retreat') return false;
+      if(playerClass === 'mage' && (sk.id === 'heal_beam' || sk.id === 'teleport')) return true;
       const type = sk.type || 'physical';
       const kind = sk.kind || '';
       return type === 'magic' || kind === 'mgk' || sk.name === 'Magic Bolt';
@@ -4137,18 +4208,20 @@ function renderBattleScreen(){
     const runIcon = '🏃';
     const defIcon = '🛡️';
     
-    let buttonsHtml = `
-      <button class="act-btn" onclick="toggleBattleCategory('physical')">${physIcon} Attack</button>
-      <button class="act-btn" onclick="toggleBattleCategory('magic')">${magIcon} Magic</button>
-      <button class="act-btn" onclick="toggleBattleCategory('consumable')">${consIcon} Consumable</button>
-      <button class="act-btn" onclick="toggleBattleCategory('run')">${runIcon} Run</button>
-      ${defendSkill ? `<button class="act-btn" onclick="battleSkillByName('${defendSkill.name}')">${defIcon} Defend</button>` : ''}
-    `;
-    
     // Store skills for category expansion
     GS._battleSkills = { physical: physicalSkills, magic: magicSkills, consumables: consumables, run: runSkill, defend: defendSkill, playerClass: playerClass };
-    
-    actionsEl.innerHTML = buttonsHtml;
+
+    if(c.hudLocked){
+      actionsEl.innerHTML = `<div style="width:100%;text-align:center;padding:18px;opacity:0.5;font-size:14px;letter-spacing:1px;">⏳ Enemy turn...</div>`;
+    } else {
+      actionsEl.innerHTML = `
+        <button class="act-btn" onclick="toggleBattleCategory('physical')">${physIcon} Attack</button>
+        <button class="act-btn" onclick="toggleBattleCategory('magic')">${magIcon} Magic</button>
+        <button class="act-btn" onclick="toggleBattleCategory('consumable')">${consIcon} Consumable</button>
+        <button class="act-btn" onclick="toggleBattleCategory('run')">${runIcon} Run</button>
+        ${defendSkill ? `<button class="act-btn" onclick="battleSkillByName('${defendSkill.name}')">${defIcon} Defend</button>` : ''}
+      `;
+    }
   }
 }
 
@@ -4260,7 +4333,9 @@ function battleSkillByName(skillName){
   
   if(p.mp < sk.mpCost){toast('Not enough MP!','bad'); return;}
   if(sk.id === 'fierce_atk' && c.fierceRecharge > 0){toast('Fierce Attack recharging!','bad'); return;}
-  
+
+  c.hudLocked = true;
+
   if(sk.id === 'defend'){
     p.mp = Math.max(0, p.mp - sk.mpCost);
     c.defending = true;
@@ -4269,13 +4344,13 @@ function battleSkillByName(skillName){
     setTimeout(() => doEnemyTurn(), 800);
     return;
   }
-  
+
   if(sk.id === 'run' || sk.id === 'swift_retreat'){
     p.mp = Math.max(0, p.mp - sk.mpCost);
     showEscapeBattle(sk.id);
     return;
   }
-  
+
   animatePlayerAttack(sk, () => {
     p.mp = Math.max(0, p.mp - sk.mpCost);
     // Check if attack hit (set by animatePlayerAttack)
@@ -4304,6 +4379,7 @@ function useBattleConsumable(itemId){
   const p = cp();
   const item = p.inventory.find(i => i.id === itemId);
   if(!item) return;
+  if(GS.combat) GS.combat.hudLocked = true;
   
   const idx = p.inventory.indexOf(item);
   if(idx > -1) p.inventory.splice(idx, 1);
@@ -4378,20 +4454,88 @@ function animatePlayerAttack(skill, callback){
   // ── Helper: fire attack visuals then call onDone ──
   function doAttackVisuals(hit, onDone){
     const skillType = skill.type || 'physical';
-    if(skillType === 'magic'){
-      const proj = document.createElement('div');
-      proj.textContent = '✨';
-      proj.style.cssText = 'position:absolute;left:30%;top:50%;font-size:40px;animation:magicProjectile 0.5s forwards';
-      effects.appendChild(proj);
-      setTimeout(() => proj.remove(), 500);
-    } else if(playerClass === 'ranger' || skill.id === 'shoot_arrow' || skill.id === 'double_arrow'){
-      const arrow = document.createElement('div');
-      arrow.textContent = '🏹';
-      arrow.style.cssText = 'position:absolute;left:30%;top:45%;font-size:35px;animation:arrowFly 0.4s forwards';
-      effects.appendChild(arrow);
-      setTimeout(() => arrow.remove(), 400);
+    const attackEffectType = getAttackEffectType(skill, playerClass);
+
+    // ── Special: Sneak Attack sequence ──
+    if(skill.id === 'sneak_attack'){
+      const arena = document.querySelector('.battle-arena');
+      const arenaRect = arena.getBoundingClientRect();
+      const playerRect = playerSide.getBoundingClientRect();
+      const enemyRect  = enemySide.getBoundingClientRect();
+      const SNEAK_DUR = 700;
+      const SLASH_DUR = 700;
+
+      // Player vanishes
+      playerSide.style.transition = 'opacity 0.2s';
+      playerSide.style.opacity = '0';
+
+      // Sneak animation at the bottom of the player sprite
+      const sneakEl = document.createElement('div');
+      sneakEl.className = 'effect-sneak';
+      sneakEl.style.left = (playerRect.left + playerRect.width / 2 - arenaRect.left) + 'px';
+      sneakEl.style.top  = (playerRect.top  + playerRect.height * 0.75 - arenaRect.top) + 'px';
+      arena.appendChild(sneakEl);
+
+      // After sneak: slash at enemy's near edge
+      setTimeout(() => {
+        sneakEl.remove();
+        if(hit){
+          const slashEl = document.createElement('div');
+          slashEl.className = 'effect-slash-warrior';
+          slashEl.style.left = (enemyRect.left - arenaRect.left) + 'px';
+          slashEl.style.top  = (enemyRect.top + enemyRect.height / 2 - arenaRect.top) + 'px';
+          arena.appendChild(slashEl);
+          setTimeout(() => slashEl.remove(), SLASH_DUR);
+        }
+      }, SNEAK_DUR);
+
+      // Player reappears after ~60% of slash
+      setTimeout(() => {
+        playerSide.style.transition = 'opacity 0.3s';
+        playerSide.style.opacity = '1';
+        setTimeout(() => { playerSide.style.transition = ''; }, 300);
+      }, SNEAK_DUR + Math.round(SLASH_DUR * 0.6));
+
+      // Hit / miss feedback
+      if(!hit){
+        GS.combat._attackHit = false;
+        c.log.push(`❌ ${p.name}'s ${skill.name} missed!`);
+        const miss = document.createElement('div');
+        miss.textContent = 'MISS!';
+        miss.style.cssText = 'position:absolute;left:50%;top:30%;transform:translateX(-50%);font-size:32px;font-weight:bold;color:#ff3333;text-shadow:2px 2px 0 #000;z-index:300;animation:damagePopup 2s forwards';
+        effects.appendChild(miss);
+        setTimeout(() => miss.remove(), 2000);
+      } else {
+        GS.combat._attackHit = true;
+        if(enemySide){
+          enemySide.classList.add('hit-flash');
+          setTimeout(() => enemySide.classList.remove('hit-flash'), 200);
+          const hitPopup = document.createElement('div');
+          hitPopup.className = 'damage-popup';
+          hitPopup.textContent = 'HIT!';
+          hitPopup.style.cssText += ';left:50%;top:20%;transform:translateX(-50%)';
+          enemySide.appendChild(hitPopup);
+          setTimeout(() => hitPopup.remove(), 2000);
+        }
+      }
+      setTimeout(onDone, SNEAK_DUR + SLASH_DUR + 100);
+      return;
     }
-    if(skillType === 'physical' && playerSide){
+
+    // Heal/buff effects play on the caster (player), not the enemy
+    const effectSide = (attackEffectType === 'heal_sprite' || attackEffectType === 'buff_sprite') ? 'player' : 'enemy';
+    const alwaysPlay = effectSide === 'player'; // heals don't need a hit
+
+    if(hit || alwaysPlay){
+      if(skill.id === 'double_arrow'){
+        // Two arrows: first immediately, second after 400ms overlap
+        applyBattleEffect('arrow', 'enemy');
+        setTimeout(() => applyBattleEffect('arrow', 'enemy'), 400);
+      } else {
+        applyBattleEffect(attackEffectType, effectSide);
+      }
+    }
+    if(skillType === 'physical' && playerSide && skill.id !== 'sneak_attack'){
       playerSide.classList.add('player-attack');
       setTimeout(() => playerSide.classList.remove('player-attack'), 300);
     }
@@ -4468,7 +4612,7 @@ function animatePlayerAttack(skill, callback){
                 ? ['battleDiceSlotDmg', 'battleDiceSlotDmg2']
                 : ['battleDiceSlotDmg'];
               fadeOutWrap(d20Wrap, slots, dmgCtrls, () => doAttackVisuals(true, callback));
-            }, 600);
+            }, 400);
           }
 
           roll3DBattle('battleDiceSlotDmg',  skillDice[0], diceRolls[0], ctrl => onDmgSettled(0, ctrl));
@@ -4477,7 +4621,7 @@ function animatePlayerAttack(skill, callback){
           }
         }
       });
-    }, 700);
+    }, 467);
   });
 }
 
@@ -4490,6 +4634,163 @@ function showDamagePopup(target, text){
   popup.style.transform = 'translateX(-50%)';
   target.appendChild(popup);
   setTimeout(() => popup.remove(), 2000);
+}
+
+// ── Battle Effects System ──
+const BATTLE_EFFECTS = {
+  // Attack types
+  physical: { class: 'effect-slash', icon: '⚔️', duration: 600 },
+  fire: { class: 'effect-fire', icon: '🔥', duration: 700 },
+  ice: { class: 'effect-ice', icon: '❄️', duration: 700 },
+  lightning: { class: 'effect-lightning-sprite', icon: '', duration: 400, travel: true },
+  energy: { class: 'effect-energy-ball', icon: '', duration: 600, travel: true, impactClass: 'effect-energy-impact', impactDuration: 400 },
+  slash_warrior: { class: 'effect-slash-warrior', icon: '', duration: 700, edgeTarget: true },
+  fist:          { class: 'effect-fist-sprite',   icon: '', duration: 400, edgeTarget: true },
+  rogue_basic:   { class: 'effect-rogue-basic',   icon: '', duration: 700, edgeTarget: true },
+  backstab:      { class: 'effect-backstab',      icon: '', duration: 800, edgeTarget: true },
+  arrow:         { class: 'effect-arrow', icon: '', duration: 500, travel: true, impactClass: 'effect-arrow-impact', impactDuration: 400 },
+  fireball:      { class: 'effect-fireball', icon: '', duration: 800, travel: true },
+  fierce:        { class: 'effect-fierce',   icon: '', duration: 600, edgeTarget: true },
+  buff_sprite:   { class: 'effect-buff-sprite',   icon: '', duration: 900 },
+  heal_sprite:   { class: 'effect-heal-sprite',   icon: '', duration: 900 },
+  poison: { class: 'effect-poison', icon: '☠️', duration: 800 },
+  heal: { class: 'effect-heal', icon: '💚', duration: 700 },
+
+  // Buff/Debuff
+  buff: { auraClass: 'buff-aura', iconClass: 'buff-icon', icon: '⬆️' },
+  debuff: { auraClass: 'debuff-aura', iconClass: 'debuff-icon', icon: '⬇️' }
+};
+
+function applyBattleEffect(effectType, targetSide, options = {}){
+  const arena = document.querySelector('.battle-arena');
+  const target = targetSide === 'enemy' ? document.getElementById('enemySide') : document.getElementById('playerSide');
+  if(!target || !arena) return;
+
+  const effect = BATTLE_EFFECTS[effectType];
+  if(!effect) return;
+
+  if(options.isBuff || options.isDebuff){
+    // Apply aura to target
+    const aura = document.createElement('div');
+    aura.className = effect.auraClass;
+    aura.style.cssText = 'position:absolute;inset:-10px;border-radius:20px;pointer-events:none';
+    target.appendChild(aura);
+    setTimeout(() => aura.remove(), 2000);
+
+    // Floating icon
+    const icon = document.createElement('div');
+    icon.className = 'floating-icon ' + effect.iconClass;
+    icon.textContent = options.icon || effect.icon;
+    target.appendChild(icon);
+    setTimeout(() => icon.remove(), 1500);
+  } else {
+    // Attack effect — position dynamically at the center of the target sprite
+    const eff = document.createElement('div');
+    eff.className = effect.class;
+    if(effect.icon) eff.textContent = effect.icon;
+
+    const arenaRect = arena.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+    const targetX = targetRect.left + targetRect.width / 2 - arenaRect.left;
+    const targetY = targetRect.top + targetRect.height / 2 - arenaRect.top;
+
+    if(effect.travel){
+      const attackerEl = targetSide === 'enemy'
+        ? document.getElementById('playerSide')
+        : document.getElementById('enemySide');
+      const attackerRect = attackerEl.getBoundingClientRect();
+      const startX = attackerRect.right - arenaRect.left;
+      const startY = attackerRect.top + attackerRect.height / 2 - arenaRect.top;
+      // Stop at the near edge of the target sprite, not the center
+      const endX = targetSide === 'enemy'
+        ? targetRect.left - arenaRect.left
+        : targetRect.right - arenaRect.left;
+      const endY = targetRect.top + targetRect.height / 2 - arenaRect.top;
+      const deltaX = endX - startX;
+      const deltaY = endY - startY;
+
+      eff.style.left = startX + 'px';
+      eff.style.top = startY + 'px';
+      arena.appendChild(eff);
+
+      const travelDuration = effect.duration || 400;
+      eff.animate([
+        { transform: 'translate(-50%, -50%)' },
+        { transform: `translate(calc(-50% + ${deltaX}px), calc(-50% + ${deltaY}px))` }
+      ], { duration: travelDuration, easing: 'ease-in', fill: 'forwards' });
+
+      // Spawn impact animation at destination after travel completes
+      if(effect.impactClass){
+        setTimeout(() => {
+          const impact = document.createElement('div');
+          impact.className = effect.impactClass;
+          impact.style.left = endX + 'px';
+          impact.style.top = endY + 'px';
+          arena.appendChild(impact);
+          setTimeout(() => impact.remove(), effect.impactDuration || 400);
+        }, travelDuration);
+      }
+    } else {
+      const posX = effect.edgeTarget
+        ? (targetSide === 'enemy' ? targetRect.left - arenaRect.left : targetRect.right - arenaRect.left)
+        : targetX;
+      eff.style.left = posX + 'px';
+      eff.style.top = targetY + 'px';
+      arena.appendChild(eff);
+    }
+
+    setTimeout(() => eff.remove(), effect.duration || 700);
+  }
+}
+
+function getAttackEffectType(skill, playerClass){
+  if(!skill) return 'physical';
+
+  const name = (skill.name || '').toLowerCase();
+  const kind = (skill.kind || '').toLowerCase();
+
+  // Class-specific basic attacks
+  if(skill.id === 'basic_atk'){
+    if(playerClass === 'warrior') return 'slash_warrior';
+    if(playerClass === 'monk')    return 'fist';
+    if(playerClass === 'rogue')   return 'rogue_basic';
+    if(playerClass === 'mage')    return 'energy';
+  }
+
+  // Rogue specials
+  if(skill.id === 'backstab') return 'backstab';
+
+  // Warrior specials
+  if(skill.id === 'fierce_atk') return 'fierce';
+
+  // Ranger arrows
+  if(skill.id === 'shoot' || skill.id === 'double_arrow') return 'arrow';
+
+  // Energy ball: Magic Bolt (warrior/monk)
+  if(skill.id === 'magic_bolt') return 'energy';
+
+  // Heal
+  if(skill.id === 'heal_beam' || name.includes('heal') || name.includes('cure') || name.includes('restore')) return 'heal_sprite';
+
+  // Fireball → dedicated sprite
+  if(skill.id === 'fireball') return 'fireball';
+
+  // Other fire → emoji fallback
+  if(name.includes('fire') || name.includes('flame') || name.includes('inferno')) return 'fire';
+
+  // Ice attacks
+  if(name.includes('ice') || name.includes('freeze') || name.includes('frost') || name.includes('cold')) return 'ice';
+
+  // Lightning attacks (Lighting Bolt)
+  if(name.includes('lighting') || name.includes('lightning') || name.includes('thunder') || name.includes('storm')) return 'lightning';
+
+  // Poison
+  if(name.includes('poison') || name.includes('toxic') || name.includes('venom')) return 'poison';
+
+  // Other magic → energy ball
+  if(kind === 'mgk') return 'energy';
+
+  return 'physical';
 }
 
 function animateEnemyAttack(damage, type, callback){
@@ -4610,6 +4911,7 @@ function rollEscapeBattleDice(needed){
 }
 
 function doPlayerTurn(){
+  if(GS.combat) GS.combat.hudLocked = false;
   renderBattleScreen();
   updPlayers();
 }
@@ -4771,12 +5073,12 @@ function combatSkill(idx){
   // Call of Nature - direct effect
   if(sk.id==='call_nature'){
     if(sk.mpCost>0)p.mp=Math.max(0,p.mp-sk.mpCost);
-      c.wolf={hp:40,maxHp:40,turns:7,strMult:0.25};
-    openModal('🐺 Call of Nature', 
+      c.wolf={hp:40,maxHp:40,turns:7,dexMult:0.6};
+    openModal('🐺 Call of Nature',
       `<div style="text-align:center;padding:20px">
         <div style="font-size:48px;margin-bottom:10px">🐺</div>
         <div style="font-size:18px;color:#4f4;font-weight:bold;margin-bottom:10px">¡Wolf summoned!</div>
-        <div style="font-size:12px;color:var(--dim)">The wolf will assist for 7 turns (25% of your damage)</div>
+        <div style="font-size:12px;color:var(--dim)">The wolf will assist for 7 turns (60% DEX damage)</div>
       </div>`,
       [{label:'OK', fn:()=>{closeModal();renderCombat();doEnemyTurn();updPlayers();}}]
     );
@@ -5173,8 +5475,8 @@ function roll3D(elementId, dieType, result, onDone, fillRatio){
 }
 // ── roll3DBattle ──────────────────────────────────────────────────────────────
 // Shows a 3-D die over #playerSide during combat. Runs at 1.3× normal speed.
-const BATTLE_SPIN   = Math.round(SPIN_MS   / 1.5);   // ≈ 1333 ms
-const BATTLE_SETTLE = Math.round(SETTLE_MS / 1.5);   // ≈ 1333 ms
+const BATTLE_SPIN   = Math.round(SPIN_MS   / 2.25);  // ≈ 889 ms
+const BATTLE_SETTLE = Math.round(SETTLE_MS / 2.25);  // ≈ 889 ms
 const BATTLE_DIE_PX = Math.round(120 * 0.6);         // 72 px  (0.6× base size)
 
 // Mounts a 3-D die in a named slot inside #battleDiceArea.
@@ -5332,7 +5634,7 @@ function resolveFuriousBlows(skillIdx, totalDmg, numHits){
   // Wolf attack
   if(c.wolf && c.wolf.hp > 0 && totalDmg > 0){
     const s = calcStats(p);
-    const wdmg = Math.max(1, Math.floor(s.str * 0.15));
+    const wdmg = Math.max(1, Math.floor(s.dex * 0.6));
     e.hp = Math.max(0, e.hp - wdmg);
     c.log.push(`🐺 Wolf bites for ${wdmg} dmg!`);
     c.wolf.turns--;
@@ -5353,10 +5655,11 @@ function rollDamageDice(skillIdx){
   const p=cp(),c=GS.combat,e=c.enemy;
   const skills=CLASS_SKILLS[p.class]||CLASS_SKILLS.warrior;
   const sk=skills[skillIdx];
-  const isD6 = sk.id === 'lightning' || sk.id === 'fireball' || sk.id === 'fierce_atk';
+  const isD6 = sk.id === 'lightning' || sk.id === 'fierce_atk';
+  const isD8 = sk.id === 'fireball';
   const isFierce = sk.id === 'fierce_atk';
   const diceCount = isFierce ? 2 : 1;
-  const diceLabel = isFierce ? 'D4 + D6' : (isD6 ? 'D6' : 'D4');
+  const diceLabel = isFierce ? 'D4 + D6' : (isD8 ? 'D8' : (isD6 ? 'D6' : 'D4'));
   
   // Show damage dice popup with animation
   const diceHtml = `
@@ -5379,21 +5682,23 @@ function animateAndRollDamage(skillIdx){
   const p=cp(),c=GS.combat,e=c.enemy;
   const skills=CLASS_SKILLS[p.class]||CLASS_SKILLS.warrior;
   const sk=skills[skillIdx];
-  const isD6 = sk.id === 'lightning' || sk.id === 'fireball' || sk.id === 'fierce_atk';
+  const isD6 = sk.id === 'lightning' || sk.id === 'fierce_atk';
+  const isD8 = sk.id === 'fireball';
   const isFierce = sk.id === 'fierce_atk';
   const d4Faces = DICE_FACES.d4;
   const d6Faces = DICE_FACES.d6;
-  
+  const d8Faces = ['1','2','3','4','5','6','7','8'];
+
   // Animate dice
   let ticks = 0;
   const die1 = document.getElementById('damageDie1');
   const die2 = document.getElementById('damageDie2');
-  
+
   if(die1) die1.classList.add('rolling');
   if(die2) die2.classList.add('rolling');
-  
+
   const iv = setInterval(()=>{
-    if(die1) die1.textContent = isFierce ? d4Faces[Math.floor(Math.random()*4)] : (isD6 ? d6Faces[Math.floor(Math.random()*6)] : d4Faces[Math.floor(Math.random()*4)]);
+    if(die1) die1.textContent = isFierce ? d4Faces[Math.floor(Math.random()*4)] : (isD8 ? d8Faces[Math.floor(Math.random()*8)] : (isD6 ? d6Faces[Math.floor(Math.random()*6)] : d4Faces[Math.floor(Math.random()*4)]));
     if(die2) die2.textContent = d6Faces[Math.floor(Math.random()*6)];
     if(++ticks > 10){
       clearInterval(iv);
@@ -5406,27 +5711,29 @@ function executeDamageRoll(skillIdx){
   const p=cp(),c=GS.combat,e=c.enemy;
   const skills=CLASS_SKILLS[p.class]||CLASS_SKILLS.warrior;
   const sk=skills[skillIdx];
-  const isD6 = sk.id === 'lightning' || sk.id === 'fireball' || sk.id === 'fierce_atk';
+  const isD6 = sk.id === 'lightning' || sk.id === 'fierce_atk';
+  const isD8 = sk.id === 'fireball';
   const isFierce = sk.id === 'fierce_atk';
   const d4Faces = DICE_FACES.d4;
   const d6Faces = DICE_FACES.d6;
-  
+  const d8Faces = ['1','2','3','4','5','6','7','8'];
+
   // Animate dice
   let ticks = 0;
   const die1 = document.getElementById('damageDie1');
   const die2 = document.getElementById('damageDie2');
-  
+
   if(die1) die1.classList.add('rolling');
   if(die2) die2.classList.add('rolling');
-  
+
   const iv = setInterval(()=>{
-    if(die1) die1.textContent = isFierce ? d4Faces[Math.floor(Math.random()*4)] : (isD6 ? d6Faces[Math.floor(Math.random()*6)] : d4Faces[Math.floor(Math.random()*4)]);
+    if(die1) die1.textContent = isFierce ? d4Faces[Math.floor(Math.random()*4)] : (isD8 ? d8Faces[Math.floor(Math.random()*8)] : (isD6 ? d6Faces[Math.floor(Math.random()*6)] : d4Faces[Math.floor(Math.random()*4)]));
     if(die2) die2.textContent = d6Faces[Math.floor(Math.random()*6)];
     if(++ticks > 10){
       clearInterval(iv);
       if(die1) die1.classList.remove('rolling');
       if(die2) die2.classList.remove('rolling');
-      
+
       // Final roll values
       let roll;
       if(isFierce){
@@ -5435,6 +5742,9 @@ function executeDamageRoll(skillIdx){
         roll = {d4: d4, d6: d6, total: d4+d6};
         if(die1) die1.textContent = d4Faces[d4-1];
         if(die2) die2.textContent = d6Faces[d6-1];
+      }else if(isD8){
+        roll = Math.floor(Math.random()*8)+1;
+        if(die1) die1.textContent = d8Faces[roll-1];
       }else{
         roll = isD6 ? Math.floor(Math.random()*6)+1 : Math.floor(Math.random()*4)+1;
         if(die1) die1.textContent = isD6 ? d6Faces[roll-1] : d4Faces[roll-1];
@@ -5458,23 +5768,31 @@ function executeDamageRoll(skillIdx){
             dmg = roll.d4 + roll.d6 + Math.floor(s.str*0.5);
             dmgText = `D4:${roll.d4} + D6:${roll.d6} + STR:${Math.floor(s.str*0.5)}`;
           }else if(sk.id === 'magic_bolt'){
-            dmg = roll + Math.floor(s.int*0.5);
-            dmgText = `D4:${roll} + INT:${Math.floor(s.int*0.5)}`;
+            dmg = roll + Math.floor(s.str*0.5);
+            dmgText = `D4:${roll} + STR:${Math.floor(s.str*0.5)}`;
           }
         }else if(p.class === 'mage'){
           if(sk.id === 'basic_atk'){
-            dmg = roll + Math.floor(s.int*0.25);
-            dmgText = `D4:${roll} + INT:${Math.floor(s.int*0.25)}`;
-          }else if(sk.id === 'lightning' || sk.id === 'fireball'){
+            dmg = roll + Math.floor(s.int*0.5);
+            dmgText = `D4:${roll} + INT:${Math.floor(s.int*0.5)}`;
+          }else if(sk.id === 'lightning'){
             dmg = roll + Math.floor(s.int*0.5);
             dmgText = `D6:${roll} + INT:${Math.floor(s.int*0.5)}`;
+          }else if(sk.id === 'fireball'){
+            dmg = roll + Math.floor(s.int*0.75);
+            dmgText = `D8:${roll} + INT:${Math.floor(s.int*0.75)}`;
           }
         }else if(p.class === 'ranger'){
           dmg = roll + Math.floor(s.dex*0.5);
           dmgText = `D4:${roll} + DEX:${Math.floor(s.dex*0.5)}`;
         }else if(p.class === 'monk'){
-          dmg = roll + Math.floor(s.dex*0.5) + Math.floor(s.str*0.5);
-          dmgText = `D4:${roll} + DEX:${Math.floor(s.dex*0.5)} + STR:${Math.floor(s.str*0.5)}`;
+          if(sk.id === 'magic_bolt'){
+            dmg = roll + Math.floor(s.str*0.5);
+            dmgText = `D4:${roll} + STR:${Math.floor(s.str*0.5)}`;
+          }else{
+            dmg = roll + Math.floor(s.dex*0.5) + Math.floor(s.str*0.5);
+            dmgText = `D4:${roll} + DEX:${Math.floor(s.dex*0.5)} + STR:${Math.floor(s.str*0.5)}`;
+          }
         }
         
         e.hp = Math.max(0, e.hp - dmg);
@@ -5508,7 +5826,7 @@ function resolveSkill(skillIdx,roll,isHit){
   // Wolf attack
   if(c.wolf&&c.wolf.hp>0 && isHit){
     const s = calcStats(p);
-    const wdmg=Math.max(1,Math.floor(s.str*.15));
+    const wdmg=Math.max(1,Math.floor(s.dex*.6));
     e.hp=Math.max(0,e.hp-wdmg);
     c.log.push(`🐺 Wolf bites for ${wdmg} dmg!`);
     c.wolf.turns--;if(c.wolf.turns<=0){c.wolf=null;c.log.push('🐺 Wolf departs.');}
@@ -5526,7 +5844,25 @@ function doEnemyTurn(){
   const p=cp(),c=GS.combat,e=c.enemy;
   // Reset Fierce Attack decrement flag for player's next turn
   c._fierceDecremented = false;
-  
+
+  // Tick enemy poison DoT
+  if(e._poisonedTurns > 0){
+    const pdmg = e._poisonDmg || 0;
+    e.hp = Math.max(0, e.hp - pdmg);
+    e._poisonedTurns--;
+    c.log.push(`☠️ ${e.name} takes ${pdmg} poison dmg! (${e._poisonedTurns} turns left)`);
+    if(e.hp <= 0){ renderBattleScreen(); combatWin(); return; }
+  }
+
+  // Tick enemy burn DoT
+  if(e._burningTurns > 0){
+    const bdmg = e._burnDmg || 0;
+    e.hp = Math.max(0, e.hp - bdmg);
+    e._burningTurns--;
+    c.log.push(`🔥 ${e.name} burns for ${bdmg} dmg! (${e._burningTurns} turns left)`);
+    if(e.hp <= 0){ renderBattleScreen(); combatWin(); return; }
+  }
+
   // Get affordable skills
   const affordable = e.skills.filter(sk => (e.mp||99) >= sk.cost);
   if(affordable.length === 0){
@@ -5631,7 +5967,13 @@ function resolveEnemyAttack(sk,roll){
   const playerClass = p.class;
   const baseAC = p.armorClass || 12;
   let playerAC = baseAC;
-  
+
+  // DEX defense bonus for Ranger and Rogue
+  if(playerClass === 'ranger' || playerClass === 'rogue'){
+    const s = calcStats(p);
+    playerAC += Math.floor(s.dex * 0.25);
+  }
+
   // Apply unflinching buff (+2 AC)
   if(p.status && p.status.unflinching){
     playerAC += 2;
@@ -5692,6 +6034,7 @@ function resolveEnemyAttack(sk,roll){
     c.log.push(`💪 ${e.name} uses ${sk.name}! (self buff)`);
     if(e.mp!==undefined)e.mp=Math.max(0,e.mp-(sk.cost||0));
     spawnPtc(window.innerWidth*.63,window.innerHeight*.35,'#8a4aaa',4);
+    applyBattleEffect(sk.hp ? 'heal_sprite' : 'buff_sprite', 'enemy');
     renderBattleScreen();
     setTimeout(() => doPlayerTurn(), 800);
   }else{
