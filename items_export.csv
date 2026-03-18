@@ -1,85 +1,155 @@
-id;name;icon;type;subtype;slot;classes;rarity;str;int;dex;con;hp;ac;description;price;specialfeat;typeofdamage1;typeofdamage2
-apprentice_staff;Apprentice Staff;🪄;weapon;staff;weapon;any;1;-1;2;0;0;0;0;A simple wooden staff, faintly humming with beginner's magic.;;int+2;magic;
-oak_wand;Oak Wand;✨;weapon;wand;weapon;any;1;-1;2;0;0;0;0;Carved from sturdy oak, it channels nature's raw energy.;;int+2;magic;
-crystal_orb;Crystal Orb;🔮;weapon;orb;weapon;any;1;-1;2;0;0;0;0;A dull sphere that glows faintly with stored arcane light.;;int+2;magic;
-silver_staff;Silver Staff;⚗️;weapon;staff;weapon;any;2;-2;4;0;0;0;0;Elegant and gleaming, it enhances spell precision.;;int+4;magic;
-runic_wand;Runic Wand;💫;weapon;wand;weapon;any;2;-2;4;0;0;0;0;A Wand carved from mystic runes. When used, the runes glow up in a vibrant green color.;;int+4;magic;
-void_orb;Void Orb;🌀;weapon;orb;weapon;any;3;-2;6;-1;0;0;0;The souls of a thousand magic creatures empower this Orb.;;int+6;magic;
-moonstaff;Moonstaff;🌙;weapon;staff;weapon;any;3;-3;6;-1;0;0;30;A staff capable of channeling the full power of the moon.;;int+6 mp+30;magic;
-staff_of_ages;Staff of Ages;🌟;weapon;staff;weapon;any;4;-4;10;-3;0;0;75;Worn yet timeless, it holds echoes of forgotten sorcery.;;int+10 mp+75;magic;
-archmage_orb;Archmage Orb;💎;weapon;orb;weapon;any;4;-4;10;-2;0;0;60;Radiant with immense energy, only masters can boost all elemental attacks by 10%.;;int+10 mp+60;magic;
-short_sword;Short Sword;🗡️;weapon;sword_shield;weapon;any;1;2;0;0;0;0;0;A reliable blade, quick and versatile. Restores 12% max MP at the end of each turn.;;str+2;Slashing;
-wooden_shield;Wooden Shield;🛡️;weapon;sword_shield;shield;warrior;1;0;0;0;0;0;1;An improvised shield.;;ac+1;
-claymore;Claymore;⚔️;weapon;twohander;weapon;any;1;3;0;0;0;0;0;A heavy two-handed sword, devastating in wide arcs.;;str+3;Slashing;
-twin_daggers;Twin Daggers;🔪;weapon;dual;weapon;any;1;1;0;0;0;0;0;Balanced for speed, perfect for dual strikes.;;str+1;Slashing;
-war_sword;War Sword;🗡️;weapon;sword_shield;weapon;any;2;4;0;0;0;0;0;Forged for battle, sturdy and lethal.;;str+4;Slashing;
-steel_shield;Steel Shield;🛡️;weapon;sword_shield;weapon;warrior;2;0;-3;0;0;30;2;Solid defense, dependable in any fight.;ac+2 hp+30;
-zweihander;Zweihänder;⚔️;weapon;twohander;weapon;any;2;5;0;0;0;0;0;A colossal blade, requiring great strength to wield.;;str+5;Slashing;
-chaos_blades;Chaos Blades;🔪;weapon;dual;weapon;any;3;2;0;1;0;0;0;Twisted steel infused with unstable energy.;;str+2;Slashing;
-dragon_blade;Dragonblade;🐉;weapon;twohander;weapon;any;3;7;0;0;0;0;0;Forged in dragonfire, scales shimmer along its blade. Does an extra 2 damage to all draconic enemies.;;str+7;Slashing;Fire
-excalibur;Excalibur;⚡;weapon;sword_shield;weapon;any;4;9;0;0;0;0;0;Legendary sword of kings. Makes the enemy loose 3 STR for the full fight.;;str+9;Slashing;Holy
-ragnarok;Ragnarök;🌩️;weapon;twohander;weapon;any;4;13;0;0;0;0;0;Mythic weapon said to herald the world's end. 10% to make the enemy flinch.;;str+13;Slashing;
-short_bow;Short Bow;🏹;weapon;bow;weapon;any;1;0;0;2;0;0;0;Compact and swift, ideal for close skirmishes.;;dex+2;Piercing;
-hunters_bow;Hunter's Bow;🏹;weapon;bow;weapon;any;2;0;0;3;0;0;0;Crafted for precision in the wild. Deals 5% extra damage to Beast enemies.;;dex+3;Piercing;
-elven_bow;Elven Bow;🌿;weapon;bow;weapon;any;2;0;0;4;0;0;0;Graceful and enchanted, arrows fly true.;;dex+4;Piercing;
-phantom_bow;Phantom Bow;👻;weapon;bow;weapon;any;3;0;0;6;0;0;0;Ethereal, its arrows pierce both flesh and spirit.;;dex+6;Piercing;Magic
-artemis_bow;Artemis Bow;🌠;weapon;bow;weapon;any;4;0;0;10;0;0;0;Blessed by the huntress, unmatched in accuracy. Adds +6 to attack roll.;;dex+10;Piercing;Holy
-iron_knuckles;Iron Knuckles;🥊;weapon;knuckles;weapon;any;1;1;0;1;0;0;0;Heavy strikes, brutal and direct.;;str+1;Piercing;
-monks_staff;Monk's Staff;🪨;weapon;monk_staff;weapon;any;1;1;0;1;0;0;0;Balanced weapon of discipline and flow.;;str+1;Piercing;
-jade_knuckles;Jade Knuckles;💚;weapon;knuckles;weapon;any;2;2;0;2;0;0;0;Gleaming green, infused with spiritual energy.;;str+2;Piercing;
-iron_staff;Iron Staff;⚒️;weapon;monk_staff;weapon;any;2;2;0;2;0;0;0;Simple but strong, a monk's trusted tool.;;str+2;Piercing;
-dragon_fists;Dragon Fists;🔥;weapon;knuckles;weapon;any;3;2;0;3;0;0;0;Gloves imbued with draconic fury. Does an extra 2 damage to all draconic enemies.;;str+2;Piercing;Fire
-heaven_staff;Heaven Staff;☁️;weapon;monk_staff;weapon;any;4;5;0;5;0;0;0;Radiant staff channeling divine harmony. Deals an extra 3 damage to all undead enemies.;;str+5;Piercing;Holy
-rusty_dagger;Rusty Dagger;🔪;weapon;dagger;weapon;any;1;0;0;2;0;0;0;Old and worn, but still sharp enough.;;dex+2;Piercing;
-sharp_knife;Sharp Knife;🔪;weapon;dagger;weapon;any;1;0;0;2;0;0;0;Quick and precise, perfect for assassins.;;dex+2;Piercing;
-twin_shadows;Twin Shadows;🌑;weapon;dual;weapon;any;1;0;0;2;0;0;0;Dual blades that vanish into darkness.;;dex+2;Piercing;Shadow
-venom_fang;Venom Fang;🐍;weapon;dagger;weapon;any;2;0;0;4;0;0;0;Coated in poison, deadly with a single cut. Adds 1 poison damage each turn.;;dex+4;Piercing;Poison
-shadow_claws;Shadow Claws;💅;weapon;dual;weapon;any;2;0;0;4;0;0;0;Jagged weapons that tear silently.;;dex+4;Piercing;Shadow
-assassin_bow;Assassin Bow;🎯;weapon;bow;weapon;any;2;0;0;3;0;0;0;Silent and deadly, favored by killers. Deals 5 more damage in the first turn.;;dex+3;Piercing;
-blade_of_whispers;Blade of Whispers;🤫;weapon;dagger;weapon;any;3;0;0;6;0;0;0;A cursed dagger that murmurs secrets.;;dex+6;Piercing;Shadow
-nightstalker;Nightstalker;🌙;weapon;dual;weapon;any;3;0;0;6;0;0;0;A weapon forged for silent killers.;;dex+6;Piercing;Shadow
-deathmark;Deathmark;💀;weapon;dagger;weapon;any;4;0;0;10;0;0;0;A dagger that seals its victim's fate. 50% chance of dealing an extra 7 damage when opponent is below half HP.;;dex+10;Piercing;Death
-eclipse_twin;Eclipse Twin;🌑;weapon;dual;weapon;any;4;0;0;10;0;0;0;Paired blades, one light, one dark. 15% chance to land a 3rd attack.;;dex+10;Piercing;Void
-leather_cap;Leather Cap;🪖;armor;helmet;head;any;1;0;0;0;0;0;1;Simple protection, light and flexible.;;ac+1;
-iron_helm;Iron Helm;⛑️;armor;helmet;head;any;1;0;0;0;0;0;1;Sturdy metal helm, reliable defense.;;ac+1;
-mage_hat;Mage Hat;🎩;armor;hat;head;any;1;0;0;0;0;0;1;Pointed cap infused with arcane charm.;;ac+1;
-hood_of_shadows;Shadow Hood;🧢;armor;hood;head;any;2;0;0;0;0;0;3;Conceals identity, cloaked in mystery.;;ac+3;
-shadowmask;Shadowmask;🎭;armor;mask;head;any;3;0;0;0;0;0;5;Mask of secrecy, feared by assassins.;;ac+5;
-knights_helm;Knight's Helm;⛑️;armor;helmet;head;any;2;0;0;0;0;0;3;Noble helm, symbol of honor.;;ac+3;
-arcane_crown;Arcane Crown;👑;armor;crown;head;any;3;0;2;0;0;0;5;Regal circlet, brimming with magic.;int+2 ac+5;
-crown_of_thorns;Crown of Thorns;🌹;armor;crown;head;any;3;0;0;0;0;0;5;Painful yet powerful, a cursed relic. If user is attacked by a physical attack, 10% of damage dealt is done to the attacker.;;ac+5;
-godking_crown;Godking Crown;👸;armor;crown;head;any;4;0;0;0;0;0;8;Worn by rulers who command divinity. Enemy loses 15 of all their combat skills (STR, INT, DEX, CON).;;ac+8;
-cloth_robe;Cloth Robe;👘;armor;robe;body;any;1;0;1;0;0;0;1;Light garment, favored by spellcasters.;;int+1 ac+1;
-leather_vest;Leather Vest;🧥;armor;vest;body;any;1;0;0;1;0;0;1;Flexible armor, offering modest protection.;;dex+1 ac+1;
-chain_mail;Chain Mail;🛡️;armor;mail;body;any;1;0;0;0;0;0;2;Interlocked rings, durable and dependable.;;ac+2;
-enchanted_robe;Enchanted Robe;🌀;armor;robe;body;any;2;0;3;0;0;0;2;Woven with spells, enhancing magic.;int+3 ac+2;
-ranger_vest;Ranger's Vest;🌿;armor;vest;body;any;2;0;0;2;0;0;3;Lightweight, built for agility in the wild.;dex+2 ac+3;
-monks_gi;Monk's Gi;👕;armor;gi;body;any;2;0;0;3;0;0;2;Traditional garb, symbol of discipline.;dex+3 ac+2;
-plate_armor;Plate Armor;🦺;armor;plate;body;any;3;0;0;0;0;0;3;Heavy steel, unmatched in defense. Physical damage is reduced by 8%.;;ac+3;
-mythril_robe;Mythril Robe;✨;armor;robe;body;any;3;0;3;0;0;0;4;Shimmering fabric, strong yet weightless. Mana potions recover 25% more mana.;int+3 ac+4;
-shadow_leather;Shadow Leather;🌑;armor;vest;body;any;3;0;0;3;0;0;3;Dark hide, silent and stealthy.;dex+3 ac+3;
-shadow_vest;Shadow Vest;🌒;armor;vest;body;any;2;0;0;2;0;0;2;Conceals the wearer in twilight.;dex+2 ac+2;
-nightweave;Nightweave;🌃;armor;vest;body;any;4;0;0;3;0;0;4;Armor woven from shadow threads.;dex+3 ac+4;
-divine_plate;Divine Plate;⭐;armor;plate;body;any;4;2;0;0;0;0;9;Blessed steel, radiant with holy power.;str+2 ac+9;
-archmage_robe;Archmage Robe;🔯;armor;robe;body;any;4;0;5;0;0;0;9;Garment of supreme sorcery, glowing with runes. Spells cost 15% less mana.;int+5 ac+9;
-worn_boots;Worn Boots;👞;armor;boots;feet;any;1;0;0;0;0;0;1;Old but serviceable, well-traveled.;;ac+1;
-swift_boots;Swift Boots;👟;armor;boots;feet;any;2;0;0;0;0;0;2;Light shoes that enhance speed.;;ac+2;
-heavy_greaves;Heavy Greaves;🦶;armor;greaves;feet;any;2;0;0;0;0;0;2;Thick steel, protecting legs in battle.;;ac+2;
-arcane_slippers;Arcane Slippers;🧦;armor;boots;feet;any;2;0;0;0;0;0;2;Soft footwear infused with magic.;;ac+2;
-hermes_boots;Hermes Boots;🌪️;armor;boots;feet;any;3;0;0;0;0;0;3;Winged sandals, swift as the wind. Movement dice +1;;ac+3;
-infinity_boots;Infinity Boots;♾️;armor;boots;feet;any;4;0;0;0;0;0;4;Timeless footwear, said to walk beyond worlds. Always attacks first.;;ac+4;
-iron_ring;Iron Ring;💍;accessory;accessory;accessory;any;1;0;0;0;0;0;1;Small strength boost.;;str+1 ac+1;
-sapphire_ring;Sapphire Ring;💎;accessory;accessory;accessory;any;2;0;0;0;0;0;2;Enhances magic power.;int+2 ac+2;
-warriors_band;Warrior's Band;⚙️;accessory;accessory;accessory;any;2;0;0;0;0;0;2;Worn by veterans.;str+2 ac+2;
-lucky_clover;Lucky Clover;🍀;accessory;accessory;accessory;any;2;0;0;0;0;0;2;+1 to all dice rolls.;rollBonus+1 ac+2;
-phoenix_feather;Phoenix Feather;🦅;accessory;accessory;accessory;any;3;0;0;0;0;0;3;Once: revive at full HP.;reviveOnce hp+50 ac+3;
-dragon_heart;Dragon Heart;❤️‍🔥;accessory;accessory;accessory;any;4;0;0;0;0;0;6;Radiates dragon power.;str+6 int+6 hp+60 ac+6;
-shadow_ring;Shadow Ring;💍;accessory;accessory;accessory;any;2;0;0;0;0;0;2;Grants shadowstep ability.;dex+2 ac+2;
-assassins_amulet;Assassin's Amulet;🗡️;accessory;accessory;accessory;any;3;0;0;0;0;0;3;Increases critical strike chance.;dex+3 ac+3;
-void_walkers;Void Walkers;🌀;accessory;accessory;accessory;any;4;0;0;0;0;0;6;Walk through shadows.;dex+6 ac+6;
-hp_potion;HP Potion;🧪;consumable;hp_pot;null;any;1;0;0;0;0;0;0;Restores 40 HP.;40;Heals 40 HP;;
-hi_hp_potion;Hi-HP Potion;💊;consumable;hp_pot;null;any;2;0;0;0;0;0;0;Restores 100 HP.;100;Heals 100 HP;;
-mana_potion;Mana Potion;🫙;consumable;mp_pot;null;any;1;0;0;0;0;0;0;Restores 40 MP.;40;Restores 40 MP;;
-hi_mana_potion;Hi-Mana Potion;🔵;consumable;mp_pot;null;any;2;0;0;0;0;0;0;Restores 100 MP.;100;Restores 100 MP;;
-rare_herb;Glowing Herb;💠;consumable;herb;null;any;2;0;0;0;0;0;0;Sellable for 80 gold.;80;Sell for 80 gold;;
-wolf_inspiration;Wolf Insight;🐺;inspiration;inspiration;null;any;2;0;0;0;0;0;0;+2 to your next roll;;+2 to next roll;;
+ID;Name;Category;Subtype;Slot;Rarity;STR;INT;DEX;AC;HP;MP;SPD;Special;Price;Description
+oak_staff;Oak Staff;Weapon;Staff;weapon;★;2;4;0;0;0;8;3;;80;A sturdy oak staff. Balanced for casting and combat.
+willow_staff;Willow Staff;Weapon;Staff;weapon;★;0;6;0;0;0;12;5;;110;Flexible willow. Ideal for quick spellcasting.
+silver_staff;Silver Staff;Weapon;Staff;weapon;★★;0;11;0;0;0;20;4;;380;Silver-tipped staff that channels arcane energy.
+moonstaff;Moonstaff;Weapon;Staff;weapon;★★★;3;17;0;0;0;28;4;;1050;Blessed by lunar light. Exceptional magical power.
+staff_of_ages;Staff of Ages;Weapon;Staff;weapon;★★★★;5;26;0;0;0;45;5;;3200;Ancient beyond reckoning. Power untouched by time.
+runic_rod;Runic Rod;Weapon;Magic Staff;weapon;★;0;7;0;0;0;0;4;;100;Covered in glowing runes. Focuses raw arcane force.
+ember_wand;Ember Wand;Weapon;Magic Staff;weapon;★;0;5;0;0;0;10;6;;90;Warm to the touch. Fast and reliable.
+arcane_staff;Arcane Staff;Weapon;Magic Staff;weapon;★★;0;14;0;0;0;15;4;;440;Crackling with unstable arcane energy.
+void_staff;Void Staff;Weapon;Magic Staff;weapon;★★★;0;20;0;3;0;10;3;;1200;Pulsing with void energy. Immense destructive power.
+archmage_staff;Archmage Staff;Weapon;Magic Staff;weapon;★★★★;0;30;0;4;0;55;5;;4000;The pinnacle of magical staves. Worn by legends.
+iron_knuckles;Iron Knuckles;Weapon;Knuckles;weapon;★;5;0;1;0;0;0;5;;70;Basic iron knuckles. Reliable and sturdy.
+bronze_fists;Bronze Fists;Weapon;Knuckles;weapon;★;4;0;2;0;0;0;6;;85;Light bronze fists. Faster than iron.
+jade_knuckles;Jade Knuckles;Weapon;Knuckles;weapon;★★;9;0;3;0;12;0;6;;340;Jade-inlaid knuckles. Heals slightly on hit.
+dragon_fists;Dragon Fists;Weapon;Knuckles;weapon;★★★;15;5;0;0;0;0;7;;1100;Wreathed in dragonfire. Burns with every strike.
+celestial_gauntlets;Celestial Gauntlets;Weapon;Knuckles;weapon;★★★★;22;7;0;4;0;0;6;;3400;Forged in the celestial realm. Divine striking power.
+short_bow;Short Bow;Weapon;Bow;weapon;★;0;0;5;0;0;0;4;;75;A compact wooden bow. Good for beginners.
+hunting_bow;Hunting Bow;Weapon;Bow;weapon;★;0;0;7;1;0;0;4;;110;A seasoned bow for hunters and scouts.
+elven_bow;Elven Bow;Weapon;Bow;weapon;★★;0;0;12;0;0;0;5;;400;Crafted by elven bowyers. Exceptional precision.
+phantom_bow;Phantom Bow;Weapon;Bow;weapon;★★★;0;0;17;3;0;0;6;;1150;Arrows phase through defenses. Near-silent.
+artemis_bow;Artemis' Bow;Weapon;Bow;weapon;★★★★;0;0;24;5;0;0;6;;3600;Blessed by the goddess of the hunt. Never misses.
+shadow_daggers;Shadow Daggers;Weapon;Twin Daggers;weapon;★;3;0;5;0;0;0;6;;85;Paired shadow blades. Speed over brute force.
+iron_twins;Iron Twins;Weapon;Twin Daggers;weapon;★;5;0;4;0;0;0;5;;75;Matched iron daggers. Reliable and sharp.
+venom_twins;Venom Twins;Weapon;Twin Daggers;weapon;★★;7;0;8;0;0;0;6;;360;Coated in serpent venom. Leaves a lasting wound.
+nightstalker;Nightstalker;Weapon;Twin Daggers;weapon;★★★;12;0;15;0;0;0;7;;1200;Forged in eternal darkness. Strikes without a sound.
+eclipse_blades;Eclipse Blades;Weapon;Twin Daggers;weapon;★★★★;18;0;22;0;0;0;8;;3800;Twin blades of absolute shadow. Death incarnate.
+short_sword;Short Sword;Weapon;1H Sword;weapon;★;5;0;0;2;0;0;5;;85;A compact one-handed sword. Versatile and reliable.
+iron_sword;Iron Sword;Weapon;1H Sword;weapon;★;7;0;0;1;0;0;4;;100;Solid iron. Trusted by soldiers and guards.
+war_sword;War Sword;Weapon;1H Sword;weapon;★★;12;0;0;5;0;0;4;;420;A battle-hardened blade forged for veterans.
+champions_blade;Champion's Blade;Weapon;1H Sword;weapon;★★★;18;0;0;7;0;0;5;;1250;Wielded only by proven champions.
+excalibur;Excalibur;Weapon;1H Sword;weapon;★★★★;26;0;0;11;0;0;6;;4500;The legendary blade of kings. Righteous and eternal.
+claymore;Claymore;Weapon;2H Sword;weapon;★;9;0;0;0;0;0;2;;95;A heavy two-handed greatsword. Raw power.
+longsword;Longsword;Weapon;2H Sword;weapon;★;7;0;0;1;0;0;3;;90;A long blade with reach and balanced weight.
+zweihander;Zweihänder;Weapon;2H Sword;weapon;★★;16;0;0;0;0;0;2;;480;A massive greatsword. Cleaves through armor.
+dragon_blade;Dragonblade;Weapon;2H Sword;weapon;★★★;22;0;0;3;0;0;3;;1400;Forged from a dragon's fang. Burns with draconic fire.
+ragnarok;Ragnarök;Weapon;2H Sword;weapon;★★★★;32;0;0;0;0;0;3;;5000;The sword of the apocalypse. World-ending power.
+wooden_shield;Wooden Shield;Weapon;Shield (Warrior only);shield;★;0;0;0;5;0;0;-1;;60;A basic wooden shield. Better than nothing.
+iron_shield;Iron Shield;Weapon;Shield (Warrior only);shield;★;0;0;0;7;10;0;-1;;90;Solid iron. Deflects most blows.
+steel_shield;Steel Shield;Weapon;Shield (Warrior only);shield;★★;0;0;0;12;20;0;-1;;380;Tempered steel. Deflects heavy blows.
+knights_shield;Knight's Shield;Weapon;Shield (Warrior only);shield;★★★;2;0;0;18;35;0;-1;;1150;Emblazoned with a royal crest. Stalwart defense.
+aegis;Aegis;Weapon;Shield (Warrior only);shield;★★★★;5;0;0;26;55;0;-1;;4000;Divine aegis of the gods. Nigh-impenetrable.
+cloth_hat;Cloth Hat;Equipment;Mage Hat;head;★;0;2;0;0;0;10;0;;50;A simple cloth hat. Standard mage issue.
+apprentice_hat;Apprentice Hat;Equipment;Mage Hat;head;★;0;4;0;0;0;14;0;;70;An apprentice mage's first hat.
+scholars_hat;Scholar's Hat;Equipment;Mage Hat;head;★★;0;7;0;1;0;24;0;;280;Worn by learned scholars of the arcane arts.
+arcane_hat;Arcane Hat;Equipment;Mage Hat;head;★★★;0;12;0;2;0;40;0;;900;Infused with arcane sigils. Amplifies magic.
+archmage_crown;Archmage Crown;Equipment;Mage Hat;head;★★★★;0;18;0;5;0;70;0;;2800;The crown of the archmage. Supreme magical authority.
+cloth_robe;Cloth Robe;Equipment;Mage Robe;body;★;0;3;0;1;0;14;0;;60;Light robes. The uniform of novice mages.
+wool_robe;Wool Robe;Equipment;Mage Robe;body;★;0;4;0;2;0;18;0;;80;Warm wool robes. Reliable everyday wear.
+enchanted_robe;Enchanted Robe;Equipment;Mage Robe;body;★★;0;8;0;4;0;45;0;;420;Woven with protective spells. Comfortable and defensive.
+mythril_robe;Mythril Robe;Equipment;Mage Robe;body;★★★;0;13;0;7;0;65;0;;1200;Mythril-threaded robes. Light yet surprisingly protective.
+archmage_robe;Archmage Robe;Equipment;Mage Robe;body;★★★★;0;20;0;10;0;100;0;;3600;Worn by the greatest mages. Radiates pure arcane power.
+soft_slippers;Soft Slippers;Equipment;Mage Boots;feet;★;0;1;0;0;0;8;1;;45;Comfortable soft slippers. Light and quiet.
+wool_shoes;Wool Shoes;Equipment;Mage Boots;feet;★;0;2;0;1;0;12;0;;55;Warm wool shoes. Standard mage footwear.
+arcane_slippers;Arcane Slippers;Equipment;Mage Boots;feet;★★;0;5;0;2;0;22;2;;260;Enchanted slippers that whisper as you walk.
+enchanted_boots;Enchanted Boots;Equipment;Mage Boots;feet;★★★;0;8;0;4;0;35;3;;850;Boots enchanted for speed and magical efficiency.
+starwalker_boots;Starwalker Boots;Equipment;Mage Boots;feet;★★★★;0;12;0;6;0;55;5;;2800;Walk among the stars. Unmatched arcane footwear.
+leather_vest;Leather Vest;Equipment;Hunter Hide;body;★;0;0;3;3;0;0;1;;65;Flexible leather. Standard ranger wear.
+hide_vest;Hide Vest;Equipment;Hunter Hide;body;★;0;0;4;4;0;0;0;;80;Thick animal hide. Tougher than leather.
+rangers_vest;Ranger's Vest;Equipment;Hunter Hide;body;★★;0;0;7;8;0;0;3;;360;Reinforced hide worn by veteran rangers.
+shadow_leather;Shadow Leather;Equipment;Hunter Hide;body;★★★;0;0;12;12;0;0;5;;1100;Infused with shadow essence. Silent and strong.
+phantom_hide;Phantom Hide;Equipment;Hunter Hide;body;★★★★;0;0;18;16;0;0;6;;3400;Hide of a phantom beast. Merges with shadow.
+leather_boots;Leather Boots;Equipment;Hunter Boots;feet;★;0;0;2;1;0;0;2;;50;Durable leather boots. Essential for travel.
+travelers_boots;Traveler's Boots;Equipment;Hunter Boots;feet;★;0;0;2;2;0;0;3;;58;Worn in but trustworthy. Miles of experience.
+ranger_boots;Ranger Boots;Equipment;Hunter Boots;feet;★★;0;0;5;4;0;0;5;;260;Reinforced boots for rough terrain.
+phantom_boots;Phantom Boots;Equipment;Hunter Boots;feet;★★★;0;0;9;6;0;0;7;;850;Almost silent. Near-invisible at night.
+windrunner_boots;Windrunner Boots;Equipment;Hunter Boots;feet;★★★★;0;0;14;9;0;0;9;;2800;Run with the wind. Limitless speed.
+leather_cap;Leather Cap;Equipment;Hunter Hat;head;★;0;0;2;2;0;0;0;;50;A simple leather cap. Keeps the sun out.
+scout_cap;Scout Cap;Equipment;Hunter Hat;head;★;0;0;3;2;0;0;1;;65;Lightweight cap worn by scouts.
+ranger_hood;Ranger Hood;Equipment;Hunter Hat;head;★★;0;0;6;5;0;0;2;;250;A deep hood that blends into the forest.
+tracker_hood;Tracker Hood;Equipment;Hunter Hat;head;★★★;0;0;10;8;0;0;3;;820;Worn by master trackers. Grants sharp senses.
+hunters_crown;Hunter's Crown;Equipment;Hunter Hat;head;★★★★;0;0;15;11;0;0;5;;2600;The crown of the greatest hunters. Famed across realms.
+leather_helm;Leather Helm;Equipment;Helmet;head;★;0;0;0;3;10;0;0;;55;Basic leather head protection.
+iron_helm;Iron Helm;Equipment;Helmet;head;★;0;0;0;5;15;0;0;;80;Standard iron helmet. Trusted by soldiers.
+knights_helm;Knight's Helm;Equipment;Helmet;head;★★;0;0;0;10;28;0;0;;380;Full-face knight's helmet. Formidable presence.
+war_helm;War Helm;Equipment;Helmet;head;★★★;2;0;0;15;45;0;0;;1100;Forged for the battlefield. Inspires fear.
+godking_helm;Godking's Helm;Equipment;Helmet;head;★★★★;6;0;0;22;70;0;0;;3600;Helm of a fallen god-king. Radiant and terrifying.
+chain_mail;Chain Mail;Equipment;Armor;body;★;1;0;0;6;15;0;0;;90;Interlocked steel rings. Flexible protection.
+ring_mail;Ring Mail;Equipment;Armor;body;★;2;0;0;5;12;0;0;;85;Rings of iron sewn to leather. Tough and reliable.
+plate_mail;Plate Mail;Equipment;Armor;body;★★;3;0;0;11;45;0;0;;460;Heavy plate. Nearly impenetrable defense.
+battle_plate;Battle Plate;Equipment;Armor;body;★★★;6;0;0;16;70;0;0;;1350;Forged in the heat of battle. Champions wear this.
+divine_plate;Divine Plate;Equipment;Armor;body;★★★★;9;0;0;22;110;0;0;;4500;Forged by gods. A warrior becomes invincible.
+iron_boots;Iron Boots;Equipment;Steel Boots;feet;★;0;0;0;3;8;0;0;;55;Iron boots. Heavy but protective.
+soldier_boots;Soldier Boots;Equipment;Steel Boots;feet;★;1;0;0;4;12;0;0;;70;A soldier's sturdy marching boots.
+heavy_greaves;Heavy Greaves;Equipment;Steel Boots;feet;★★;2;0;0;8;22;0;0;;330;Iron leg armor. Protects from ankle to knee.
+knight_greaves;Knight Greaves;Equipment;Steel Boots;feet;★★★;4;0;0;13;40;0;0;;1000;Full knight leg armor. Restricts movement slightly.
+titan_greaves;Titan Greaves;Equipment;Steel Boots;feet;★★★★;6;0;0;18;65;0;0;;3000;Titan's iron greaves. Crushing weight crushing power.
+shadow_cloak;Shadow Cloak;Equipment;Rogue Cloak;body;★;0;0;3;3;0;0;3;;70;A dark cloak that absorbs light.
+thief_vest;Thief Vest;Equipment;Rogue Cloak;body;★;0;0;4;2;0;0;4;;75;Lightweight vest with hidden pockets.
+shadow_vest;Shadow Vest;Equipment;Rogue Cloak;body;★★;0;0;8;6;0;0;5;;350;Treated shadow leather. Excellent concealment.
+nightweave;Nightweave;Equipment;Rogue Cloak;body;★★★;0;0;13;9;0;0;7;;1150;Woven from midnight essence. Near-invisible.
+void_shroud;Void Shroud;Equipment;Rogue Cloak;body;★★★★;0;0;20;13;0;0;9;;3800;A shroud from the void between worlds.
+cotton_hood;Cotton Hood;Equipment;Hood;head;★;0;0;2;2;0;0;0;;45;A simple cotton hood. Obscures the face.
+linen_hood;Linen Hood;Equipment;Hood;head;★;0;0;3;2;0;0;1;;55;Fine linen hood. Comfortable and unassuming.
+dark_hood;Dark Hood;Equipment;Hood;head;★★;0;0;6;5;0;0;2;;270;Dyed black. Hides the wearer in shadow.
+assassin_hood;Assassin Hood;Equipment;Hood;head;★★★;0;0;10;8;0;0;4;;880;Worn by master assassins. Grants deadly focus.
+shadowmaster_hood;Shadowmaster Hood;Equipment;Hood;head;★★★★;0;0;16;12;0;0;6;;2800;A hood of absolute darkness. The wearer becomes shadow.
+soft_boots;Soft Boots;Equipment;Swift Boots;feet;★;0;0;2;1;0;0;3;;50;Soft-soled boots. Barely make a sound.
+light_boots;Light Boots;Equipment;Swift Boots;feet;★;0;0;3;0;0;0;4;;60;Feather-light boots. Built for speed.
+swift_boots;Swift Boots;Equipment;Swift Boots;feet;★★;0;0;6;2;0;0;6;;300;A rogue standard. Unmatched ground speed.
+shadow_treads;Shadow Treads;Equipment;Swift Boots;feet;★★★;0;0;10;4;0;0;8;;1000;Leave no footprints. Perfect for silent kills.
+phantom_treads;Phantom Treads;Equipment;Swift Boots;feet;★★★★;0;0;16;6;0;0;10;;3000;Treads of the void. Move faster than thought.
+cloth_mask;Cloth Mask;Equipment;Mask;head;★;0;0;2;1;0;0;0;;40;A simple cloth mask. The mark of a thief.
+thief_mask;Thief Mask;Equipment;Mask;head;★;0;0;3;2;0;0;1;;55;Worn by common thieves. Better than nothing.
+shadow_mask;Shadow Mask;Equipment;Mask;head;★★;0;0;7;4;0;0;2;;300;Treated leather. Hides the face in all light.
+assassin_mask;Assassin Mask;Equipment;Mask;head;★★★;0;0;12;7;0;0;3;;960;The mark of a professional killer.
+death_mask;Death Mask;Equipment;Mask;head;★★★★;4;0;18;10;0;0;5;;3400;Carved from obsidian. Strikes terror in enemies.
+monks_gi;Monk's Gi;Equipment;Monk's Gi;body;★;2;0;2;3;0;0;0;;65;Traditional monk training attire.
+martial_wrap;Martial Wrap;Equipment;Monk's Gi;body;★;3;0;3;4;0;0;0;;80;Tightly wrapped martial cloth. Flexible and durable.
+jade_gi;Jade Gi;Equipment;Monk's Gi;body;★★;5;0;6;7;12;0;0;;340;Infused with jade essence. Channels inner power.
+iron_monks_gi;Iron Monk's Gi;Equipment;Monk's Gi;body;★★★;8;0;10;10;25;0;0;;1050;Reinforced with iron threads. Monk combat mastery.
+celestial_robe;Celestial Robe;Equipment;Monk's Gi;body;★★★★;12;0;15;14;50;0;0;;3200;Woven in the celestial realm. The pinnacle of monk attire.
+copper_necklace;Copper Necklace;Accessory;Necklace;accessory;★;0;0;0;0;15;0;0;;60;A simple copper necklace. Provides minor protection.
+glass_pendant;Glass Pendant;Accessory;Necklace;accessory;★;0;0;0;0;0;14;0;;60;A glass pendant with a faint magical glow.
+travelers_charm;Traveler's Charm;Accessory;Necklace;accessory;★;0;0;0;1;0;0;2;;65;Carried by wanderers for generations. Good luck.
+iron_pendant;Iron Pendant;Accessory;Necklace;accessory;★;2;0;0;0;12;0;0;;70;A heavy iron pendant. Symbol of endurance.
+silver_necklace;Silver Necklace;Accessory;Necklace;accessory;★★;3;0;0;0;28;0;0;;260;Polished silver. Grants strength and vitality.
+mages_pendant;Mage's Pendant;Accessory;Necklace;accessory;★★;0;5;0;0;0;32;0;;290;A common mage accessory. Enhances mana flow.
+rangers_necklace;Ranger's Necklace;Accessory;Necklace;accessory;★★;0;0;4;0;0;0;2;;270;Made from a beast's claw. Grants agility.
+warrior_chain;Warrior's Chain;Accessory;Necklace;accessory;★★;4;0;0;3;0;0;0;;280;A thick iron chain. Symbol of a warrior.
+gold_necklace;Gold Necklace;Accessory;Necklace;accessory;★★★;5;5;0;0;35;0;0;;850;Pure gold. Grants both strength and wisdom.
+arcane_pendant;Arcane Pendant;Accessory;Necklace;accessory;★★★;0;11;0;0;0;55;0;;950;Pulsing with arcane energy. Greatly boosts mana.
+dragon_scale_necklace;Dragon Scale Necklace;Accessory;Necklace;accessory;★★★;8;0;0;6;45;0;0;;1000;Carved from a dragon's scale. Extraordinary protection.
+amulet_of_gods;Amulet of the Gods;Accessory;Necklace;accessory;★★★★;8;8;8;0;55;35;0;;4000;Blessed by all gods. Elevates the wearer beyond mortal limits.
+phoenix_pendant;Phoenix Pendant;Accessory;Necklace;accessory;★★★★;0;6;0;0;90;0;0;;4500;Contains the eternal flame of the phoenix.
+iron_ring;Iron Ring;Accessory;Ring;accessory;★;2;0;0;0;0;0;0;;50;A simple iron ring. Small but steady strength boost.
+copper_ring;Copper Ring;Accessory;Ring;accessory;★;0;0;0;0;14;0;0;;50;A copper ring. Minor vitality boost.
+jade_ring;Jade Ring;Accessory;Ring;accessory;★;0;0;0;0;0;16;0;;55;A smooth jade ring. Increases mana slightly.
+bone_ring;Bone Ring;Accessory;Ring;accessory;★;0;0;2;0;0;0;1;;55;Carved from bone. Grants a hint of agility.
+sapphire_ring;Sapphire Ring;Accessory;Ring;accessory;★★;0;6;0;0;0;24;0;;250;A sapphire ring that enhances magical power.
+ruby_ring;Ruby Ring;Accessory;Ring;accessory;★★;5;0;0;0;22;0;0;;250;A ruby ring that fills the wearer with fierce strength.
+emerald_ring;Emerald Ring;Accessory;Ring;accessory;★★;0;0;5;0;0;0;2;;240;A bright emerald ring. Enhances agility.
+warriors_band;Warrior's Band;Accessory;Ring;accessory;★★;5;0;0;3;18;0;0;;270;Worn by veterans of countless battles.
+ring_of_power;Ring of Power;Accessory;Ring;accessory;★★★;9;0;0;0;35;0;0;;780;Radiates with raw physical power.
+arcane_ring;Arcane Ring;Accessory;Ring;accessory;★★★;0;11;0;0;0;45;0;;850;Crackling with arcane energy. Greatly boosts magic.
+swift_ring;Swift Ring;Accessory;Ring;accessory;★★★;0;0;9;0;0;0;6;;800;The wearer moves like the wind.
+dragon_heart;Dragon Heart Ring;Accessory;Ring;accessory;★★★★;9;9;0;0;65;35;0;;4000;Contains the power of a dragon heart. Overwhelming might.
+ring_of_fate;Ring of Fate;Accessory;Ring;accessory;★★★★;5;5;5;0;0;0;0;+2 Dice;5000;The hand of fate itself. +2 to all dice rolls.
+copper_studs;Copper Studs;Accessory;Earring;accessory;★;0;0;0;1;12;0;0;;45;Simple copper studs. A hint of protection.
+glass_studs;Glass Studs;Accessory;Earring;accessory;★;0;0;0;0;0;12;0;;45;Glass studs with a faint shimmer.
+iron_earrings;Iron Earrings;Accessory;Earring;accessory;★;2;0;0;0;0;0;0;;50;Iron earrings. A warrior tradition.
+jade_drops;Jade Drops;Accessory;Earring;accessory;★;0;2;0;0;0;10;0;;50;Smooth jade teardrops. Focuses the mind.
+silver_hoops;Silver Hoops;Accessory;Earring;accessory;★★;3;0;0;0;22;0;0;;230;Silver hoops. Grants strength and endurance.
+sapphire_drops;Sapphire Drops;Accessory;Earring;accessory;★★;0;5;0;0;0;28;0;;250;Glittering sapphire earrings. Enhances magic.
+ruby_studs;Ruby Studs;Accessory;Earring;accessory;★★;4;0;0;3;0;0;0;;240;Ruby-set studs. Fire and fury.
+emerald_hoops;Emerald Hoops;Accessory;Earring;accessory;★★;0;0;4;0;0;0;2;;230;Emerald hoops. Grants swiftness.
+gold_hoops;Gold Hoops;Accessory;Earring;accessory;★★★;7;0;7;0;28;0;0;;780;Pure gold hoops. Strength and agility combined.
+arcane_drops;Arcane Drops;Accessory;Earring;accessory;★★★;0;10;0;0;0;38;2;;820;Earrings crackling with arcane energy.
+shadow_studs;Shadow Studs;Accessory;Earring;accessory;★★★;0;0;9;6;0;0;4;;790;Set with shadow gems. Grants swiftness and defense.
+divine_earrings;Divine Earrings;Accessory;Earring;accessory;★★★★;8;8;8;0;45;25;0;;4200;Forged by divine hands. Perfect balance of all attributes.
+lucky_clover;Lucky Clover;Accessory;Special;accessory;★★;0;0;0;0;0;0;0;+1 Dice;300;+1 to all dice rolls.
+phoenix_feather;Phoenix Feather;Accessory;Special;accessory;★★★;0;0;0;0;50;0;0;Revive x1;1200;Once: revive at full HP. Burns bright in darkest moments.
+hp_potion;HP Potion;Consumable;HP Potion;—;★;0;0;0;0;0;0;0;Heal 40 HP;40;Restores 40 HP.
+hi_hp_potion;Hi-HP Potion;Consumable;HP Potion;—;★★;0;0;0;0;0;0;0;Heal 100 HP;100;Restores 100 HP.
+mana_potion;Mana Potion;Consumable;Mana Potion;—;★;0;0;0;0;0;0;0;Heal 40 MP;40;Restores 40 MP.
+hi_mana_potion;Hi-Mana Potion;Consumable;Mana Potion;—;★★;0;0;0;0;0;0;0;Heal 100 MP;100;Restores 100 MP.
