@@ -35,8 +35,21 @@ img{image-rendering:pixelated;image-rendering:crisp-edges}
 .battle-header{display:flex;justify-content:space-between;align-items:center;padding:10px 20px}
 .battle-header .back-btn{font-size:18px;padding:8px 15px}
 .battle-title{font-family:'Press Start 2P',monospace;font-size:14px;color:var(--gold);text-shadow:0 0 10px rgba(255,100,0,0.5)}
-.battle-log{height:240px;width:90%;overflow-y:auto;background:rgba(0,0,0,0.5);border-radius:0;padding:12px;margin:10px auto;font-size:18px;color:var(--dim);text-align:center;position:relative;z-index:5000;transition:background 0.2s}
+.battle-log{height:160px;width:90%;overflow-y:auto;background:rgba(0,0,0,0.5);border-radius:0;padding:8px 12px;margin:6px auto;font-size:13px;line-height:1.55;color:var(--dim);text-align:center;position:relative;z-index:5000;transition:background 0.2s;scrollbar-width:thin;scrollbar-color:#333 transparent}
+.battle-log::-webkit-scrollbar{width:4px}.battle-log::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
 .battle-log:hover{background:rgba(0,0,0,0.95)}
+@media(max-width:520px){
+  .battle-arena{padding:0 0 6px;min-height:220px}
+  .combatant-side{width:36%}
+  .enemy-side .combatant-sprite{width:190px;height:190px}
+  #battleEnemySprite{width:190px!important;height:190px!important}
+  /* Wolf pack: shrink the container and both wolf areas */
+  #battleEnemySprite[style*="270px"]{width:190px!important;height:190px!important}
+  .player-side .combatant-sprite{width:76px;height:114px}
+  .battle-log{font-size:11px;height:120px}
+  .battle-actions{width:95%}
+  .battle-actions .act-btn{font-size:14px}
+}
 .battle-actions{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:10px;background:rgba(0,0,0,0.7);border-radius:0;margin:10px 5px;z-index:100;position:relative;width:80%;margin-left:auto;margin-right:auto;height:18%;min-height:120px;overflow-y:auto}
 .battle-actions .act-btn{width:calc(33% - 4px);font-size:18px;padding:6px 8px;min-height:35px;background:rgba(14,40,14,0.85);border:1px solid #333;color:#fff;position:relative}
 .battle-actions .act-btn:hover{background:rgba(20,60,20,0.9);border-color:#4a4}
@@ -59,12 +72,6 @@ img{image-rendering:pixelated;image-rendering:crisp-edges}
 .combatant-name{font-family:'VT323',monospace;font-size:28px;color:var(--gold);margin-top:15px}
 .combatant-stats{width:100%;max-width:250px;margin-top:12px}
 .hp-bar,.mp-bar{height:14px;background:rgba(0,0,0,0.6);border-radius:0;overflow:hidden;margin-bottom:4px}
-.combatant-sprite{font-size:180px;width:270px;height:270px;display:flex;align-items:center;justify-content:center}
-.combatant-sprite img{width:270px;height:270px;object-fit:contain;max-width:270px;max-height:270px}
-.combatant-name{font-family:'VT323',monospace;font-size:28px;color:var(--gold);margin-top:15px}
-.combatant-stats{width:100%;max-width:250px;margin-top:12px}
-.hp-bar,.mp-bar{height:14px;background:rgba(0,0,0,0.6);border-radius:0;overflow:hidden;margin-bottom:4px}
-
 /* Attack animations */
 @keyframes attackLunge{0%{transform:translateX(0)}50%{transform:translateX(80px)}100%{transform:translateX(0)}}
 @keyframes attackRetreat{0%{transform:translateX(0)}50%{transform:translateX(-80px)}100%{transform:translateX(0)}}
@@ -102,6 +109,7 @@ img{image-rendering:pixelated;image-rendering:crisp-edges}
 @keyframes diceSpin{0%{opacity:0;transform:rotate(0deg) scale(0.2)}55%{opacity:1;transform:rotate(540deg) scale(1.2)}100%{opacity:1;transform:rotate(720deg) scale(1)}}
 @keyframes enemyDeath{0%{opacity:1;transform:scale(1) translateY(0)}30%{opacity:0.8;transform:scale(1.08) rotate(3deg)}70%{opacity:0.3;transform:scale(0.85) rotate(-6deg) translateY(10px)}100%{opacity:0;transform:scale(0.5) translateY(40px)}}
 @keyframes wolfLunge{0%{transform:translateX(0)}35%{transform:translateX(-90px)}70%{transform:translateX(-70px)}100%{transform:translateX(0)}}
+@keyframes wolfLungeB{0%{transform:translateX(0)}35%{transform:translateX(-45px)}70%{transform:translateX(-35px)}100%{transform:translateX(0)}}
 @keyframes dmgFloatUp{0%{opacity:1;transform:translateX(-50%) scale(1.1)}100%{opacity:0;transform:translateX(-50%) translateY(-58px) scale(0.85)}}
 @keyframes screenShake{0%,100%{transform:translate(0,0)}15%{transform:translate(-7px,3px)}30%{transform:translate(7px,-3px)}45%{transform:translate(-5px,2px)}60%{transform:translate(5px,-2px)}80%{transform:translate(-2px,1px)}}
 .screen-shake{animation:screenShake 0.4s ease-out}
@@ -555,8 +563,11 @@ document.addEventListener('click', function() {
     </div>
   </div>
   <!-- Stats slide-in panel -->
-  <div id="battleStatsPanel" style="position:fixed;top:0;right:0;bottom:0;width:210px;background:rgba(8,6,16,0.97);border-left:1px solid #2a2040;padding:14px 12px;z-index:8000;transform:translateX(100%);transition:transform 0.25s ease;overflow-y:auto;display:flex;flex-direction:column;gap:6px">
-    <div style="font-family:'VT323',monospace;font-size:13px;color:var(--gold);border-bottom:1px solid #2a2040;padding-bottom:6px;margin-bottom:4px">📊 Combat Stats</div>
+  <div id="battleStatsPanel" style="position:fixed;top:0;right:0;bottom:0;width:220px;background:rgba(8,6,16,0.97);border-left:1px solid #2a2040;padding:14px 12px;z-index:8000;transform:translateX(100%);transition:transform 0.25s ease;overflow-y:auto;display:flex;flex-direction:column;gap:6px">
+    <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #2a2040;padding-bottom:6px;margin-bottom:4px">
+      <span style="font-family:'VT323',monospace;font-size:13px;color:var(--gold)">📊 Stats &amp; Items</span>
+      <button onclick="toggleBattleStatsPanel()" style="background:none;border:none;color:#666;font-size:16px;cursor:pointer;padding:0 2px;line-height:1">✕</button>
+    </div>
     <div id="battleStatsPanelContent" style="font-size:12px;line-height:1.9;color:#ccc"></div>
   </div>
 </div>
@@ -4753,6 +4764,8 @@ function _showBossIntroCutscene(e, onDone){
 function renderBattleScreen(){
   const p=cp(),c=GS.combat,e=c.enemy;
   if(!c || !p) return;
+  const _statsPanel = document.getElementById('battleStatsPanel');
+  if(_statsPanel && _statsPanel.style.transform === 'translateX(0%)') _renderBattleStatsPanel();
   
   const pHpP = Math.max(0, p.hp/p.maxHp*100);
   const pMpP = Math.max(0, p.mp/p.maxMp*100);
@@ -4861,18 +4874,23 @@ function renderBattleScreen(){
       const w1glow=pending&&!w1.dead?'box-shadow:0 0 14px #ff4444;':'';
       const w2glow=pending&&!w2.dead?'box-shadow:0 0 14px #ff4444;':'';
       const targetLabel=pending?'<div style="font-size:10px;color:#ff8888;margin-top:2px;font-weight:bold">▶ CLICK TO ATTACK</div>':'';
-      enemySprite.style.cssText='position:relative;width:270px;height:270px';
+      const wolfStatusIcons=(w)=>{const ic=[];if(w._poisonedTurns>0)ic.push(`<span title="Poisoned (${w._poisonedTurns}t)">${gIcon('Poison.png',16)}</span>`);if(w._burningTurns>0)ic.push(`<span title="Burning (${w._burningTurns}t)">🔥</span>`);if(w._cursedTurns>0)ic.push(`<span title="Cursed (${w._cursedTurns}t)">${gIcon('Debuff.png',16)}</span>`);return ic.length?`<div style="display:flex;gap:2px;justify-content:center;margin-top:2px">${ic.join('')}</div>`:'';};
+      const _wSize = window.innerWidth <= 520 ? 95 : 135;
+      const _cSize = _wSize * 2;
+      enemySprite.style.cssText=`position:relative;width:${_cSize}px;height:${_cSize}px`;
       enemySprite.innerHTML=`
         <div id="packWolf2Area" onclick="${w2.dead?'':'selectWolfTarget(2)'}" style="position:absolute;left:0;top:0;cursor:${w2.dead?'default':'pointer'};text-align:center;${w2.dead?'opacity:0.3;filter:grayscale(1)':''}">
-          <img id="packWolf2Sprite" src="assets/wolf.png" style="width:135px;height:135px;object-fit:contain;transform:scaleX(-1);outline:${(pending&&!w2.dead)||(c.targetWolf===2&&!pending)?sel:unsel};${w2glow}">
-          <div style="height:7px;background:rgba(0,0,0,0.6);width:115px;margin:3px auto 0;overflow:hidden"><div style="height:100%;width:${w2pct}%;background:#c03030;transition:width 0.3s"></div></div>
+          <img id="packWolf2Sprite" src="assets/wolf.png" style="width:${_wSize}px;height:${_wSize}px;object-fit:contain;transform:scaleX(-1);outline:${(pending&&!w2.dead)||(c.targetWolf===2&&!pending)?sel:unsel};${w2glow}">
+          <div style="height:7px;background:rgba(0,0,0,0.6);width:${_wSize-20}px;margin:3px auto 0;overflow:hidden"><div style="height:100%;width:${w2pct}%;background:#c03030;transition:width 0.3s"></div></div>
           <div style="font-size:11px;color:#aaa;margin-top:2px">${w2.dead?'✗ ':''}Wolf B</div>
+          ${wolfStatusIcons(w2)}
           ${w2.dead?'':targetLabel}
         </div>
         <div id="packWolf1Area" onclick="${w1.dead?'':'selectWolfTarget(1)'}" style="position:absolute;right:0;bottom:0;cursor:${w1.dead?'default':'pointer'};text-align:center;${w1.dead?'opacity:0.3;filter:grayscale(1)':''}">
-          <img id="packWolf1Sprite" src="assets/wolf.png" style="width:135px;height:135px;object-fit:contain;transform:scaleX(-1);outline:${(pending&&!w1.dead)||(c.targetWolf===1&&!pending)?sel:unsel};${w1glow}">
-          <div style="height:7px;background:rgba(0,0,0,0.6);width:115px;margin:3px auto 0;overflow:hidden"><div style="height:100%;width:${w1pct}%;background:#c03030;transition:width 0.3s"></div></div>
+          <img id="packWolf1Sprite" src="assets/wolf.png" style="width:${_wSize}px;height:${_wSize}px;object-fit:contain;transform:scaleX(-1);outline:${(pending&&!w1.dead)||(c.targetWolf===1&&!pending)?sel:unsel};${w1glow}">
+          <div style="height:7px;background:rgba(0,0,0,0.6);width:${_wSize-20}px;margin:3px auto 0;overflow:hidden"><div style="height:100%;width:${w1pct}%;background:#c03030;transition:width 0.3s"></div></div>
           <div style="font-size:11px;color:#aaa;margin-top:2px">${w1.dead?'✗ ':''}Wolf A</div>
+          ${wolfStatusIcons(w1)}
           ${w1.dead?'':targetLabel}
         </div>`;
     } else if(e.sprite){
@@ -5142,6 +5160,24 @@ function _renderBattleStatsPanel(){
     <div style="color:var(--gold)">${armor  ? armor.icon +' '+armor.name  : '—'}</div>
     ${shield ? `<div style="color:#888;font-size:10px;margin-top:3px">SHIELD</div><div style="color:var(--gold)">${shield.icon+' '+shield.name}</div>` : ''}
     ${p.gold!=null ? `<div style="border-top:1px solid #2a2040;margin:5px 0"></div><div>${coinImg()} Gold <b style="color:#fc0">${p.gold}</b></div>` : ''}
+    ${(()=>{
+      const consumables=(p.inventory||[]).filter(i=>i.healHp||i.healMp||i.type==='consumable'||i.type==='potion');
+      if(!consumables.length) return '';
+      return `<div style="border-top:1px solid #2a2040;margin:5px 0"></div>
+        <div style="color:#888;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px">Consumables</div>
+        ${consumables.map(i=>`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">
+          <span>${i.icon||'🧪'} ${i.name}</span>
+          ${i.healHp?`<span style="color:#f88;font-size:10px">+${i.healHp}HP</span>`:''}
+          ${i.healMp?`<span style="color:#88f;font-size:10px">+${i.healMp}MP</span>`:''}
+        </div>`).join('')}`;
+    })()}
+    ${(()=>{
+      const other=(p.inventory||[]).filter(i=>!i.healHp&&!i.healMp&&i.type!=='consumable'&&i.type!=='potion'&&i.type!=='equipment');
+      if(!other.length) return '';
+      return `<div style="border-top:1px solid #2a2040;margin:5px 0"></div>
+        <div style="color:#888;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px">Other Items</div>
+        ${other.map(i=>`<div style="margin-bottom:2px">${i.icon||'📦'} <span style="color:#ccc">${i.name}</span></div>`).join('')}`;
+    })()}
   `;
 }
 
@@ -6139,7 +6175,7 @@ function renderCombat(){
   const pMpP=Math.max(0,p.mp/p.maxMp*100);
   const eHpP=Math.max(0,e.hp/e.maxHp*100);
   const skills=CLASS_SKILLS[p.class]||CLASS_SKILLS.warrior;
-  const clog=c.log.slice(-5).map(l=>`<div>${l}</div>`).join('')||'<span style="opacity:.4">Combat begins...</span>';
+  const clog=c.log.slice(-5).map(l=>{let s='';if(l.includes('CRITICAL'))s='color:#ffcc00;font-weight:bold';else if(l.includes('❌')||l.includes('missed'))s='color:#777';else if(l.includes('Phoenix Feather')||l.includes('revives'))s='color:#cc88ff;font-weight:bold';return `<div${s?` style="${s}"`:''}>${l}</div>`;}).join('')||'<span style="opacity:.4">Combat begins...</span>';
   // Status line
   const statusParts=[];
   if(c.fierceRecharge>0)statusParts.push(`<span class="recharge-badge" title="Cannot use Fierce Attack">⚡ FIERCE (${c.fierceRecharge}t)</span>`);
@@ -7434,7 +7470,7 @@ function doWolfPackTurn(){
     // Lunge animation on the attacking wolf's container
     const areaId = wolf===c._packWolf1 ? 'packWolf1Area' : 'packWolf2Area';
     const areaEl = document.getElementById(areaId);
-    if(areaEl){ areaEl.style.animation='wolfLunge 0.55s ease-out'; setTimeout(()=>{ if(areaEl) areaEl.style.animation=''; },560); }
+    if(areaEl){ const _anim=wolf===c._packWolf1?'wolfLunge':'wolfLungeB'; areaEl.style.animation=`${_anim} 0.55s ease-out`; setTimeout(()=>{ if(areaEl) areaEl.style.animation=''; },560); }
     setTimeout(()=>{
       const hitRoll=(Math.floor(Math.random()*20)+1)+wolf.str;
       const playerAC=(p.armorClass||12);
@@ -7466,6 +7502,7 @@ function doEnemyTurn(){
   if(e.isWolfPack && c._packWolf1){ doWolfPackTurn(); return; }
   // Reset Fierce Attack decrement flag for player's next turn
   c._fierceDecremented = false;
+  c._backstabDecremented = false;
 
   // Tick enemy poison DoT
   if(e._poisonedTurns > 0){
@@ -9165,29 +9202,6 @@ function spawnDmgFloat(x, y, text, color){
 function spawnPtc(cx,cy,color,n){
   for(let i=0;i<n;i++){const el=document.createElement('div');el.className='ptc';const a=(Math.random()*360)*Math.PI/180,d=40+Math.random()*80;el.style.cssText=`left:${cx}px;top:${cy}px;width:${3+Math.random()*4}px;height:${3+Math.random()*4}px;background:${color};--dx:${Math.cos(a)*d}px;--dy:${Math.sin(a)*d-48}px;animation-duration:${.55+Math.random()*.6}s`;document.body.appendChild(el);setTimeout(()=>el.remove(),1400);}
 }
-function showDamageNumber(damage, isPlayerDamage = false){
-  const modal = document.getElementById('modal');
-  const dmgEl = document.createElement('div');
-  dmgEl.style.cssText = `
-    position: fixed;
-    left: 50%;
-    top: 40%;
-    transform: translate(-50%, -50%);
-    font-size: 48px;
-    font-weight: bold;
-    color: ${isPlayerDamage ? '#ff4040' : '#40ff40'};
-    text-shadow: 4px 4px 4px rgba(0,0,0,0.8);
-    animation: dmgFloat 1s ease-out forwards;
-    z-index: 1000;
-    pointer-events: none;
-  `;
-  dmgEl.textContent = `-${damage}`;
-  document.body.appendChild(dmgEl);
-  setTimeout(() => dmgEl.remove(), 1000);
-}
-const dmgStyle = document.createElement('style');
-dmgStyle.textContent = `@keyframes dmgFloat{0%{transform:translate(-50%,-50%) scale(0.5);opacity:1}100%{transform:translate(-50%,-100%) scale(1.5);opacity:0}}`;
-document.head.appendChild(dmgStyle);
 
 window.addEventListener('resize',()=>{initBg();if(board.tiles.length){resizeBoard();requestDraw();}});
 initBg();drawBg();renderForms();
