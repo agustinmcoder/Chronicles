@@ -49,11 +49,11 @@ img{image-rendering:pixelated;image-rendering:crisp-edges}
 .mp-fill{background:#4060c0;height:100%;transition:width 0.3s steps(8)}
 .battle-arena{flex:1;width:80%;display:flex;align-items:flex-end;justify-content:space-between;padding:0 0 12px;position:relative;min-height:300px;margin:0 auto}
 .combatant-side{width:30%;display:flex;flex-direction:column;align-items:center;transition:transform 0.3s ease}
-.player-side{margin-right:auto;padding-left:0}
+.player-side{margin-right:auto;padding-left:0;align-items:center}
 .enemy-side{margin-left:auto;padding-right:0}
 .combatant-sprite{font-size:180px;width:270px;height:270px;display:flex;align-items:center;justify-content:center}
-.player-side .combatant-sprite{font-size:102px;width:102px;height:153px;align-items:flex-end}
-.player-side .combatant-sprite img{width:100%;height:100%;object-fit:fill;align-self:flex-end}
+.player-side .combatant-sprite{font-size:102px;width:102px;height:153px;align-items:center;justify-content:center}
+.player-side .combatant-sprite img{width:100%;height:100%;object-fit:contain;align-self:center}
 .enemy-side .combatant-sprite{width:270px;height:270px}
 .combatant-sprite img{width:100%;height:100%;object-fit:contain;max-width:270px;max-height:270px}
 .combatant-name{font-family:'VT323',monospace;font-size:28px;color:var(--gold);margin-top:15px}
@@ -101,6 +101,10 @@ img{image-rendering:pixelated;image-rendering:crisp-edges}
 @keyframes bossIntroFlash{0%,100%{opacity:1}50%{opacity:0.4}}
 @keyframes diceSpin{0%{opacity:0;transform:rotate(0deg) scale(0.2)}55%{opacity:1;transform:rotate(540deg) scale(1.2)}100%{opacity:1;transform:rotate(720deg) scale(1)}}
 @keyframes enemyDeath{0%{opacity:1;transform:scale(1) translateY(0)}30%{opacity:0.8;transform:scale(1.08) rotate(3deg)}70%{opacity:0.3;transform:scale(0.85) rotate(-6deg) translateY(10px)}100%{opacity:0;transform:scale(0.5) translateY(40px)}}
+@keyframes wolfLunge{0%{transform:translateX(0)}35%{transform:translateX(-90px)}70%{transform:translateX(-70px)}100%{transform:translateX(0)}}
+@keyframes dmgFloatUp{0%{opacity:1;transform:translateX(-50%) scale(1.1)}100%{opacity:0;transform:translateX(-50%) translateY(-58px) scale(0.85)}}
+@keyframes screenShake{0%,100%{transform:translate(0,0)}15%{transform:translate(-7px,3px)}30%{transform:translate(7px,-3px)}45%{transform:translate(-5px,2px)}60%{transform:translate(5px,-2px)}80%{transform:translate(-2px,1px)}}
+.screen-shake{animation:screenShake 0.4s ease-out}
 
 /* ── Battle Effects ── */
 @keyframes slashTrail{0%{opacity:0;transform:translate(-50%,-50%) scale(0.5) rotate(0deg)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.2) rotate(-10deg)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.5) rotate(-20deg)}}
@@ -614,6 +618,10 @@ document.addEventListener('click', function() {
         <div style="color:var(--dim);font-size:11px;margin-bottom:8px">FINAL BOSSES</div>
         <div id="btFinalBossList" style="display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto"></div>
       </div>
+      <div style="flex:1">
+        <div style="color:var(--dim);font-size:11px;margin-bottom:8px">ENCOUNTERS</div>
+        <div id="btEncounterList" style="display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -715,7 +723,7 @@ function hasStatus(target, statusKey){
 function skillRank(p, id){ return (p && p.skillRanks && p.skillRanks[id]) || 1; }
 
 // ── CRIT HELPER ──
-function applyCrit(dmgBase, isCrit, c){ if(isCrit){ c.log.push('💥 CRITICAL HIT!'); return Math.floor(dmgBase*1.5); } return dmgBase; }
+function applyCrit(dmgBase, isCrit, c){ if(isCrit){ if(c) c._lastDmgWasCrit=true; c.log.push('💥 CRITICAL HIT!'); return Math.floor(dmgBase*1.5); } if(c) c._lastDmgWasCrit=false; return dmgBase; }
 
 // ── CLASS SKILL DEFINITIONS ──
 const CLASS_SKILLS = {
@@ -778,7 +786,7 @@ const CLASS_SKILLS = {
   rogue: [
     {id:'basic_atk',   name:'Basic Attack',   icon:'',kind:'atk',mpCost:0,dice:['d4'],desc:'D4 + 50% DEX + 50% STR. Piercing damage.',
       exec:(p,e,c,r)=>{const s=calcStats(p);const d4=c._playerDiceRoll||Math.floor(Math.random()*4)+1;const dmgBase=d4+Math.floor(s.dex*0.5)+Math.floor(s.str*0.5);const hitMod=Math.floor(s.str*0.5)+Math.floor(s.dex*0.5);const _nr=(c._preRolledD20!=null?c._preRolledD20:Math.floor(Math.random()*20)+1);delete c._preRolledD20;const hitRoll=_nr+hitMod;const _crit=_nr===20;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s attack missed!`);return 0;}const dmg=applyCrit(dmgBase,_crit,c);e.hp=Math.max(0,e.hp-dmg);c.log.push(`🗡️ Basic Attack — ${dmg} piercing dmg (D4:${d4}+${Math.floor(s.dex*0.5)} DEX+${Math.floor(s.str*0.5)} STR)`);return dmg;}},
-    {id:'backstab',   name:'Backstab',       icon:'',kind:'atk',mpCost:6,dice:['d8'],desc:'D8 + 100% DEX. 1 turn cooldown. Must hit.',
+    {id:'backstab',   name:'Backstab',       icon:'',kind:'atk',mpCost:0,dice:['d8'],desc:'D8 + 100% DEX. 1 turn cooldown. Must hit.',
       exec:(p,e,c,r)=>{if(c.backstabCd>0){c.log.push(`🔪 Backstab still recharging (${c.backstabCd} turns left)!`);return 0;}const s=calcStats(p);const _dm=skillRank(p,'backstab')>=2?10:8;const d8=c._playerDiceRoll||Math.floor(Math.random()*_dm)+1;const dmgBase=d8+Math.floor(s.dex);const _nr=(c._preRolledD20!=null?c._preRolledD20:Math.floor(Math.random()*20)+1);delete c._preRolledD20;const hitRoll=_nr+s.dex;const _crit=_nr===20;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Backstab missed!`);c.backstabCd=1;return 0;}const dmg=applyCrit(dmgBase,_crit,c);e.hp=Math.max(0,e.hp-dmg);c.backstabCd=1;c.log.push(`🔪 Backstab — ${dmg} piercing dmg! (D8:${d8}+${Math.floor(s.dex)} DEX, recharging 1 turn)`);return dmg;}},
     {id:'poison_blade',name:'Poison Blade',  icon:'',kind:'atk',mpCost:18,dice:['d6'],desc:'D6 + 50% DEX + 50% STR. Poison deals DEX×3 dmg/turn for 3 turns.',
       exec:(p,e,c,r)=>{const s=calcStats(p);const d6=c._playerDiceRoll||Math.floor(Math.random()*6)+1;const dmgBase=d6+Math.floor(s.dex*0.5)+Math.floor(s.str*0.5);const _nr=(c._preRolledD20!=null?c._preRolledD20:Math.floor(Math.random()*20)+1);delete c._preRolledD20;const hitRoll=_nr+s.dex;const _crit=_nr===20;c.log.push(`🎲 Hit: ${hitRoll} vs AC ${e.armorClass||12}`);if(hitRoll<(e.armorClass||12)){c.log.push(`❌ ${p.name}'s Poison Blade missed!`);return 0;}const dmg=applyCrit(dmgBase,_crit,c);e.hp=Math.max(0,e.hp-dmg);if(!c._skipStatus){const poisonDmg=Math.floor(s.dex*3);const _pTurns=skillRank(p,'poison_blade')>=2?4:3;e._poisonedTurns=(e._poisonedTurns||0)+_pTurns;e._poisonDmg=poisonDmg;c.log.push(`☠️ Poison Blade — ${dmg} dmg + poison (${poisonDmg}/turn for 3 turns)`);}else{c.log.push(`☠️ Poison Blade — ${dmg} dmg`);}return dmg;}},
@@ -1034,7 +1042,8 @@ const MINI_BOSSES = [
   {name:'Forest Witch',icon:'',sprite:'forest witch',hp:65,maxHp:65,mp:60,maxMp:60,str:3,int:9,dex:5,armorClass:15,skills:[{name:'Hex Bolt',cost:14,dmg:1.8,type:'magic',desc:'Fires a concentrated hex bolt.'},{name:'Curse',cost:8,dmg:0.5,type:'magic',debuff:'str',desc:'Curses foe.'}]},
   {name:'Stone Golem',icon:'',sprite:'stone golem',hp:140,maxHp:140,mp:10,maxMp:10,str:10,int:1,dex:4,armorClass:15,skills:[{name:'Boulder Smash',cost:5,dmg:4.0,type:'physical',desc:'Crushes the target.'},{name:'Stone Skin',cost:5,dmg:0,type:'buff',ac:4,desc:'Hardens rock exterior.'}]},
   {name:'Vampire Lord',icon:'',sprite:'vampire lord',hp:90,maxHp:90,mp:40,maxMp:40,str:8,int:6,dex:6,armorClass:15,skills:[{name:'Blood Drain',cost:15,dmg:1.4,type:'magic',heal:0.5,desc:'Drains life force.'},{name:'Bat Swarm',cost:10,dmg:1.0,type:'physical',hits:3,desc:'3 rapid hits.'}]},
-  {name:'Sea Serpent',icon:'',sprite:'sea serpent',hp:100,maxHp:100,mp:40,maxMp:40,str:9,int:4,dex:7,armorClass:15,skills:[{name:'Constrict',cost:8,dmg:1.3,type:'physical',stun:1,desc:'May stun.'},{name:'Poison Fang',cost:5,dmg:0.8,type:'physical',poison:3,desc:'3-turn poison.'}]},
+  {name:'Ancient Giant Wolf',icon:'',sprite:'ancient wolf',hp:120,maxHp:120,mp:20,maxMp:20,str:10,int:2,dex:8,armorClass:14,isWolf:true,skills:[{name:'Savage Bite',cost:0,dmg:1.4,type:'physical',desc:'Powerful bite attack.'},{name:'Rallying Howl',cost:10,dmg:0,type:'buff',str:4,desc:'Howls to boost its own power. +4 STR.'},{name:'Pack Lunge',cost:15,dmg:2.0,type:'physical',desc:'A devastating leaping pounce.'}]},
+  {name:'Werewolf',icon:'',sprite:'werewolf',hp:95,maxHp:95,mp:25,maxMp:25,str:11,int:2,dex:9,armorClass:13,isWolf:true,isWerewolf:true,skills:[{name:'Claw Swipe',cost:0,dmg:1.3,type:'physical',desc:'Fast slashing strike.'},{name:'Feral Howl',cost:10,dmg:0,type:'buff',str:4,desc:'Lets out a terrifying howl. +4 STR.'},{name:'Moonblaze',cost:15,dmg:2.2,type:'magic',desc:'Channels lunar energy into a devastating lunge.'}]},
 ];
 
 const FINAL_BOSSES = [
@@ -1655,6 +1664,10 @@ function renderBattleTest(){
       <button class="act-btn" onclick="startBattleTest('final',${i})">${b.icon} ${b.name}</button>
     `).join('');
   }
+  const encList=document.getElementById('btEncounterList');
+  if(encList){
+    encList.innerHTML=`<button class="act-btn" onclick="startBattleTestEncounter('wolfpack')">Wolf Pack</button>`;
+  }
 }
 
 function btCycleRace(dir){
@@ -1671,6 +1684,45 @@ function btCycleClass(dir){
   idx=(idx+dir+classes.length)%classes.length;
   btForm.cls=classes[idx];
   renderBattleTest();
+}
+
+function startBattleTestEncounter(type){
+  if(type==='wolfpack'){
+    const nameInput=document.getElementById('btNameInput');
+    btForm.name=nameInput?nameInput.value:'Hero';
+    const base=CLASSES[btForm.cls];
+    const testPlayer={
+      name:btForm.name,race:btForm.race,gender:btForm.gender,class:btForm.cls,level:1,exp:0,gold:500,
+      hp:base.hp,maxHp:base.hp,mp:base.mp,maxMp:base.mp,statPoints:0,
+      inventory:[],equipped:{},
+      tileIdx:0,allocStr:0,allocInt:0,allocDex:0,allocHp:0,
+      bossesDefeated:0,questsCompleted:0,curses:{},poison:0,skipTurns:0,skillRanks:{}
+    };
+    const starterItems={
+      mage:['apprentice_staff','cloth_robe','worn_boots','iron_ring'],
+      warrior:['short_sword','tower_shield','leather_cap','iron_ring'],
+      ranger:['short_bow','leather_vest','worn_boots','iron_ring'],
+      monk:['iron_knuckles','monks_gi','worn_boots','iron_ring'],
+      rogue:['rusty_dagger','leather_vest','worn_boots','iron_ring']
+    };
+    (starterItems[btForm.cls]||starterItems.warrior).forEach(itId=>{
+      const it=ITEMS[itId];
+      if(it){testPlayer.inventory.push({...it});if(it.slot&&!testPlayer.equipped[it.slot])testPlayer.equipped[it.slot]=itId;}
+    });
+    const wolfPack={
+      name:'Wolf Pack',icon:'',sprite:'wolf',
+      hp:70,maxHp:70,mp:0,maxMp:0,
+      str:8,int:1,dex:7,armorClass:11,
+      isWolfPack:true,
+      skills:[
+        {name:'Bite',cost:0,dmg:1.2,type:'physical',desc:'A coordinated bite from both wolves.'},
+        {name:'Flank',cost:0,dmg:1.5,type:'physical',desc:'One wolf distracts while the other strikes from the side.'}
+      ]
+    };
+    GS.players=[testPlayer];GS.curP=0;GS.turn=1;GS.initOrder=[0];GS._testMode=true;
+    showS('gameScreen');
+    setTimeout(()=>initCombat(wolfPack),100);
+  }
 }
 
 function startBattleTest(type, idx){
@@ -3485,8 +3537,34 @@ function triggerEv(tileIdx){
       default: closeEndTurn();
   }
 }
+function triggerWolfPackEncounter(){
+  const p=cp();
+  openModal('🐺 Wolf Pack!',
+    '<div style="font-size:13px;line-height:1.7">As you move through the forest trail, two wolves emerge from the undergrowth, hackles raised and teeth bared. They circle you, looking for an opening to strike!</div>',
+    [{label:'Fight!',fn:()=>{
+      closeModal();
+      const wolfPack={
+        name:'Wolf Pack',icon:'',sprite:'wolf',
+        hp:70,maxHp:70,mp:0,maxMp:0,
+        str:8,int:1,dex:7,armorClass:11,
+        isWolfPack:true,
+        skills:[
+          {name:'Bite',cost:0,dmg:1.2,type:'physical',desc:'A coordinated bite from both wolves.'},
+          {name:'Flank',cost:0,dmg:1.5,type:'physical',desc:'One wolf distracts while the other strikes from the side.'}
+        ]
+      };
+      initCombat(wolfPack);
+    }}]
+  );
+}
+
 function doNormal(){
   const p=cp();
+  const tile=board.tiles[p.tileIdx];
+  if(p.mainQuest && p.mainQuest.id==='fur_merchant' && tile && tile.region==='r1' && Math.random()<0.10){
+    triggerWolfPackEncounter();
+    return;
+  }
   if(Math.random() < 0.2){
     openModal('🌿 Uneventful','Nothing eventful happens along the road.',[{label:'Continue',fn:()=>{clearEventBackground();closeEndTurn();}}]);
   }else{
@@ -3818,10 +3896,18 @@ function doVillage(){
   const exploreBtn = hasVillageQuest
     ? `<button class="act-btn" onclick="openVillageQuestEncounters()">🔎 Explore the Village</button>`
     : '';
+  // Check if player can turn in fur_merchant quest here
+  const canTurnIn = p.mainQuest && p.mainQuest.id==='fur_merchant'
+    && p.mainQuest.progress>=p.mainQuest.goal
+    && p.mainQuest.originTile===p.tileIdx;
+  const turnInBtn = canTurnIn
+    ? `<button class="act-btn" style="border-color:#f0c040" onclick="villageQuestTurnIn_fur_merchant()">🐺 Return to Fur Merchant</button>`
+    : '';
   const html=`<div class="mo-title">${vName}</div>
     <div class="mo-choices" style="display:flex;flex-direction:column;gap:6px">
       <button class="act-btn pri" onclick="villageRest()">💤 Rest — Recover HP</button>
       <button class="act-btn" onclick="openVillageShop()">Shop — Buy & Sell</button>
+      ${turnInBtn}
       ${exploreBtn}
     </div>`;
   openModal(null,null,[],html);
@@ -3881,7 +3967,8 @@ function villageQuestApproach_fur_merchant(){
           progress: 0,
           goal: 2,
           rewardGold: 120,
-          rewardExp: 80
+          rewardExp: 80,
+          originTile: p.tileIdx
         };
         toast(`${p.name} accepted: Fur Merchant!`, 'good');
         closeEndTurn();
@@ -3898,6 +3985,28 @@ function villageQuestDecline_fur_merchant(){
   closeModal();
   openModal('Fur Merchant', `<div style="font-size:13px;line-height:1.7">You keep walking, glancing back at the curious little stall from a distance.</div>`,
     [{label:'Continue', fn:()=>{ closeModal(); closeEndTurn(); }}]
+  );
+}
+
+function villageQuestTurnIn_fur_merchant(){
+  const p=cp();
+  openModal('Fur Merchant',
+    `<div style="font-size:13px;line-height:1.7">The merchant's eyes light up as you lay the pelts on the counter. "Magnificent! These are exactly what I needed. A deal's a deal, traveler — here's your reward."</div>`,
+    [{label:'Collect Reward', fn:()=>{
+      const g=p.mainQuest.rewardGold||120;
+      const xp=p.mainQuest.rewardExp||80;
+      p.gold=(p.gold||0)+g;
+      p.exp=(p.exp||0)+xp;
+      if(!GS._assignedMainQuests) GS._assignedMainQuests={};
+      delete GS._assignedMainQuests['fur_merchant'];
+      const qIdx=p.inventory.findIndex(it=>it&&it.type==='quest_card'&&it.id==='quest:fur_merchant');
+      if(qIdx>=0) p.inventory.splice(qIdx,1);
+      p.mainQuest=null;
+      updPlayers();
+      toast(`✓ Fur Merchant quest complete! +${g}g +${xp} EXP`,'good');
+      closeModal();
+      closeEndTurn();
+    }}]
   );
 }
 
@@ -4427,6 +4536,16 @@ function forfeitSideQuest(pi, i){
 
 function doMiniBoss(){
   const p=cp();
+  const tile=board.tiles[p.tileIdx];
+  // 60% chance of Werewolf in r1 when fur_merchant quest is active
+  if(p.mainQuest && p.mainQuest.id==='fur_merchant' && tile && tile.region==='r1' && Math.random()<0.60){
+    const werewolf=MINI_BOSSES.find(x=>x.isWerewolf);
+    if(werewolf){
+      const b={...werewolf};b.hp=b.maxHp;b.isMiniBoss=true;b.isFinalBoss=false;
+      toast(`${b.name} appears!`,'bad');initCombat(b);
+      return;
+    }
+  }
   const defeated=(p.defeatedMinis||[]);
   const pool=MINI_BOSSES.filter(x=>!defeated.includes(x.name));
   const src=pool.length?pool:MINI_BOSSES;
@@ -4462,7 +4581,14 @@ function initCombat(enemy){
   const isFinalBoss = FINAL_BOSSES.some(b => b.name === enemy.name) || enemy.isFinalBoss;
   
   // Use new battle screen for all combat (skip boss intro for now)
-  GS.combat={enemy,log:[],phase:'player_choose',playerRoll:0,enemyRoll:0,defending:false,tempDefMult:0.5,fierceRecharge:0,wolf:null,fled:false};
+  GS.combat={enemy,log:[],phase:'player_choose',playerRoll:0,enemyRoll:0,defending:false,tempDefMult:0.5,fierceRecharge:0,backstabCd:0,wolf:null,fled:false};
+  if(enemy.isWolfPack){
+    const mk=(n)=>({...enemy,name:'Wolf '+n,hp:40,maxHp:40,dead:false,skills:enemy.skills.map(s=>({...s}))});
+    GS.combat._packWolf1=mk('A');
+    GS.combat._packWolf2=mk('B');
+    GS.combat.enemy=GS.combat._packWolf1;
+    GS.combat.targetWolf=1;
+  }
   if(isFinalBoss){
     // Switch to boss music for final boss
     const bgMusic = document.getElementById('bgMusic');
@@ -4646,9 +4772,15 @@ function renderBattleScreen(){
   document.getElementById('battlePlayerMp').style.width = pMpP + '%';
   
   // Update enemy
-  document.getElementById('battleEnemyName').textContent = e.name;
-  document.getElementById('battleEnemyHp').style.width = eHpP + '%';
-  document.getElementById('battleEnemyMp').style.width = eMpP + '%';
+  document.getElementById('battleEnemyName').textContent = e.isWolfPack ? 'Wolf Pack' : e.name;
+  const enemyStatsEl = document.querySelector('#enemySide .combatant-stats');
+  if(e.isWolfPack && c._packWolf1){
+    if(enemyStatsEl) enemyStatsEl.style.display = 'none';
+  } else {
+    if(enemyStatsEl) enemyStatsEl.style.display = '';
+    document.getElementById('battleEnemyHp').style.width = eHpP + '%';
+    document.getElementById('battleEnemyMp').style.width = eMpP + '%';
+  }
 
   // Enemy status effect icons
   const eStatusEl = document.getElementById('battleEnemyStatus');
@@ -4705,21 +4837,52 @@ function renderBattleScreen(){
   const playerSprite = document.getElementById('battlePlayerSprite');
   if(playerSprite){
     playerSprite.innerHTML = '';
-    const sprite = renderSprite(p.class, 102, p.color || CLASSES[p.class].color, p.race || 'human', p.gender || 'male');
+    const isWolfPackCombat = e.isWolfPack && c._packWolf1;
+    const spriteSize = isWolfPackCombat ? 270 : 102;
+    if(isWolfPackCombat){
+      playerSprite.style.width='270px'; playerSprite.style.height='270px';
+    } else {
+      playerSprite.style.width=''; playerSprite.style.height='';
+    }
+    const sprite = renderSprite(p.class, spriteSize, p.color || CLASSES[p.class].color, p.race || 'human', p.gender || 'male');
     playerSprite.appendChild(sprite);
   }
-  
+
   // Render enemy sprite
   const enemySprite = document.getElementById('battleEnemySprite');
   if(enemySprite){
     enemySprite.innerHTML = '';
-    if(e.sprite){
+    if(e.isWolfPack && c._packWolf1){
+      const w1=c._packWolf1, w2=c._packWolf2;
+      const w1pct=Math.max(0,Math.round(w1.hp/w1.maxHp*100));
+      const w2pct=Math.max(0,Math.round(w2.hp/w2.maxHp*100));
+      const pending=!!c._pendingSkillName;
+      const sel=pending?'2px solid #ff4444':'2px solid #f0c040', unsel='2px solid transparent';
+      const w1glow=pending&&!w1.dead?'box-shadow:0 0 14px #ff4444;':'';
+      const w2glow=pending&&!w2.dead?'box-shadow:0 0 14px #ff4444;':'';
+      const targetLabel=pending?'<div style="font-size:10px;color:#ff8888;margin-top:2px;font-weight:bold">▶ CLICK TO ATTACK</div>':'';
+      enemySprite.style.cssText='position:relative;width:270px;height:270px';
+      enemySprite.innerHTML=`
+        <div id="packWolf2Area" onclick="${w2.dead?'':'selectWolfTarget(2)'}" style="position:absolute;left:0;top:0;cursor:${w2.dead?'default':'pointer'};text-align:center;${w2.dead?'opacity:0.3;filter:grayscale(1)':''}">
+          <img id="packWolf2Sprite" src="assets/wolf.png" style="width:135px;height:135px;object-fit:contain;transform:scaleX(-1);outline:${(pending&&!w2.dead)||(c.targetWolf===2&&!pending)?sel:unsel};${w2glow}">
+          <div style="height:7px;background:rgba(0,0,0,0.6);width:115px;margin:3px auto 0;overflow:hidden"><div style="height:100%;width:${w2pct}%;background:#c03030;transition:width 0.3s"></div></div>
+          <div style="font-size:11px;color:#aaa;margin-top:2px">${w2.dead?'✗ ':''}Wolf B</div>
+          ${w2.dead?'':targetLabel}
+        </div>
+        <div id="packWolf1Area" onclick="${w1.dead?'':'selectWolfTarget(1)'}" style="position:absolute;right:0;bottom:0;cursor:${w1.dead?'default':'pointer'};text-align:center;${w1.dead?'opacity:0.3;filter:grayscale(1)':''}">
+          <img id="packWolf1Sprite" src="assets/wolf.png" style="width:135px;height:135px;object-fit:contain;transform:scaleX(-1);outline:${(pending&&!w1.dead)||(c.targetWolf===1&&!pending)?sel:unsel};${w1glow}">
+          <div style="height:7px;background:rgba(0,0,0,0.6);width:115px;margin:3px auto 0;overflow:hidden"><div style="height:100%;width:${w1pct}%;background:#c03030;transition:width 0.3s"></div></div>
+          <div style="font-size:11px;color:#aaa;margin-top:2px">${w1.dead?'✗ ':''}Wolf A</div>
+          ${w1.dead?'':targetLabel}
+        </div>`;
+    } else if(e.sprite){
       const img = document.createElement('img');
       img.src = 'assets/' + e.sprite + '.png';
       img.style.width = '100%';
       img.style.height = '100%';
       img.style.objectFit = 'contain';
       if(e.isFinalBoss) img.className = 'boss-idle';
+      if(e.isWolf) img.style.transform = 'scaleX(-1)';
       enemySprite.appendChild(img);
     } else {
       enemySprite.textContent = e.icon || '❓';
@@ -4729,7 +4892,14 @@ function renderBattleScreen(){
   // Update battle log
   const logEl = document.getElementById('battleLog');
   if(logEl){
-    logEl.innerHTML = c.log.map(l => '<div>' + l + '</div>').join('') || '<span style="opacity:0.5">Combat begins...</span>';
+    logEl.innerHTML = c.log.map(l => {
+      let s = '';
+      if(l.includes('CRITICAL')) s = 'color:#ffcc00;font-weight:bold';
+      else if(l.includes('❌') || l.includes('missed')) s = 'color:#777';
+      else if(l.includes('Phoenix Feather') || l.includes('revives')) s = 'color:#cc88ff;font-weight:bold';
+      else if(l.includes('✦') || l.includes('revive')) s = 'color:#cc88ff';
+      return `<div${s?` style="${s}"`:''}>${l}</div>`;
+    }).join('') || '<span style="opacity:0.5">Combat begins...</span>';
     logEl.scrollTop = logEl.scrollHeight;
   }
   
@@ -4793,6 +4963,7 @@ function battleSkill(idx){
 
   if(p.mp < sk.mpCost){toast('Not enough MP!','bad'); return;}
   if(sk.id === 'fierce_atk' && c.fierceRecharge > 0){toast('Fierce Attack recharging!','bad'); return;}
+  if(sk.id === 'backstab'   && c.backstabCd    > 0){toast('Backstab recharging!','bad'); return;}
 
   // Defend
   if(sk.id === 'defend'){
@@ -4895,7 +5066,7 @@ function toggleBattleCategory(category){
     const skills = CLASS_SKILLS[playerClass] || CLASS_SKILLS.warrior;
     optionsHtml = physical.map(sk => {
       const canAfford = p.mp >= sk.mpCost;
-      const isRecharging = sk.id === 'fierce_atk' && c.fierceRecharge > 0;
+      const isRecharging = (sk.id === 'fierce_atk' && c.fierceRecharge > 0) || (sk.id === 'backstab' && c.backstabCd > 0);
       const disabled = !canAfford || isRecharging;
       return `<button class="act-btn" data-skillid="${sk.id}" ${disabled ? 'disabled' : ''} onmouseenter="showSkillTooltip(this,'${sk.id}','${playerClass}')" onmouseleave="hideSkillTooltip()" onclick="battleSkillByName('${sk.name}')">${skillIcon(sk.id, playerClass)}${sk.name} <span style="opacity:0.6">${sk.mpCost > 0 ? sk.mpCost + 'MP' : ''}</span></button>`;
     }).join('');
@@ -5129,7 +5300,7 @@ function _applySavingEffect(skId, p, e, c){
   delete c._savingThrowSaved;
 }
 
-function battleSkillByName(skillName){
+function battleSkillByName(skillName, _wolfTargetAlreadyChosen){
   const p = cp(), c = GS.combat, e = c.enemy;
   const skills = CLASS_SKILLS[p.class] || CLASS_SKILLS.warrior;
   const sk = skills.find(s => s.name === skillName);
@@ -5137,6 +5308,15 @@ function battleSkillByName(skillName){
 
   if(p.mp < sk.mpCost){toast('Not enough MP!','bad'); return;}
   if(sk.id === 'fierce_atk' && c.fierceRecharge > 0){toast('Fierce Attack recharging!','bad'); return;}
+  if(sk.id === 'backstab'   && c.backstabCd    > 0){toast('Backstab recharging!','bad'); return;}
+
+  // Wolf pack: for attack skills, require player to click a wolf to target
+  if(!_wolfTargetAlreadyChosen && e.isWolfPack && c._packWolf1 && sk.id !== 'defend' && sk.id !== 'run' && sk.id !== 'heal_beam' && sk.id !== 'call_nature' && sk.id !== 'evasion' && sk.id !== 'shadow_cloak'){
+    c._pendingSkillName = skillName;
+    renderBattleScreen();
+    toast('Select a wolf to attack!','imp');
+    return;
+  }
 
   c.hudLocked = true;
 
@@ -5202,6 +5382,8 @@ function battleSkillByName(skillName){
 
     if(dmg > 0){
       c.log.push('⚔️ ' + p.name + ' uses ' + sk.name + ' for ' + Math.floor(dmg) + ' damage!');
+      const _hitEl = (c._packWolf1) ? document.getElementById(c.enemy===c._packWolf1?'packWolf1Sprite':'packWolf2Sprite') : document.getElementById('battleEnemySprite');
+      if(_hitEl){ const _hr=_hitEl.getBoundingClientRect(); spawnDmgFloat(_hr.left+_hr.width/2, _hr.top+_hr.height*0.2, c._lastDmgWasCrit?`💥${Math.floor(dmg)}`:`-${Math.floor(dmg)}`, c._lastDmgWasCrit?'#ffcc00':'#ff8844'); }
     }
     if(c._wolfJustSummoned){ c._wolfJustSummoned=false; renderBattleScreen(); animateWolfSummon(); setTimeout(()=>doEnemyTurn(),900); return; }
 
@@ -5322,6 +5504,11 @@ function animatePlayerAttack(skill, callback){
   function doAttackVisuals(hit, onDone){
     const skillType = skill.type || 'physical';
     const attackEffectType = getAttackEffectType(skill, playerClass);
+    const _c = GS.combat;
+    const wolfTarget = (_c && _c._packWolf1)
+      ? document.getElementById(_c.enemy === _c._packWolf1 ? 'packWolf1Sprite' : 'packWolf2Sprite')
+      : null;
+    const wolfArea = wolfTarget ? wolfTarget.parentElement : null;
 
     // ── Special: Sneak Attack sequence ──
     if(skill.id === 'sneak_attack'){
@@ -5416,33 +5603,31 @@ function animatePlayerAttack(skill, callback){
     function fireEffectAndFeedback(spawnPos){
       if(hit || alwaysPlay){
         if(skill.id === 'double_arrow'){
-          applyBattleEffect('arrow', 'enemy');
-          setTimeout(() => applyBattleEffect('arrow', 'enemy'), 400);
+          const arrowOpts = wolfTarget ? {targetEl: wolfTarget} : {};
+          applyBattleEffect('arrow', 'enemy', arrowOpts);
+          setTimeout(() => applyBattleEffect('arrow', 'enemy', arrowOpts), 400);
         } else {
           const opts = spawnPos ? {spawnX: spawnPos.x, spawnY: spawnPos.y} : {};
+          if(wolfTarget) opts.targetEl = wolfTarget;
           applyBattleEffect(attackEffectType, effectSide, opts);
         }
       }
       if(!hit){
         GS.combat._attackHit = false;
         c.log.push(`❌ ${p.name}'s ${skill.name} missed! (Roll: ${hitRoll} vs AC ${enemyAC})`);
-        const missPopup = document.createElement('div');
-        missPopup.textContent = 'MISS!';
-        missPopup.style.cssText = 'position:absolute;left:50%;top:30%;transform:translateX(-50%);' +
-          'font-size:32px;font-weight:bold;color:#ff3333;text-shadow:2px 2px 0 #000;' +
-          'z-index:300;animation:damagePopup 2s forwards';
-        effects.appendChild(missPopup);
-        setTimeout(() => missPopup.remove(), 2000);
+        const _missEl = wolfTarget || document.getElementById('battleEnemySprite');
+        if(_missEl){ const _mr=_missEl.getBoundingClientRect(); spawnDmgFloat(_mr.left+_mr.width/2, _mr.top+_mr.height*0.2, 'MISS', '#aaaaaa'); }
       } else {
         GS.combat._attackHit = true;
-        if(enemySide){
-          enemySide.classList.add('hit-flash');
-          setTimeout(() => enemySide.classList.remove('hit-flash'), 200);
+        const hitFlashEl = wolfArea || enemySide;
+        if(hitFlashEl){
+          hitFlashEl.classList.add('hit-flash');
+          setTimeout(() => hitFlashEl.classList.remove('hit-flash'), 200);
           const hitPopup = document.createElement('div');
           hitPopup.className = 'damage-popup';
           hitPopup.textContent = 'HIT!';
           hitPopup.style.cssText += ';left:50%;top:20%;transform:translateX(-50%)';
-          enemySide.appendChild(hitPopup);
+          hitFlashEl.appendChild(hitPopup);
           setTimeout(() => hitPopup.remove(), 2000);
         }
       }
@@ -5460,9 +5645,11 @@ function animatePlayerAttack(skill, callback){
 
       const pRect      = playerSide.getBoundingClientRect();
       const eRect      = enemySide.getBoundingClientRect();
-      const spriteEl   = document.getElementById('battleEnemySprite');
+      const spriteEl   = wolfTarget || document.getElementById('battleEnemySprite');
       const spriteRect = spriteEl ? spriteEl.getBoundingClientRect() : eRect;
-      const lungeX     = Math.max(0, eRect.left - pRect.right) + spriteRect.width * 0.3;
+      const lungeX     = wolfTarget
+        ? Math.max(0, spriteRect.left - pRect.right + spriteRect.width * 0.3)
+        : Math.max(0, eRect.left - pRect.right) + spriteRect.width * 0.3;
 
       playerSide.style.transition = `transform ${LUNGE_MS}ms ease-in`;
       playerSide.style.transform  = `translateX(${lungeX}px)`;
@@ -5470,10 +5657,12 @@ function animatePlayerAttack(skill, callback){
       setTimeout(() => {
         const arena    = document.querySelector('.battle-arena');
         const arenaRect = arena.getBoundingClientRect();
-        const pRectNow  = playerSide.getBoundingClientRect();
-        const spawnPos  = {
-          x: pRectNow.right - arenaRect.left,
-          y: pRectNow.top + pRectNow.height * 0.5 - arenaRect.top
+        const spawnPos  = wolfTarget ? {
+          x: wolfTarget.getBoundingClientRect().left - arenaRect.left,
+          y: wolfTarget.getBoundingClientRect().top  + wolfTarget.getBoundingClientRect().height * 0.5 - arenaRect.top
+        } : {
+          x: playerSide.getBoundingClientRect().right - arenaRect.left,
+          y: playerSide.getBoundingClientRect().top + playerSide.getBoundingClientRect().height * 0.5 - arenaRect.top
         };
         fireEffectAndFeedback(spawnPos);
 
@@ -5655,8 +5844,10 @@ function applyBattleEffect(effectType, targetSide, options = {}){
     if(effect.icon) eff.textContent = effect.icon;
 
     const arenaRect = arena.getBoundingClientRect();
-    const targetRect = target.getBoundingClientRect();
-    const targetX = targetRect.left + targetRect.width / 2 - arenaRect.left;
+    const targetRect = (options.targetEl ? options.targetEl : target).getBoundingClientRect();
+    const targetX = options.targetEl
+      ? targetRect.left - arenaRect.left
+      : targetRect.left + targetRect.width / 2 - arenaRect.left;
     const targetY = targetRect.top + targetRect.height / 2 - arenaRect.top;
 
     if(effect.travel){
@@ -5937,10 +6128,12 @@ function renderCombat(){
     c.fierceRecharge = Math.max(0, c.fierceRecharge - 1);
     c._fierceDecremented = true;
   }
-  // Clear the "just used" flag after first decrement
-  if(c._fierceJustUsed){
-    c._fierceJustUsed = false;
+  if(c._fierceJustUsed) c._fierceJustUsed = false;
+  if(c.backstabCd>0 && !c._backstabDecremented && !c._backstabJustUsed){
+    c.backstabCd = Math.max(0, c.backstabCd - 1);
+    c._backstabDecremented = true;
   }
+  if(c._backstabJustUsed) c._backstabJustUsed = false;
   
   const pHpP=Math.max(0,p.hp/p.maxHp*100);
   const pMpP=Math.max(0,p.mp/p.maxMp*100);
@@ -5950,12 +6143,13 @@ function renderCombat(){
   // Status line
   const statusParts=[];
   if(c.fierceRecharge>0)statusParts.push(`<span class="recharge-badge" title="Cannot use Fierce Attack">⚡ FIERCE (${c.fierceRecharge}t)</span>`);
+  if(c.backstabCd>0)statusParts.push(`<span class="recharge-badge" title="Cannot use Backstab">🔪 BACKSTAB (${c.backstabCd}t)</span>`);
   if(c.defending)statusParts.push(`<span style="color:#60c060;font-size:10px" title="75% damage reduction">🛡️ Defending</span>`);
   if(c.wolf)statusParts.push(`<span style="color:#c0c060;font-size:10px" title="Wolf assists in attacks">🐺 Wolf (${c.wolf.turns}t)</span>`);
   if(p.poison>0)statusParts.push(`<span style="color:#a060c0;font-size:10px" title="Takes poison damage each turn">☠ Poison (${p.poison}t)</span>`);
   const skillBtns=skills.map((sk,i)=>{
     const canAfford=p.mp>=sk.mpCost;
-    const isRecharging=sk.id==='fierce_atk'&&c.fierceRecharge>0;
+    const isRecharging=(sk.id==='fierce_atk'&&c.fierceRecharge>0)||(sk.id==='backstab'&&c.backstabCd>0);
     const dis=!canAfford||isRecharging;
     return `<div class="skill-btn ${sk.kind}" onclick="${dis?'':'combatSkill('+i+')'}" ${dis?'disabled':''} style="${dis?'opacity:.4;cursor:not-allowed':''}">
       <div class="sk-name">${sk.icon} ${sk.name}${isRecharging?` <span class="recharge-badge">⏳</span>`:''}</div>
@@ -6007,6 +6201,7 @@ function renderCombat(){
     const enemySprite = renderEnemySprite(e.sprite, 60);
     enemySprite.style.display = 'block';
     enemySprite.style.margin = '0 auto';
+    if(e.isWolf || e.isWolfPack) enemySprite.style.transform = 'scaleX(-1)';
     enemySpriteContainer.innerHTML = '';
     enemySpriteContainer.appendChild(enemySprite);
   }else if(enemySpriteContainer){
@@ -6021,6 +6216,7 @@ function combatSkill(idx){
   
   if(p.mp<sk.mpCost){toast('Not enough MP!','bad');return;}
   if(sk.id==='fierce_atk'&&c.fierceRecharge>0){toast('Fierce Attack recharging!','bad');return;}
+  if(sk.id==='backstab'&&c.backstabCd>0){toast('Backstab recharging!','bad');return;}
   
   // Defend - no dice roll, direct effect
   if(sk.id==='defend'){
@@ -6902,7 +7098,11 @@ function resolveSkill(skillIdx,roll,isHit){
   // Fierce Attack cooldown (2 turns) - will decrement at START of next player turn
   if(sk.id === 'fierce_atk'){
     c.fierceRecharge = 2;
-    c._fierceJustUsed = true; // Flag to decrement on next turn start
+    c._fierceJustUsed = true;
+  }
+  if(sk.id === 'backstab'){
+    c.backstabCd = 1;
+    c._backstabJustUsed = true;
   }
   
   // Wolf attack (old modal path only — new battle screen handles wolf in its own callback)
@@ -7219,8 +7419,51 @@ function triggerDraktharEvent(event){
 }
 // ────────────────────────────────────────────────────────
 
+function doWolfPackTurn(){
+  const p=cp(),c=GS.combat;
+  const wolves=[c._packWolf1,c._packWolf2].filter(w=>!w.dead);
+  if(!wolves.length){ combatWin(); return; }
+  let idx=0;
+  function attackNext(){
+    if(idx>=wolves.length){ renderBattleScreen(); setTimeout(()=>doPlayerTurn(),400); return; }
+    const wolf=wolves[idx++];
+    c.enemy=wolf;
+    const sk=wolf.skills[Math.floor(Math.random()*wolf.skills.length)];
+    c.log.push(`🐺 ${wolf.name} uses ${sk.name}!`);
+    renderBattleScreen();
+    // Lunge animation on the attacking wolf's container
+    const areaId = wolf===c._packWolf1 ? 'packWolf1Area' : 'packWolf2Area';
+    const areaEl = document.getElementById(areaId);
+    if(areaEl){ areaEl.style.animation='wolfLunge 0.55s ease-out'; setTimeout(()=>{ if(areaEl) areaEl.style.animation=''; },560); }
+    setTimeout(()=>{
+      const hitRoll=(Math.floor(Math.random()*20)+1)+wolf.str;
+      const playerAC=(p.armorClass||12);
+      if(hitRoll<playerAC){
+        c.log.push(`❌ ${wolf.name}'s attack missed!`);
+      } else {
+        const defMult=c.defending?c.tempDefMult:1.0;
+        const dmg=Math.max(1,Math.floor(wolf.str*sk.dmg*defMult));
+        p.hp=Math.max(0,p.hp-dmg);
+        c.log.push(`${wolf.name} — ${sk.name}: ${dmg} dmg`);
+        if(dmg>0){ spawnPtc(window.innerWidth*.35,window.innerHeight*.35,'#e05050',3); const _pl=document.getElementById('playerSide'); if(_pl){ const _pr=_pl.getBoundingClientRect(); spawnDmgFloat(_pr.left+_pr.width/2,_pr.top+_pr.height*0.3,`-${dmg}`,'#ff4444'); } if(dmg>p.maxHp*0.10){ const _arena=document.querySelector('.battle-arena'); if(_arena){_arena.classList.add('screen-shake');setTimeout(()=>_arena.classList.remove('screen-shake'),420);} } }
+      }
+      c.defending=false;
+      if(p.hp<=0){
+        const fi=p.inventory.find(i=>i.id==='phoenix_feather'&&!i.used);
+        if(fi){ fi.used=true; p.hp=p.maxHp; c.log.push(`✦ Phoenix Feather! ${p.name} revives!`); }
+        else { renderBattleScreen(); combatLose(); return; }
+      }
+      renderBattleScreen();
+      setTimeout(attackNext, 700);
+    }, 700);
+  }
+  attackNext();
+}
+
 function doEnemyTurn(){
   const p=cp(),c=GS.combat,e=c.enemy;
+  // Wolf pack uses its own turn logic
+  if(e.isWolfPack && c._packWolf1){ doWolfPackTurn(); return; }
   // Reset Fierce Attack decrement flag for player's next turn
   c._fierceDecremented = false;
 
@@ -7517,7 +7760,12 @@ function resolveEnemyAttack(sk,roll){
     if(e.mp!==undefined)e.mp=Math.max(0,e.mp-(sk.cost||0));
     p.hp=Math.max(0,p.hp-dmg);
     c.log.push(`${e.icon} ${e.name} — ${sk.name}: ${dmg} dmg${hits>1?` (${hitCount}/${hits} hits)`:''}${defMult<1?' [BLOCKED]':''}`);
-    if(dmg>0)spawnPtc(window.innerWidth*.35,window.innerHeight*.35,'#e05050',5);
+    if(dmg>0){
+      spawnPtc(window.innerWidth*.35,window.innerHeight*.35,'#e05050',5);
+      const _pl=document.getElementById('playerSide');
+      if(_pl){ const _pr=_pl.getBoundingClientRect(); spawnDmgFloat(_pr.left+_pr.width/2,_pr.top+_pr.height*0.3,`-${dmg}`,'#ff4444'); }
+      if(dmg > p.maxHp*0.10){ const _arena=document.querySelector('.battle-arena'); if(_arena){_arena.classList.add('screen-shake');setTimeout(()=>_arena.classList.remove('screen-shake'),420);} }
+    }
   }
   if(p.hp<=0){
     const fi=p.inventory.find(i=>i.id==='phoenix_feather'&&!i.used);
@@ -7548,7 +7796,43 @@ function closeCombatFled(){
   GS.combat=null;
   closeEndTurn();
 }
+function selectWolfTarget(n){
+  const c=GS.combat;
+  if(!c||!c._packWolf1) return;
+  const wolf = n===1 ? c._packWolf1 : c._packWolf2;
+  if(!wolf || wolf.dead) return;
+  c.targetWolf=n; c.enemy=wolf;
+  // If a skill is pending, execute it now against this wolf
+  if(c._pendingSkillName){
+    const pending=c._pendingSkillName;
+    c._pendingSkillName=null;
+    c.hudLocked=true;
+    renderBattleScreen();
+    battleSkillByName(pending, true);
+    return;
+  }
+  renderBattleScreen();
+}
+
 function killEnemy(){
+  const c=GS.combat, e=c?c.enemy:null;
+  // Wolf pack: mark one wolf dead, continue if the other survives
+  if(e && e.isWolfPack && c._packWolf1){
+    e.dead=true;
+    const deadSprite=document.getElementById(e===c._packWolf1?'packWolf1Sprite':'packWolf2Sprite');
+    if(deadSprite) deadSprite.style.animation='hitShake 0.12s ease 0s 3,enemyDeath 0.6s ease 0.36s forwards';
+    const bothDead=c._packWolf1.dead && c._packWolf2.dead;
+    if(bothDead){ setTimeout(()=>combatWin(),1000); return; }
+    // Switch to surviving wolf and let it take its turn
+    setTimeout(()=>{
+      if(!c._packWolf1.dead){ c.targetWolf=1; c.enemy=c._packWolf1; }
+      else { c.targetWolf=2; c.enemy=c._packWolf2; }
+      toast('One wolf down! The fight continues!','imp');
+      renderBattleScreen();
+      doWolfPackTurn();
+    },1000);
+    return;
+  }
   const sprite = document.getElementById('battleEnemySprite');
   if(sprite){
     sprite.style.animation = 'hitShake 0.12s ease 0s 3, enemyDeath 0.6s ease 0.36s forwards';
@@ -7596,6 +7880,48 @@ function combatWinContinue(p,e){
   if(e.isMiniBoss){
     if(!p.defeatedMinis) p.defeatedMinis=[];
     if(!p.defeatedMinis.includes(e.name)) p.defeatedMinis.push(e.name);
+  }
+  // Wolf pack fight — 40% chance per wolf killed
+  if(e.isWolfPack && GS.combat && GS.combat._packWolf1){
+    const _killed=[GS.combat._packWolf1,GS.combat._packWolf2].filter(w=>w&&w.dead).length;
+    let _peltsFound=0;
+    for(let _i=0;_i<_killed;_i++){ if(Math.random()<0.40) _peltsFound++; }
+    if(_peltsFound>0 && p.mainQuest && p.mainQuest.id==='fur_merchant'){
+      p.mainQuest.progress=Math.min(p.mainQuest.goal,(p.mainQuest.progress||0)+_peltsFound);
+      toast(`${_peltsFound===1?'Wolf pelt':'2 wolf pelts'} collected! (${p.mainQuest.progress}/${p.mainQuest.goal})`,'imp');
+      if(p.mainQuest.progress>=p.mainQuest.goal) toast('You have enough pelts! Return to the Fur Merchant.','imp');
+    } else if(_peltsFound>0){
+      toast(`Found ${_peltsFound===1?'a wolf pelt':'2 wolf pelts'}!`,'imp');
+    } else {
+      toast('The wolves left no usable pelts.','');
+    }
+  }
+
+  // Quest progress for werewolf mini-boss (fur_merchant) — 90% chance of 1 pelt
+  if(p.mainQuest && p.mainQuest.id==='fur_merchant' && e.isWerewolf){
+    if(Math.random()<0.90){
+      p.mainQuest.progress=Math.min(p.mainQuest.goal,(p.mainQuest.progress||0)+1);
+      toast(`Wolf pelt collected! (${p.mainQuest.progress}/${p.mainQuest.goal})`,'imp');
+      if(p.mainQuest.progress>=p.mainQuest.goal){
+        toast('You have enough pelts! Return to the Fur Merchant to complete the quest.','imp');
+      }
+    }else{
+      toast('The werewolf had no usable pelts.','');
+    }
+    updPlayers();
+  }
+  // Quest progress for wolf pack (fur_merchant) — 40% chance of 1 pelt per fight
+  if(p.mainQuest && p.mainQuest.id==='fur_merchant' && e.isWolfPack){
+    if(Math.random()<0.40){
+      p.mainQuest.progress=Math.min(p.mainQuest.goal,(p.mainQuest.progress||0)+1);
+      toast(`Wolf pelt collected! (${p.mainQuest.progress}/${p.mainQuest.goal})`,'imp');
+      if(p.mainQuest.progress>=p.mainQuest.goal){
+        toast('You have enough pelts! Return to the Fur Merchant to complete the quest.','imp');
+      }
+    }else{
+      toast('The wolves had no usable pelts this time.','');
+    }
+    updPlayers();
   }
   // Quest progress for skeletal mini bosses
   if(p.mainQuest && e.isMiniBoss){
@@ -8829,6 +9155,13 @@ function showVictory(p){
   document.body.appendChild(el);
   setInterval(()=>spawnPtc(Math.random()*window.innerWidth,Math.random()*window.innerHeight,'#f0c060',8),450);
 }
+function spawnDmgFloat(x, y, text, color){
+  const el = document.createElement('div');
+  el.style.cssText = `position:fixed;left:${x}px;top:${y}px;transform:translateX(-50%);font-family:'VT323',monospace;font-size:30px;font-weight:bold;color:${color};text-shadow:1px 1px 0 #000,0 0 6px ${color}88;pointer-events:none;z-index:9999;animation:dmgFloatUp 1.1s ease-out forwards`;
+  el.textContent = text;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1150);
+}
 function spawnPtc(cx,cy,color,n){
   for(let i=0;i<n;i++){const el=document.createElement('div');el.className='ptc';const a=(Math.random()*360)*Math.PI/180,d=40+Math.random()*80;el.style.cssText=`left:${cx}px;top:${cy}px;width:${3+Math.random()*4}px;height:${3+Math.random()*4}px;background:${color};--dx:${Math.cos(a)*d}px;--dy:${Math.sin(a)*d-48}px;animation-duration:${.55+Math.random()*.6}s`;document.body.appendChild(el);setTimeout(()=>el.remove(),1400);}
 }
@@ -8891,6 +9224,14 @@ document.addEventListener('keydown', function(ev){
   const actEl = document.getElementById('battleActions');
   if(!actEl) return;
   const key = ev.key;
+
+  // Wolf targeting mode: ESC cancels, 1/2 select wolf
+  if(c._pendingSkillName){
+    if(key==='Escape'||key==='Backspace'){ ev.preventDefault(); c._pendingSkillName=null; renderBattleScreen(); return; }
+    if(key==='1'){ ev.preventDefault(); selectWolfTarget(1); return; }
+    if(key==='2'){ ev.preventDefault(); selectWolfTarget(2); return; }
+  }
+
   const isMain = actEl.innerHTML.includes('toggleBattleCategory');
   if(isMain){
     if(key==='1'){ev.preventDefault();toggleBattleCategory('physical');}
