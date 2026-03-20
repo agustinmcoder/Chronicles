@@ -293,7 +293,9 @@ img{image-rendering:pixelated;image-rendering:crisp-edges}
 .legend{display:flex;flex-wrap:wrap;gap:4px;font-size:8px;color:var(--dim)}
 .leg{display:flex;align-items:center;gap:2px}
 .ld{width:8px;height:8px;border-radius:50%}
-#turnBanner{width:100%;padding:8px 12px;text-align:center;font-family:'Press Start 2P',monospace;font-size:10px;color:var(--gold);background:rgba(3,5,3,.93);border-bottom:1px solid var(--gold-dark);z-index:50;letter-spacing:3px;flex-shrink:0}
+#turnBanner{width:100%;padding:8px 12px;text-align:center;font-family:'Press Start 2P',monospace;font-size:10px;color:var(--gold);background:rgba(3,5,3,.93);border-bottom:1px solid var(--gold-dark);z-index:50;letter-spacing:3px;flex-shrink:0;transition:background .4s,color .4s,box-shadow .4s}
+#turnBanner.my-turn{background:linear-gradient(90deg,rgba(15,70,15,.97),rgba(30,110,30,.97));color:#a0ffa0;border-bottom-color:rgba(80,220,80,.4);animation:banner-pulse 1.8s ease-in-out infinite}
+@keyframes banner-pulse{0%,100%{box-shadow:none}50%{box-shadow:0 2px 22px rgba(60,220,60,.35)}}
 /* LOBBY SEQUENTIAL SETUP */
 #lobbyNav{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:12px}
 .lobby-dot{width:10px;height:10px;border-radius:50%;background:var(--border);transition:all .2s;flex-shrink:0}
@@ -661,8 +663,11 @@ document.addEventListener('click', function() {
         <div id="ol_base_info" style="margin-top:8px;font-size:13px;color:var(--dim)"></div>
       </div>
 
-      <!-- Ready button -->
-      <button id="onlineReadyBtn" class="act-btn pri" onclick="toggleOnlineReady()" style="max-width:220px;font-size:18px;padding:8px 20px">✓ Ready</button>
+      <!-- Ready + Randomize -->
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button id="onlineReadyBtn" class="act-btn pri" onclick="toggleOnlineReady()" style="font-size:18px;padding:8px 20px">✓ Ready</button>
+        <button class="act-btn" onclick="olRandomize()" style="font-size:15px;padding:8px 14px" title="Randomize class, race, gender and stats">🎲 Randomize</button>
+      </div>
     </div>
   </div>
 
@@ -5399,6 +5404,16 @@ function renderBattleScreen(){
     logEl.scrollTop = logEl.scrollHeight;
   }
   
+  // Spectating: non-active online players see battle but can't act
+  if(isOnline && !isMyTurn()){
+    const actionsEl = document.getElementById('battleActions');
+    if(actionsEl) actionsEl.innerHTML = `
+      <div style="text-align:center;padding:18px 0;color:var(--dim);font-family:'Press Start 2P',monospace;font-size:8px;letter-spacing:2px">
+        👁 SPECTATING ${p.name.toUpperCase()}'S BATTLE
+      </div>`;
+    return;
+  }
+
   // Render skill buttons - grouped by category
   const actionsEl = document.getElementById('battleActions');
   if(actionsEl){
@@ -9366,6 +9381,8 @@ function showPassBanner(p, cb){
   document.getElementById('passBannerIcon').textContent   = cls.icon;
   document.getElementById('passBannerName').textContent   = p.name.toUpperCase();
   document.getElementById('passBannerClass').textContent  = `${cls.name.toUpperCase()} · TURN ${GS.turn}`;
+  const tapEl = document.getElementById('passBannerTap');
+  if(tapEl) tapEl.textContent = isMyTurn() ? 'Tap anywhere to start your turn' : `${p.name}'s turn — tap to dismiss`;
   banner.classList.add('show');
   let done = false;
   const dismiss = () => {
@@ -9418,15 +9435,15 @@ function endTurn(){
   syncGS();
   updPlayers();renderActs();
   if(isOnline){
-    // In online mode: no pass banner, each player sees their own device
     const nextP = GS.players[GS.curP];
-    if(nextP._onlineIdx === myPlayerIdx){
-      setBanner(`Your turn! (Turn ${GS.turn})`);
-      toast('Your turn!', 'good');
-      startTurn();
-    } else {
-      setBanner(`${nextP.name}'s turn...`);
-    }
+    showPassBanner(nextP, ()=>{
+      if(nextP._onlineIdx === myPlayerIdx){
+        setBanner(`Your turn! (Turn ${GS.turn})`);
+        startTurn();
+      } else {
+        setBanner(`${nextP.name}'s turn...`);
+      }
+    });
   } else if(GS.players.length > 1){
     showPassBanner(GS.players[GS.curP], startTurn);
   } else {
@@ -9610,7 +9627,15 @@ function closeEndTurn(){
     endTurn();
   }
 }
-function setBanner(t){document.getElementById('turnBanner').textContent=t;}
+function setBanner(t){
+  const b=document.getElementById('turnBanner');
+  if(!b) return;
+  b.textContent=t;
+  if(isOnline){
+    if(isMyTurn()) b.classList.add('my-turn');
+    else b.classList.remove('my-turn');
+  }
+}
 function updPlayers(){
   const c=document.getElementById('playersList');if(!c)return;
   c.innerHTML=GS.players.map((p,i)=>{
@@ -10331,7 +10356,8 @@ let myPlayerIdx      = 0;
 let isHost           = false;
 let roomCode         = '';
 let _pendingOnlineInit = false;
-let _onlineReady = false;
+let _onlineReady      = false;
+let _prevOnlinePhase  = '';
 
 // ── Inline lobby character state (uses pForms[0]) ─────────────────────────────
 function olInitChar(){
@@ -10365,6 +10391,22 @@ function olUpdateUI(){
   setT('ol_dex_total', `= ${base.dex+(pf.alloc.dex||0)}`);
   setT('ol_hp_total',  `= ${base.hp+(pf.alloc.hp||0)*10} HP`);
   setT('ol_base_info', `MP: ${base.mp}  ·  AC: ${{warrior:14,monk:13,ranger:11,mage:10,rogue:13}[cls]||12}`);
+}
+
+function olRandomize(){
+  const pf = pForms[0];
+  const classes = Object.keys(CLASSES);
+  const races   = Object.keys(RACES);
+  const genders = Object.keys(GENDERS);
+  pf.cls    = classes[Math.floor(Math.random()*classes.length)];
+  pf.race   = races  [Math.floor(Math.random()*races.length)];
+  pf.gender = genders[Math.floor(Math.random()*genders.length)];
+  pf.alloc  = {str:0,int:0,dex:0,hp:0};
+  pf.pts    = 4;
+  const stats = ['str','int','dex','hp'];
+  for(let i=0;i<4;i++) pf.alloc[stats[Math.floor(Math.random()*stats.length)]]++;
+  pf.pts = 0;
+  olUpdateUI();
 }
 
 function olCycleClass(dir){
@@ -10472,23 +10514,39 @@ function connectOnline(){
     }
   });
   socket.on('gameStateUpdate', ({ gs, board: nb }) => {
+    const prevPhase = _prevOnlinePhase;
     GS.curP=gs.curP; GS.turn=gs.turn; GS.phase=gs.phase;
     GS.initOrder=gs.initOrder||GS.initOrder;
     GS.highlightedTiles=gs.highlightedTiles||[];
     GS.diceVal=gs.diceVal; GS.combat=gs.combat; GS.players=gs.players;
+    _prevOnlinePhase = gs.phase;
     if(nb&&nb.tiles){ board.tiles=nb.tiles; board.connections=nb.connections; board.tileW=nb.tileW; board.tileH=nb.tileH; if(nb.startTiles) board.startTiles=nb.startTiles; }
     updPlayers(); renderActs(); markBoardDirty();
+
+    // Pending board init for non-host
     if(_pendingOnlineInit && gs.phase==='initiative'){
       _pendingOnlineInit = false;
+      resizeBoard();
       drawBoard();
       setTimeout(submitOnlineInit, 200);
       return;
     }
     if(gs.phase==='initiative') return;
+
+    // Battle spectating: enter battle screen when active player starts combat
+    if(gs.phase==='combat' && prevPhase!=='combat'){
+      showBattleScreen();
+      return;
+    }
+    // Battle over: return to game board
+    if(prevPhase==='combat' && gs.phase!=='combat'){
+      showS('gameScreen');
+    }
+
     const next = GS.players[GS.curP];
-    if(next&&next._onlineIdx===myPlayerIdx){
-      setBanner(`Your turn! (Turn ${GS.turn})`);
-      if(GS.phase==='roll') toast('Your turn — roll the dice!','good');
+    if(next && next._onlineIdx===myPlayerIdx && gs.phase==='roll'){
+      // It's my turn — show the pass banner then start
+      showPassBanner(next, ()=>{ setBanner(`Your turn! (Turn ${GS.turn})`); startTurn(); });
     } else if(next){
       setBanner(`${next.name}'s turn... (Turn ${GS.turn})`);
     }
@@ -10599,6 +10657,7 @@ function startOnlineGame(characters){
       syncGS();
       setTimeout(submitOnlineInit, 400);
     } else {
+      resizeBoard();
       drawBoard();
       setBanner('Waiting for host to set up the board...');
       _pendingOnlineInit = true;
