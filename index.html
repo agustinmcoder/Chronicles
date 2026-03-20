@@ -27,8 +27,7 @@ img{image-rendering:pixelated;image-rendering:crisp-edges}
 #charCreation{background:linear-gradient(rgba(4,6,4,0.7),rgba(4,6,4,0.7)),url('assets/fondo/fondo.gif');background-size:cover;background-position:center}
 #rulesScreen{background:linear-gradient(rgba(4,6,4,0.7),rgba(4,6,4,0.7)),url('assets/fondo/fondo.gif');background-size:cover;background-position:center}
 #creditsScreen{background:linear-gradient(rgba(4,6,4,0.7),rgba(4,6,4,0.7)),url('assets/fondo/fondo.gif');background-size:cover;background-position:center}
-#testAreaScreen{background:linear-gradient(rgba(4,6,4,0.7),rgba(4,6,4,0.7)),url('assets/fondo/fondo.gif');background-size:cover;background-position:center}
-#battleTestScreen{background:linear-gradient(rgba(4,6,4,0.7),rgba(4,6,4,0.7)),url('assets/fondo/fondo.gif');background-size:cover;background-position:center}
+#testHubScreen,#testAreaScreen,#battleTestScreen{background:linear-gradient(rgba(4,6,4,0.7),rgba(4,6,4,0.7)),url('assets/fondo/fondo.gif');background-size:cover;background-position:center}
 #battleScreen{position:fixed;inset:0;z-index:100;background:#0a0a0a}
 .battle-bg{position:absolute;inset:0;background:url('assets/fondo/final_boss_hell.gif');background-size:cover;background-position:center}
 .battle-container{position:relative;height:100%;display:flex;flex-direction:column;padding:0}
@@ -64,7 +63,7 @@ img{image-rendering:pixelated;image-rendering:crisp-edges}
 .combatant-side{width:30%;display:flex;flex-direction:column;align-items:center;transition:transform 0.3s ease}
 .player-side{margin-right:auto;padding-left:0;align-items:center}
 .enemy-side{margin-left:auto;padding-right:0}
-.combatant-sprite{font-size:180px;width:270px;height:270px;display:flex;align-items:center;justify-content:center}
+.combatant-sprite{font-size:180px;width:270px;height:270px;display:flex;align-items:center;justify-content:center;will-change:transform}
 .player-side .combatant-sprite{font-size:102px;width:102px;height:153px;align-items:center;justify-content:center}
 .player-side .combatant-sprite img{width:100%;height:100%;object-fit:contain;align-self:center}
 .enemy-side .combatant-sprite{width:270px;height:270px}
@@ -79,8 +78,8 @@ img{image-rendering:pixelated;image-rendering:crisp-edges}
 @keyframes magicCast{0%{transform:scale(0.5);opacity:0}50%{transform:scale(1.2);opacity:1}100%{transform:scale(1);opacity:1}}
 @keyframes magicProjectile{0%{left:30%;opacity:1}100%{left:70%;opacity:0}}
 @keyframes hitShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
-@keyframes poisonAura{0%{box-shadow:0 0 0px 0px #00ff7088;opacity:0}30%{box-shadow:0 0 40px 30px #00ff70cc;opacity:1}70%{box-shadow:0 0 40px 30px #00ff70cc;opacity:1}100%{box-shadow:0 0 0px 0px #00ff7000;opacity:0}}
-.poison-aura{animation:poisonAura 1.1s ease forwards;border-radius:4px;}
+@keyframes poisonAura{0%{filter:drop-shadow(0 0 0px #00ff7000);opacity:1}30%{filter:drop-shadow(0 0 18px #00ff70cc)}70%{filter:drop-shadow(0 0 18px #00ff70cc)}100%{filter:drop-shadow(0 0 0px #00ff7000)}}
+.poison-aura{animation:poisonAura 1.1s ease forwards;}
 @keyframes damagePopup{0%{transform:translateY(0)scale(1);opacity:1}100%{transform:translateY(-50px)scale(1.5);opacity:0}}
 @keyframes bounceIn{0%{transform:translateX(-50%) scale(0.4);opacity:0}60%{transform:translateX(-50%) scale(1.3);opacity:1}100%{transform:translateX(-50%) scale(1);opacity:1}}
 @keyframes dicePop{0%{transform:scale(0.5);opacity:0}50%{transform:scale(1.2);opacity:1}100%{transform:scale(1);opacity:0}}
@@ -198,6 +197,17 @@ img{image-rendering:pixelated;image-rendering:crisp-edges}
 .menu-btn:hover::before,.menu-btn:hover::after{opacity:1}
 .panel-title{font-family:'Press Start 2P',monospace;font-size:clamp(11px,2vw,18px);color:var(--gold);text-align:center;text-shadow:0 0 10px rgba(440,194,96,.4);margin-bottom:30px}
 /* CHAR CREATION */
+#charCreation .panel{width:min(860px,96vw);max-height:96vh;overflow-y:hidden;padding:24px 32px}
+#lobbyPhase2 .players-row{max-height:none;overflow-y:visible;margin-bottom:0}
+#lobbyPhase2 .pcard{width:100%;max-width:100%;display:flex;flex-direction:column;padding:16px 20px}
+.pcard-body{display:flex;gap:28px;align-items:flex-start;margin-top:10px}
+.pcard-left{width:220px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:10px}
+.pcard-right{flex:1;display:flex;flex-direction:column;gap:10px}
+.pcard-selectors{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.pcard-selector-item{display:flex;flex-direction:column;align-items:center;gap:4px}
+.pcard-selector-label{font-size:10px;color:var(--dim);letter-spacing:3px}
+.pcard-selector-row{display:flex;align-items:center;gap:4px}
+.stat-alloc-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 20px}
 .pcount-row{display:flex;align-items:center;justify-content:center;gap:18px;margin-bottom:23px}
 .cnt-btn{background:rgba(440,194,96,.15);border:1px solid var(--gold-dark);color:var(--gold);width:39px;height:39px;font-size:21px;cursor:pointer;transition:background .4s}
 .cnt-btn:hover{background:rgba(440,194,96,.3)}
@@ -260,7 +270,7 @@ img{image-rendering:pixelated;image-rendering:crisp-edges}
   color:var(--dim);font-family:'VT323',monospace;font-size:18px;letter-spacing:4px;padding:7px 18px;cursor:pointer;transition:all .4s;z-index:40}
 
 /* HUD player cards */
-.pi-card{background:rgba(10,12,10,.88);border:2px solid var(--border);padding:6px 8px;border-radius:0;min-width:180px;flex:0 0 auto}
+.pi-card{background:rgba(10,12,10,.88);border:2px solid var(--border);padding:6px 10px;border-radius:0;min-width:280px;flex:0 0 auto}
 .pi-name{font-size:18px;color:var(--gold)}
 .pi-btns .pi-btn{font-size:15px}
 
@@ -284,6 +294,62 @@ img{image-rendering:pixelated;image-rendering:crisp-edges}
 .leg{display:flex;align-items:center;gap:2px}
 .ld{width:8px;height:8px;border-radius:50%}
 #turnBanner{width:100%;padding:8px 12px;text-align:center;font-family:'Press Start 2P',monospace;font-size:10px;color:var(--gold);background:rgba(3,5,3,.93);border-bottom:1px solid var(--gold-dark);z-index:50;letter-spacing:3px;flex-shrink:0}
+/* LOBBY SEQUENTIAL SETUP */
+#lobbyNav{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:12px}
+.lobby-dot{width:10px;height:10px;border-radius:50%;background:var(--border);transition:all .2s;flex-shrink:0}
+.lobby-dot.active{background:var(--gold);transform:scale(1.3)}
+.lobby-dot.done{background:#3a9a3a}
+/* PASS-THE-CONTROLLER BANNER */
+#passBanner{position:fixed;inset:0;z-index:9800;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0.92);opacity:0;pointer-events:none;transition:opacity .4s;cursor:pointer}
+#passBanner.show{opacity:1;pointer-events:all}
+#passBannerSub{font-family:'Press Start 2P',monospace;font-size:clamp(8px,1.5vw,11px);color:var(--dim);letter-spacing:5px;margin-bottom:16px}
+#passBannerIcon{font-size:clamp(48px,10vw,80px);margin-bottom:8px;line-height:1}
+#passBannerName{font-family:'Cinzel',serif;font-size:clamp(28px,6vw,54px);color:var(--gold);text-shadow:0 0 30px rgba(255,200,80,.5);margin-bottom:6px}
+#passBannerClass{font-size:12px;color:var(--dim);letter-spacing:3px;margin-bottom:24px}
+#passBannerTap{font-size:9px;color:var(--dim);letter-spacing:3px;animation:cursorBlink 1.2s infinite}
+/* WIN SCREEN */
+#winScreen{position:fixed;inset:0;z-index:9950;display:none;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;background:#000}
+#winConfetti{position:absolute;inset:0;pointer-events:none;z-index:8;width:100%;height:100%}
+#winRays{position:absolute;inset:0;z-index:1;opacity:0;transition:opacity 1.2s;background:radial-gradient(ellipse at center,rgba(20,8,0,1) 0%,#000 70%)}
+#winRays::before{content:'';position:absolute;top:50%;left:50%;width:300vmax;height:300vmax;margin:-150vmax;background:conic-gradient(transparent 0deg,rgba(240,192,96,0.07) 8deg,transparent 16deg,rgba(240,192,96,0.05) 24deg,transparent 32deg,rgba(240,192,96,0.08) 40deg,transparent 48deg,rgba(240,192,96,0.06) 56deg,transparent 64deg,rgba(240,192,96,0.07) 72deg,transparent 80deg,rgba(240,192,96,0.05) 88deg,transparent 96deg,rgba(240,192,96,0.09) 104deg,transparent 112deg,rgba(240,192,96,0.06) 120deg,transparent 128deg,rgba(240,192,96,0.07) 136deg,transparent 144deg,rgba(240,192,96,0.05) 152deg,transparent 160deg,rgba(240,192,96,0.08) 168deg,transparent 176deg,rgba(240,192,96,0.06) 184deg,transparent 192deg,rgba(240,192,96,0.07) 200deg,transparent 208deg,rgba(240,192,96,0.05) 216deg,transparent 224deg,rgba(240,192,96,0.09) 232deg,transparent 240deg,rgba(240,192,96,0.06) 248deg,transparent 256deg,rgba(240,192,96,0.07) 264deg,transparent 272deg,rgba(240,192,96,0.05) 280deg,transparent 288deg,rgba(240,192,96,0.08) 296deg,transparent 304deg,rgba(240,192,96,0.06) 312deg,transparent 320deg,rgba(240,192,96,0.07) 328deg,transparent 336deg,rgba(240,192,96,0.05) 344deg,transparent 352deg,transparent 360deg);animation:winRays 30s linear infinite}
+#winFlashEl{position:absolute;inset:0;background:white;z-index:7;opacity:0;pointer-events:none}
+#winCrackEl{position:absolute;inset:0;z-index:7;pointer-events:none;display:flex;align-items:center;justify-content:center}
+#winCrackLine{width:3px;height:100%;background:linear-gradient(to bottom,transparent,white 20%,white 80%,transparent);box-shadow:0 0 30px white,0 0 80px #f0c060;transform:scaleY(0);transform-origin:center}
+#winContent{position:relative;z-index:6;display:flex;flex-direction:column;align-items:center;width:100%;padding:16px 20px}
+#winTitle{font-family:'Press Start 2P',monospace;font-size:clamp(36px,9vw,90px);letter-spacing:10px;background:linear-gradient(90deg,#f0c060,#fff8c0,#f0a000,#fff8c0,#f0c060);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:winShimmer 3s linear infinite;opacity:0;transform:scale(2.5);transition:opacity 0.5s,transform 0.5s}
+#winTitle.show{opacity:1;transform:scale(1)}
+#winSubTitle{font-size:clamp(9px,1.6vw,14px);color:rgba(255,248,192,0.6);letter-spacing:5px;margin-top:8px;opacity:0;transition:opacity 0.8s;text-align:center}
+#winSubTitle.show{opacity:1}
+#winCards{display:flex;gap:14px;margin-top:22px;align-items:flex-end;justify-content:center;flex-wrap:wrap}
+.win-card{background:rgba(8,12,8,0.92);border:2px solid var(--border);padding:16px 14px;min-width:150px;max-width:190px;text-align:center;opacity:0;transform:translateY(100px);transition:opacity 0.5s,transform 0.5s,box-shadow 0.5s;position:relative;display:flex;flex-direction:column;align-items:center;gap:6px}
+.win-card.show{opacity:1;transform:translateY(0)}
+.win-card.mvp{border-color:var(--gold);animation:winMvpPulse 2s ease-in-out infinite}
+.win-card.mvp.show{opacity:1;transform:translateY(-14px) scale(1.07)}
+.win-card-crown{font-size:26px;line-height:1}
+.win-card-name{font-size:15px;color:var(--gold);font-weight:bold;white-space:nowrap}
+.win-card-class{font-size:11px;color:var(--dim);letter-spacing:2px}
+.win-card-stats{font-size:12px;color:var(--dim);display:flex;flex-direction:column;gap:3px;width:100%;margin-top:4px}
+.win-card-stat{display:flex;justify-content:space-between;padding:0 2px}
+.win-card-stat span:last-child{color:var(--text)}
+.win-card-title{font-size:10px;color:#fff8c0;letter-spacing:1px;font-style:italic;border-top:1px solid var(--border);padding-top:6px;margin-top:2px;width:100%;text-align:center}
+#winActions{display:flex;gap:16px;margin-top:24px;opacity:0;transition:opacity 0.8s}
+#winActions.show{opacity:1}
+@keyframes winRays{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes winMvpPulse{0%,100%{box-shadow:0 0 40px rgba(240,192,96,0.6),0 0 80px rgba(240,192,96,0.2)}50%{box-shadow:0 0 80px rgba(240,192,96,0.95),0 0 150px rgba(255,248,192,0.4)}}
+@keyframes winShimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+/* LEVEL UP OVERLAY */
+#levelUpOverlay{position:fixed;inset:0;z-index:9900;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0.96);opacity:0;pointer-events:none;transition:opacity .35s}
+#levelUpOverlay.show{opacity:1;pointer-events:all}
+@keyframes lvlFlash{0%{opacity:0;transform:scale(0.4)}60%{opacity:1;transform:scale(1.12)}100%{transform:scale(1)}}
+@keyframes lvlGlow{0%,100%{text-shadow:0 0 20px #f0c060,0 0 60px #f0a000}50%{text-shadow:0 0 60px #fff8c0,0 0 120px #f0c060}}
+@keyframes lvlShimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+@keyframes lvlRays{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+#lvlBurst{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+#lvlBurst::before{content:'';position:absolute;top:50%;left:50%;width:200vmax;height:200vmax;margin:-100vmax;background:conic-gradient(transparent 0deg,rgba(240,192,96,0.06) 10deg,transparent 20deg,rgba(240,192,96,0.04) 30deg,transparent 40deg,rgba(240,192,96,0.07) 50deg,transparent 60deg);animation:lvlRays 12s linear infinite}
+#lvlNumber{font-family:'Press Start 2P',monospace;font-size:clamp(64px,18vw,120px);background:linear-gradient(90deg,#f0c060,#fff8c0,#f0a000,#fff8c0,#f0c060);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:lvlShimmer 2s linear infinite;line-height:1;position:relative;z-index:1}
+#lvlLabel{font-family:'Press Start 2P',monospace;font-size:clamp(10px,2.5vw,16px);color:#fff;letter-spacing:6px;margin-bottom:8px;position:relative;z-index:1}
+#lvlName{font-size:clamp(18px,4vw,28px);color:var(--dim);margin-bottom:32px;position:relative;z-index:1}
+#lvlStats{background:rgba(0,0,0,0.7);border:1px solid var(--gold-dark);padding:24px 40px;position:relative;z-index:1;animation:lvlFlash .5s ease-out;min-width:420px}
 /* MODAL */
 .mo{position:fixed;inset:0;background:transparent;z-index:9600;display:none;align-items:center;justify-content:center}
 .mo.on{display:flex}
@@ -352,7 +418,7 @@ img{image-rendering:pixelated;image-rendering:crisp-edges}
 ::-webkit-scrollbar{width:3px}
 ::-webkit-scrollbar-track{background:rgba(0,0,0,.3)}
 ::-webkit-scrollbar-thumb{background:var(--gold-dark);border-radius:0}
-.ptc{position:fixed;pointer-events:none;border-radius:50%;animation:ptcFly 1s ease-out forwards;z-index:300}
+.ptc{position:fixed;pointer-events:none;border-radius:50%;animation:ptcFly 1s ease-out forwards;z-index:300;will-change:transform,opacity}
 @keyframes ptcFly{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(0);opacity:0}}
 .init-list{list-style:none}
 .init-list li{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(455,455,455,.05);font-size:10px;animation:logIn .3s ease both}
@@ -442,7 +508,7 @@ document.addEventListener('click', function() {
   hasInteracted = true;
   const audio = document.getElementById('bgMusic');
   if(audio && !musicPlaying){
-    audio.volume = 0.4;
+    audio.volume = _volMusic;
     audio.play().then(() => { 
       musicPlaying = true; 
       const btn = document.getElementById('musicBtn');
@@ -459,15 +525,14 @@ document.addEventListener('click', function() {
 <!-- MAIN MENU -->
 <div id="menuScreen" class="screen active">
   <button class="music-toggle" onclick="toggleMusic()" id="musicBtn">🎵</button>
+  <button class="music-toggle" onclick="openVolumeControl()" style="right:72px" title="Volume">🔊</button>
   <div class="title">Chronicles of the<br>Enchanted Path</div>
   <div class="subtitle">~ An Adventure Board Game ~</div>
   <button class="menu-btn" onclick="playConfirmSound();showS('charCreation')">New Game</button>
   <div class="menu-sep"></div>
   <button class="menu-btn" id="loadGameBtn">Load Game</button>
   <div class="menu-sep"></div>
-  <button class="menu-btn" onclick="playConfirmSound();showS('testAreaScreen')">Test Area</button>
-  <div class="menu-sep"></div>
-  <button class="menu-btn" onclick="playConfirmSound();showS('battleTestScreen')">Battle Test</button>
+  <button class="menu-btn" onclick="playConfirmSound();showS('testHubScreen')">Test Lab</button>
   <div class="menu-sep"></div>
   <button class="menu-btn" onclick="playConfirmSound();showS('rulesScreen')">Rules</button>
   <div class="menu-sep"></div>
@@ -480,13 +545,27 @@ document.addEventListener('click', function() {
   <button class="music-toggle" onclick="toggleMusic()" id="musicBtnChar">🎵</button>
   <div class="panel">
     <div class="panel-title">Create Your Heroes</div>
-    <div class="pcount-row">
-      <button class="cnt-btn" onclick="changePC(-1)">−</button>
-      <div><div class="cnt-val" id="pcDisplay">4</div><div style="font-size:7px;color:var(--dim);text-align:center;letter-spacing:4px">PLAYERS</div></div>
-      <button class="cnt-btn" onclick="changePC(1)">+</button>
+
+    <!-- Phase 1: pick player count -->
+    <div id="lobbyPhase1">
+      <div class="pcount-row">
+        <button class="cnt-btn" id="pcMinus" onclick="changePC(-1)">−</button>
+        <div><div class="cnt-val" id="pcDisplay">4</div><div style="font-size:7px;color:var(--dim);text-align:center;letter-spacing:4px">PLAYERS</div></div>
+        <button class="cnt-btn" id="pcPlus" onclick="changePC(1)" style="opacity:0.3;pointer-events:none">+</button>
+      </div>
+      <button class="start-btn" onclick="playConfirmSound();startLobby()">Set Up Characters →</button>
     </div>
-    <div class="players-row" id="playersRow"></div>
-    <button class="start-btn" onclick="playConfirmSound();startGame()">Begin the Journey ⟶</button>
+
+    <!-- Phase 2: one player card at a time -->
+    <div id="lobbyPhase2" style="display:none">
+      <div id="lobbyProgress" style="display:flex;gap:8px;justify-content:center;margin:8px 0 4px"></div>
+      <div id="lobbyPlayerNum" style="text-align:center;font-size:9px;color:var(--dim);letter-spacing:3px;margin-bottom:10px">PLAYER 1 OF 4</div>
+      <div class="players-row" id="playersRow"></div>
+      <div id="lobbyNav">
+        <button class="act-btn" id="lobbyBackBtn" onclick="lobbyBack()" style="visibility:hidden">← Back</button>
+        <button class="act-btn pri" id="lobbyNextBtn" onclick="playConfirmSound();lobbyNext()">Player 2 →</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -502,9 +581,12 @@ document.addEventListener('click', function() {
     <div class="hud-action">
       <div class="dice-wrap"><div class="dice" id="mainDice" onclick="rollDice()">?</div></div>
       <div id="actionBtns" style="width:100%"></div>
-      <button class="act-btn" style="font-size:18px;padding:4px 12px;width:100%" onclick="startTrade()">🤝 Trade</button>
-      <button class="act-btn" style="font-size:18px;padding:4px 12px;width:100%" onclick="saveGame()">💾 Save</button>
-      <button class="act-btn" style="font-size:18px;padding:4px 12px;width:100%" onclick="openModal('🏠 Return to Menu','<div style=\'text-align:center;font-size:14px;margin:10px 0\'>Unsaved progress will be lost.</div>',[{label:'✓ Leave',fn:()=>{closeModal();showS('menuScreen');}},{label:'✗ Cancel',fn:closeModal}])">🏠 Menu</button>
+      <div id="turnLogWrap" style="width:100%;display:none;max-height:110px;overflow-y:auto;background:rgba(0,0,0,0.7);border:1px solid var(--border);padding:6px 8px;font-size:13px;line-height:1.6;color:var(--dim);scrollbar-width:thin;scrollbar-color:#333 transparent" id="turnLogPanel"></div>
+      <button class="act-btn" style="font-size:13px;padding:3px 8px;width:100%;opacity:0.7" onclick="toggleTurnLog()">📜 History</button>
+      <button class="act-btn" style="font-size:13px;padding:3px 8px;width:100%" onclick="startTrade()">🤝 Trade</button>
+      <button class="act-btn" style="font-size:13px;padding:3px 8px;width:100%" onclick="saveGame()">💾 Save</button>
+      <button class="act-btn" style="font-size:13px;padding:3px 8px;width:100%" onclick="openVolumeControl()">🔊 Volume</button>
+      <button class="act-btn" style="font-size:13px;padding:3px 8px;width:100%" onclick="openModal('🏠 Return to Menu','<div style=\'text-align:center;font-size:14px;margin:10px 0\'>Unsaved progress will be lost.</div>',[{label:'✓ Leave',fn:()=>{closeModal();showS('menuScreen');}},{label:'✗ Cancel',fn:closeModal}])">🏠 Menu</button>
     </div>
     <div class="hud-legend" style="display:flex;flex-direction:column;align-items:center;gap:4px;">
       <div class="sb-ttl">🗺 Map</div>
@@ -612,8 +694,22 @@ document.addEventListener('click', function() {
 </div>
 
 <!-- TEST AREA -->
-<div id="testAreaScreen" class="screen">
+<!-- TEST HUB -->
+<div id="testHubScreen" class="screen">
   <button class="back-btn" onclick="showS('menuScreen')">← Back</button>
+  <div class="panel" style="padding:36px 40px;max-width:380px;text-align:center">
+    <div class="panel-title">Test Lab</div>
+    <div style="display:flex;flex-direction:column;gap:14px;margin-top:24px">
+      <button class="menu-btn" onclick="playConfirmSound();showS('testAreaScreen')">Event Test</button>
+      <button class="menu-btn" onclick="playConfirmSound();showS('battleTestScreen')">Battle Test</button>
+      <button class="menu-btn" onclick="playConfirmSound();testLevelUp()">Level Up Test</button>
+      <button class="menu-btn" onclick="playConfirmSound();testWinScreen()">Win Screen Test</button>
+    </div>
+  </div>
+</div>
+
+<div id="testAreaScreen" class="screen">
+  <button class="back-btn" onclick="showS('testHubScreen')">← Back</button>
   <div class="panel" style="padding:30px;max-width:600px">
     <div class="panel-title">Test Area</div>
     <p style="color:var(--dim);margin-bottom:20px;text-align:center">Test any event with a Human Male Warrior</p>
@@ -624,7 +720,7 @@ document.addEventListener('click', function() {
 
 <!-- BATTLE TEST AREA -->
 <div id="battleTestScreen" class="screen">
-  <button class="back-btn" onclick="showS('menuScreen')">← Back</button>
+  <button class="back-btn" onclick="showS('testHubScreen')">← Back</button>
   <div class="panel" style="padding:30px;max-width:800px">
     <div class="panel-title">Battle Test</div>
     <p style="color:var(--dim);margin-bottom:20px;text-align:center">Create a character and fight any boss</p>
@@ -1616,6 +1712,20 @@ window.showS = function(id){
 };
 
 // Test Area - Render event list
+function testLevelUp(){
+  // Set up a dummy player and trigger level-up screen
+  if(!GS.players || !GS.players.length){
+    GS.players=[{name:'TestHero',race:'human',gender:'male',class:'warrior',level:4,exp:0,maxHp:120,hp:120,maxMp:40,mp:40,gold:200,statPoints:2,allocStr:1,allocInt:0,allocDex:0,allocHp:1,bossesDefeated:1,questsCompleted:0,curses:{},poison:0,skipTurns:0,debuffs:{},inventory:[],equipped:{weapon:null,head:null,body:null,feet:null,shield:null,accessory:null}}];
+    GS.curP=0;
+  }
+  const p=cp();
+  p.statPoints=2;
+  showLevelUpScreen(p);
+}
+function testWinScreen(){
+  // Placeholder — win screen not implemented yet
+  alert('Win screen coming soon!');
+}
 function renderTestArea(){
   const list=document.getElementById('testEventList');
   if(!list)return;
@@ -1739,7 +1849,7 @@ function startBattleTestEncounter(type){
       hp:base.hp,maxHp:base.hp,mp:base.mp,maxMp:base.mp,statPoints:0,
       inventory:[],equipped:{},
       tileIdx:0,allocStr:0,allocInt:0,allocDex:0,allocHp:0,
-      bossesDefeated:0,questsCompleted:0,curses:{},poison:0,skipTurns:0,skillRanks:{}
+      bossesDefeated:0,questsCompleted:0,curses:{},poison:0,skipTurns:0,tilesWalked:0,skillRanks:{}
     };
     const starterItems={
       mage:['apprentice_staff','cloth_robe','worn_boots','iron_ring'],
@@ -1780,7 +1890,7 @@ function startBattleTest(type, idx){
     hp:base.hp,maxHp:base.hp,mp:base.mp,maxMp:base.mp,statPoints:0,
     inventory:[],equipped:{},
     tileIdx:0,allocStr:0,allocInt:0,allocDex:0,allocHp:0,
-    bossesDefeated:0,questsCompleted:0,curses:{},poison:0,skipTurns:0,skillRanks:{}
+    bossesDefeated:0,questsCompleted:0,curses:{},poison:0,skipTurns:0,tilesWalked:0,skillRanks:{}
   };
   
   // Give some starter items based on class
@@ -1898,12 +2008,17 @@ function showS(id){
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const el = document.getElementById(id);
   if(el) el.classList.add('active');
+  if(id === 'charCreation'){
+    // Always reset to phase 1 when entering character creation
+    const p1=document.getElementById('lobbyPhase1'), p2=document.getElementById('lobbyPhase2');
+    if(p1) p1.style.display=''; if(p2) p2.style.display='none';
+  }
   if(id === 'menuScreen'){
     startMenuAnim();
     // Auto-play music (may be blocked by browser)
     const audio = document.getElementById('bgMusic');
     if(audio && !musicPlaying){
-      audio.volume = 0.4;
+      audio.volume = _volMusic;
       audio.play().then(() => { 
         musicPlaying = true; 
         const btn = document.getElementById('musicBtn');
@@ -1941,8 +2056,11 @@ function playSound(type){
     const ctx = getAudioContext();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
+    const masterGain = ctx.createGain();
+    masterGain.gain.value = typeof _volSfx !== 'undefined' ? _volSfx : 0.7;
     osc.connect(gain);
-    gain.connect(ctx.destination);
+    gain.connect(masterGain);
+    masterGain.connect(ctx.destination);
     
     const now = ctx.currentTime;
     
@@ -1973,6 +2091,25 @@ function playSound(type){
       gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
       osc.start(now);
       osc.stop(now + 0.08);
+    }else if(type === 'levelup'){
+      // Ascending fanfare — two oscillators for richness
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.connect(gain2); gain2.connect(masterGain);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(330, now);
+      osc.frequency.setValueAtTime(440, now+0.12);
+      osc.frequency.setValueAtTime(550, now+0.24);
+      osc.frequency.setValueAtTime(660, now+0.36);
+      osc.frequency.setValueAtTime(880, now+0.48);
+      gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.01, now+0.9);
+      osc2.type = 'triangle';
+      osc2.frequency.setValueAtTime(660, now+0.36);
+      osc2.frequency.setValueAtTime(880, now+0.48);
+      osc2.frequency.setValueAtTime(1100, now+0.6);
+      gain2.gain.setValueAtTime(0.0, now+0.3); gain2.gain.setValueAtTime(0.25, now+0.48); gain2.gain.exponentialRampToValueAtTime(0.01, now+1.0);
+      osc.start(now); osc.stop(now+0.9);
+      osc2.start(now+0.3); osc2.stop(now+1.0);
     }else if(type === 'magic'){
       // Magic spell sound
       osc.type = 'sine';
@@ -2149,11 +2286,15 @@ const ZOOM_MIN=0.5,ZOOM_MAX=3;
 // FPS throttling & dirty flag
 let boardDirty = true;
 let lastDrawTime = 0;
-const DRAW_INTERVAL = 1000 / 30; // 30 FPS
+const DRAW_INTERVAL = 1000 / 60; // 60 FPS
 function markBoardDirty(){ boardDirty = true; }
+let _drawRAFQueued = false;
 function requestDraw(){
   boardDirty = true;
-  requestAnimationFrame(drawBoard);
+  if(!_drawRAFQueued){
+    _drawRAFQueued = true;
+    requestAnimationFrame(()=>{ _drawRAFQueued=false; drawBoard(); });
+  }
 }
 
 function getCanvDims(){
@@ -2460,7 +2601,40 @@ function genBoard(){
   panOffsetY = 0;
 
   assignRegions();
+  _precomputeBoardEdges();
   drawBoard();
+}
+
+// Precomputed finalboss connector edge list — rebuilt once per genBoard
+let _boardEdgeList = [];
+function _precomputeBoardEdges(){
+  const seen = new Set();
+  _boardEdgeList = [];
+  Object.entries(board.connections).forEach(([fi, tos]) => {
+    const f = board.tiles[parseInt(fi)];
+    if(!f) return;
+    tos.forEach(ti => {
+      const tt = board.tiles[ti];
+      if(!tt) return;
+      if(f.type !== 'finalboss' && tt.type !== 'finalboss') return;
+      const key = Math.min(parseInt(fi), ti) + '-' + Math.max(parseInt(fi), ti);
+      if(seen.has(key)) return;
+      seen.add(key);
+      _boardEdgeList.push({fx:f.gx, fy:f.gy, tx:tt.gx, ty:tt.gy});
+    });
+  });
+}
+
+// Reusable hex-path helper — avoids creating a closure per tile per frame
+function _drawHexPath(ctx, cx, cy, hw, hh){
+  ctx.beginPath();
+  ctx.moveTo(cx,      cy - hh);
+  ctx.lineTo(cx + hw, cy - hh * 0.5);
+  ctx.lineTo(cx + hw, cy + hh * 0.5);
+  ctx.lineTo(cx,      cy + hh);
+  ctx.lineTo(cx - hw, cy + hh * 0.5);
+  ctx.lineTo(cx - hw, cy - hh * 0.5);
+  ctx.closePath();
 }
 
 // Zoom with mouse wheel - changes zoom level
@@ -2477,6 +2651,8 @@ bCv.addEventListener('mousedown', function(e) {
   panStartTime = Date.now();
   hasDragged = false;
   bCv.style.cursor = 'grabbing';
+  // Cancel any active camera follow so dragging is never overridden
+  if(typeof _eb !== 'undefined') _eb.camTarget = null;
 });
 
 bCv.addEventListener('mousemove', function(e) {
@@ -2504,6 +2680,18 @@ bCv.addEventListener('wheel', function(e) {
 }, { passive: false });
 
 var bAnim = 0;
+var _boardGrd = null, _boardGrdH = 0;
+function _getBoardGrd(){
+  if(!_boardGrd || _boardGrdH !== bCv.height){
+    _boardGrdH = bCv.height;
+    _boardGrd = bCtx.createLinearGradient(0, 0, 0, bCv.height);
+    _boardGrd.addColorStop(0, '#010408');
+    _boardGrd.addColorStop(0.3, '#050d10');
+    _boardGrd.addColorStop(0.65, '#061510');
+    _boardGrd.addColorStop(1, '#0c1e0e');
+  }
+  return _boardGrd;
+}
 function drawBoard() {
   const now = performance.now();
   if (!boardDirty && now - lastDrawTime < DRAW_INTERVAL) {
@@ -2512,19 +2700,13 @@ function drawBoard() {
   }
   lastDrawTime = now;
   boardDirty = false;
-  
+
   // bAnim removed for performance
-  bCtx.imageSmoothingEnabled = true;
   bCtx.clearRect(0, 0, bCv.width, bCv.height);
-  const grd = bCtx.createLinearGradient(0, 0, 0, bCv.height);
-  grd.addColorStop(0, '#010408');
-  grd.addColorStop(0.3, '#050d10');
-  grd.addColorStop(0.65, '#061510');
-  grd.addColorStop(1, '#0c1e0e');
-  bCtx.fillStyle = grd;
+  bCtx.fillStyle = _getBoardGrd();
   bCtx.fillRect(0, 0, bCv.width, bCv.height);
   if (!board.tiles.length) {
-    requestDraw();
+    requestAnimationFrame(drawBoard);
     return;
   }
   // Map always at base scale (fills container)
@@ -2565,65 +2747,35 @@ function drawBoard() {
   const cellH = baseH / 16;
   bCtx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
   bCtx.lineWidth = 1.5 / effectiveScale;
-  for (let i = 0; i <= 24; i++) {
-    bCtx.beginPath();
-    bCtx.moveTo(i * cellW, 0);
-    bCtx.lineTo(i * cellW, baseH);
-    bCtx.stroke();
-  }
-  for (let i = 0; i <= 16; i++) {
-    bCtx.beginPath();
-    bCtx.moveTo(0, i * cellH);
-    bCtx.lineTo(baseW, i * cellH);
-    bCtx.stroke();
-  }
+  bCtx.beginPath();
+  for (let i = 0; i <= 24; i++) { bCtx.moveTo(i * cellW, 0);    bCtx.lineTo(i * cellW, baseH); }
+  for (let i = 0; i <= 16; i++) { bCtx.moveTo(0, i * cellH);    bCtx.lineTo(baseW, i * cellH); }
+  bCtx.stroke();
   const tileToScreen = (gx, gy) => ({
     x: gx * cellW + cellW / 2,
     y: gy * cellH + cellH / 2
   });
-  // Only draw paths connecting to finalboss tiles
-  const drawnEdges = new Set();
-  Object.entries(board.connections).forEach(([fi, tos]) => {
-    const f = board.tiles[parseInt(fi)];
-    const fIsFinalBoss = f.type === 'finalboss';
-    tos.forEach(ti => {
-      const tt = board.tiles[ti];
-      const tIsFinalBoss = tt.type === 'finalboss';
-      // Only draw if either end is a finalboss
-      if(!fIsFinalBoss && !tIsFinalBoss) return;
-      const key = Math.min(parseInt(fi), ti) + '-' + Math.max(parseInt(fi), ti);
-      if (drawnEdges.has(key)) return;
-      drawnEdges.add(key);
-      const fpos = tileToScreen(f.gx, f.gy);
-      const tpos = tileToScreen(tt.gx, tt.gy);
-      bCtx.beginPath();
-      bCtx.moveTo(fpos.x, fpos.y);
-      bCtx.lineTo(tpos.x, tpos.y);
-      bCtx.strokeStyle = '#3a4408';
-      bCtx.lineWidth = 8;
-      bCtx.lineCap = 'round';
-      bCtx.stroke();
-      bCtx.beginPath();
-      bCtx.moveTo(fpos.x, fpos.y);
-      bCtx.lineTo(tpos.x, tpos.y);
-      bCtx.strokeStyle = '#b87c48';
-      bCtx.lineWidth = 4;
-      bCtx.stroke();
-      bCtx.setLineDash([8, 6]);
-      bCtx.beginPath();
-      bCtx.moveTo(fpos.x, fpos.y);
-      bCtx.lineTo(tpos.x, tpos.y);
-      bCtx.strokeStyle = 'rgba(455, 440, 160, 0.35)';
-      bCtx.lineWidth = 1.5;
-      bCtx.stroke();
-      bCtx.setLineDash([]);
-      bCtx.lineCap = 'butt';
-    });
+  // Draw finalboss connector paths (precomputed at board generation)
+  _boardEdgeList.forEach(({fx, fy, tx, ty}) => {
+    const fpos = tileToScreen(fx, fy);
+    const tpos = tileToScreen(tx, ty);
+    bCtx.strokeStyle='#3a4408'; bCtx.lineWidth=8; bCtx.lineCap='round';
+    bCtx.beginPath(); bCtx.moveTo(fpos.x, fpos.y); bCtx.lineTo(tpos.x, tpos.y); bCtx.stroke();
+    bCtx.strokeStyle='#b87c48'; bCtx.lineWidth=4;
+    bCtx.beginPath(); bCtx.moveTo(fpos.x, fpos.y); bCtx.lineTo(tpos.x, tpos.y); bCtx.stroke();
+    bCtx.setLineDash([8,6]);
+    bCtx.strokeStyle='rgba(255,240,160,0.35)'; bCtx.lineWidth=1.5;
+    bCtx.beginPath(); bCtx.moveTo(fpos.x, fpos.y); bCtx.lineTo(tpos.x, tpos.y); bCtx.stroke();
+    bCtx.setLineDash([]); bCtx.lineCap='butt';
   });
-  // Only draw visible tiles for performance
-  const visible = getVisibleTileRange();
+  // Inline visible tile culling (reuses already-computed transform values)
+  const _tsw = cellW * effectiveScale, _tsh = cellH * effectiveScale, _vm = 1;
+  const _vminX = Math.floor(-finalOffsetX / _tsw) - _vm;
+  const _vmaxX = Math.ceil((bCv.width  - finalOffsetX) / _tsw) + _vm;
+  const _vminY = Math.floor(-finalOffsetY / _tsh) - _vm;
+  const _vmaxY = Math.ceil((bCv.height - finalOffsetY) / _tsh) + _vm;
   board.tiles.forEach((t, i) => {
-    if(t.gx < visible.minX || t.gx > visible.maxX || t.gy < visible.minY || t.gy > visible.maxY) return;
+    if(t.gx < _vminX || t.gx > _vmaxX || t.gy < _vminY || t.gy > _vmaxY) return;
     const pos = tileToScreen(t.gx, t.gy);
     const scaledT = { x: pos.x, y: pos.y, type: t.type, gx: t.gx, gy: t.gy, id: t.id, tileW: cellW, tileH: cellH, region: t.region };
     const curP = GS.players && GS.players[GS.curP];
@@ -2639,7 +2791,7 @@ function drawBoard() {
     drawHeroSprite(bCtx, pos.x, pos.y, p.class, CLASSES[p.class].color, pi === GS.curP, p.name, 1.15, race, gender);
   });
   bCtx.restore();
-  requestDraw();
+  requestAnimationFrame(drawBoard);
 }
 
 const TILE_COLORS={forest:{bg:'#1a3a1a',stripe:'#2d5a2d',text:'#9cd89c'},village:{bg:'#6a4040',stripe:'#8a6060',text:'#d9c9c9'},shop:{bg:'#1a4a4a',stripe:'#2d6d6d',text:'#9cd9d9'},inn:{bg:'#5a4510',stripe:'#7d681c',text:'#d9c99c'},miniboss:{bg:'#4a1010',stripe:'#6d2020',text:'#d99090'},finalboss:{bg:'#4a0840',stripe:'#681858',text:'#d990d9'},quest:{bg:'#3a2a5a',stripe:'#5a4080',text:'#d9c0e9'},normal:{bg:'#2d4d2d',stripe:'#456a45',text:'#9cd89c'}};
@@ -2668,16 +2820,7 @@ function drawTile(t,idx,hl, scale = 1, cleared = false){
   const cx = tx + tileW/2, cy = ty + tileH/2;
   const hw = tileW/2 * hexScale, hh = tileH/2 * hexScale;
   
-  function drawHexPath(offsetX = 0, offsetY = 0){
-    bCtx.beginPath();
-    bCtx.moveTo(cx + offsetX, cy - hh + offsetY);
-    bCtx.lineTo(cx + hw + offsetX, cy - hh*0.5 + offsetY);
-    bCtx.lineTo(cx + hw + offsetX, cy + hh*0.5 + offsetY);
-    bCtx.lineTo(cx + offsetX, cy + hh + offsetY);
-    bCtx.lineTo(cx - hw + offsetX, cy + hh*0.5 + offsetY);
-    bCtx.lineTo(cx - hw + offsetX, cy - hh*0.5 + offsetY);
-    bCtx.closePath();
-  }
+  // Use global _drawHexPath helper (no closure allocation per tile)
 
   // Only normal tiles with region are transparent
   const isTransparentNormal = t.type === 'normal' && t.region;
@@ -2690,7 +2833,7 @@ function drawTile(t,idx,hl, scale = 1, cleared = false){
 
     // Draw solid background with transparency
     bCtx.save();
-    drawHexPath();
+    _drawHexPath(bCtx,cx,cy,hw,hh);
     bCtx.clip();
     bCtx.globalAlpha = baseAlpha;
     bCtx.fillStyle = rc.bg;
@@ -2699,7 +2842,7 @@ function drawTile(t,idx,hl, scale = 1, cleared = false){
     bCtx.restore();
 
     // Draw hex border
-    drawHexPath();
+    _drawHexPath(bCtx,cx,cy,hw,hh);
     bCtx.strokeStyle = '#1a1a1a';
     bCtx.lineWidth = 3;
     bCtx.stroke();
@@ -2707,18 +2850,19 @@ function drawTile(t,idx,hl, scale = 1, cleared = false){
     // Highlight flash
     if(hl){
       bCtx.save();
-      drawHexPath();
-      bCtx.shadowColor='rgba(455,440,100,0.9)';
-      bCtx.shadowBlur=40;
-      bCtx.fillStyle='rgba(455,440,140,0.45)';
+      _drawHexPath(bCtx,cx,cy,hw,hh);
+      bCtx.fillStyle='rgba(255,240,80,0.35)';
       bCtx.fill();
+      bCtx.strokeStyle='rgba(255,240,80,0.95)';
+      bCtx.lineWidth=3;
+      bCtx.stroke();
       bCtx.restore();
     }
 
     // Cleared boss tile overlay
     if(cleared){
       bCtx.save();
-      drawHexPath();
+      _drawHexPath(bCtx,cx,cy,hw,hh);
       bCtx.fillStyle='rgba(0,0,0,0.55)';
       bCtx.fill();
       bCtx.restore();
@@ -2759,7 +2903,7 @@ function drawTile(t,idx,hl, scale = 1, cleared = false){
     bCtx.save();
     // Only clip to hexagon for non-finalboss tiles
     if(t.type !== 'finalboss'){
-      drawHexPath();
+      _drawHexPath(bCtx,cx,cy,hw,hh);
       bCtx.clip();
     }
     const scaleUp = (t.type === 'village' || t.type === 'shop' || t.type === 'inn') ? 1.2 : 1.0;
@@ -2777,7 +2921,7 @@ function drawTile(t,idx,hl, scale = 1, cleared = false){
 
   // Draw hex border (skip for finalboss to show full image)
   if(t.type !== 'finalboss'){
-    drawHexPath();
+    _drawHexPath(bCtx,cx,cy,hw,hh);
     bCtx.strokeStyle = '#1a1a1a';
     bCtx.lineWidth = 3;
     bCtx.stroke();
@@ -2786,18 +2930,19 @@ function drawTile(t,idx,hl, scale = 1, cleared = false){
   // Highlight flash
   if(hl){
     bCtx.save();
-    drawHexPath();
-    bCtx.shadowColor='rgba(455,440,100,0.9)';
-    bCtx.shadowBlur=40;
-    bCtx.fillStyle='rgba(455,440,140,0.45)';
+    _drawHexPath(bCtx,cx,cy,hw,hh);
+    bCtx.fillStyle='rgba(255,240,80,0.35)';
     bCtx.fill();
+    bCtx.strokeStyle='rgba(255,240,80,0.95)';
+    bCtx.lineWidth=3;
+    bCtx.stroke();
     bCtx.restore();
   }
 
   // Cleared boss tile overlay
   if(cleared){
     bCtx.save();
-    drawHexPath();
+    _drawHexPath(bCtx,cx,cy,hw,hh);
     bCtx.fillStyle='rgba(0,0,0,0.55)';
     bCtx.fill();
     bCtx.restore();
@@ -2899,25 +3044,20 @@ function drawHeroSprite(ctx,cx,cy,cls,color,isCur,name, scale = 1, race = 'human
   // Draw character image
   ctx.drawImage(img, drawX, drawY, sw, sh);
   
-  // Current player glow - enhanced
+  // Current player glow — layered strokes, no shadowBlur (expensive)
   if (isCur) {
     ctx.save();
-    // Outer glow circle
-    ctx.shadowColor = '#ffe840';
-    ctx.shadowBlur = 30;
-    ctx.strokeStyle = '#ffe840';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.arc(cx, cy, sw * 0.8, 0, Math.PI * 2);
-    ctx.stroke();
-    // Reset shadow for inner elements
-    ctx.shadowBlur = 0;
+    const _r = sw * 0.8;
+    ctx.beginPath(); ctx.arc(cx, cy, _r, 0, Math.PI*2);
+    ctx.strokeStyle='rgba(255,232,64,0.15)'; ctx.lineWidth=12; ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx, cy, _r, 0, Math.PI*2);
+    ctx.strokeStyle='rgba(255,232,64,0.30)'; ctx.lineWidth=6;  ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx, cy, _r, 0, Math.PI*2);
+    ctx.strokeStyle='#ffe840';               ctx.lineWidth=2;  ctx.stroke();
     // Ground highlight ellipse
-    ctx.strokeStyle = '#ffe840';
-    ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.ellipse(cx, drawY + sh - 2, sw * 0.4, sh * 0.08, 0, 0, Math.PI * 4);
-    ctx.stroke();
+    ctx.ellipse(cx, drawY + sh - 2, sw * 0.4, sh * 0.08, 0, 0, Math.PI * 2);
+    ctx.strokeStyle='#ffe840'; ctx.lineWidth=2; ctx.stroke();
     ctx.restore();
   }
   
@@ -2977,6 +3117,44 @@ bCv.addEventListener('click',e=>{
 // ══════════════════════════════════════════════════════
 const GS={players:[],curP:0,turn:0,phase:'roll',initOrder:[],highlightedTiles:[],diceVal:0,shopItems:[],currentCards:[],combat:null,_assignedMainQuests:{},_afterReward:null,_combatMod:0};
 let playerCount=4,pForms=[];
+
+// ── VOLUME ──────────────────────────────────────────────
+let _volMusic = parseFloat(localStorage.getItem('vol_music') ?? '0.4');
+let _volSfx   = parseFloat(localStorage.getItem('vol_sfx')   ?? '0.7');
+function _applyMusicVol(){
+  const bg = document.getElementById('bgMusic');
+  const boss = document.getElementById('bossMusic');
+  if(bg)   bg.volume   = _volMusic;
+  if(boss) boss.volume = _volMusic;
+}
+function openVolumeControl(){
+  const html = `
+    <div class="panel-title">🔊 Volume</div>
+    <div style="display:flex;flex-direction:column;gap:18px;margin-top:16px;padding:0 8px">
+      <div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+          <span style="color:var(--gold);font-size:13px">🎵 Music</span>
+          <span id="volMusicVal" style="color:var(--text);font-size:13px">${Math.round(_volMusic*100)}%</span>
+        </div>
+        <input type="range" min="0" max="100" value="${Math.round(_volMusic*100)}"
+          style="width:100%;accent-color:var(--gold)"
+          oninput="_volMusic=this.value/100;document.getElementById('volMusicVal').textContent=this.value+'%';_applyMusicVol();localStorage.setItem('vol_music',_volMusic)">
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+          <span style="color:var(--gold);font-size:13px">🔔 Sound FX</span>
+          <span id="volSfxVal" style="color:var(--text);font-size:13px">${Math.round(_volSfx*100)}%</span>
+        </div>
+        <input type="range" min="0" max="100" value="${Math.round(_volSfx*100)}"
+          style="width:100%;accent-color:var(--gold)"
+          oninput="_volSfx=this.value/100;document.getElementById('volSfxVal').textContent=this.value+'%';localStorage.setItem('vol_sfx',_volSfx)">
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px">
+      <button class="menu-btn" onclick="closeModal()">Close</button>
+    </div>`;
+  openModal(null,null,[],html);
+}
 
 function recordVisit(p,tileIdx){if(!p.visitHistory)p.visitHistory=[];p.visitHistory.push({tile:tileIdx,turn:GS.turn});p.visitHistory=p.visitHistory.filter(v=>GS.turn-v.turn<8);}
 function wasVisitedRecently(p,tileIdx){if(!p.visitHistory)return false;return p.visitHistory.some(v=>v.tile===tileIdx&&GS.turn-v.turn<8);}
@@ -3044,70 +3222,111 @@ function clearEventBackground(){
 // ══════════════════════════════════════════════════════
 //  CHARACTER CREATION UI
 // ══════════════════════════════════════════════════════
-function changePC(d){playerCount=Math.max(1,Math.min(5,playerCount+d));document.getElementById('pcDisplay').textContent=playerCount;renderForms();}
+function changePC(d){
+  playerCount=Math.max(1,Math.min(4,playerCount+d));
+  document.getElementById('pcDisplay').textContent=playerCount;
+  const minus=document.getElementById('pcMinus'), plus=document.getElementById('pcPlus');
+  if(minus){ minus.style.opacity=playerCount<=1?'0.3':'1'; minus.style.pointerEvents=playerCount<=1?'none':''; }
+  if(plus){  plus.style.opacity=playerCount>=4?'0.3':'1'; plus.style.pointerEvents=playerCount>=4?'none':''; }
+}
 function renderForms(){
   const row=document.getElementById('playersRow');row.innerHTML='';
-  const cols=['#9a3a3a','#3a5a9a','#3a9a5a','#9a8a3a','#7a3a9a','#2a2a2a'];
-  pForms=[];
+  const cols=['#9a3a3a','#3a5a9a','#3a9a5a','#9a8a3a'];
+  // pForms already initialised by startLobby; just rebuild DOM
   for(let i=0;i<playerCount;i++){
-    const pColor = cols[i];
-    pForms.push({cls:'warrior',race:'human',gender:'male',alloc:{str:0,int:0,dex:0,hp:0},pts:4, color: pColor});
+    const pColor=pForms[i].color||cols[i];
     const card=document.createElement('div');card.className='pcard';card.style.borderColor=pColor+'66';
-    card.innerHTML=`<div class="plbl" style="color:${pColor}">Player ${i+1}</div>
-      <div class="sprite-wrap" id="sprWrap${i}"></div>
-      <input class="pname-in" id="pn${i}" type="text" placeholder="Name..." value="Hero ${i+1}" maxlength="14">
-      <div style="margin-bottom:8px">
-        <div style="font-size:16px;color:var(--dim);text-align:center;margin-bottom:4px">RACE</div>
-        <div style="display:flex;align-items:center;justify-content:center;gap:4px">
-          <button class="s-btn" onclick="cycleRace(${i},-1)">◀</button>
-          <span id="raceLabel${i}" style="min-width:90px;text-align:center;font-size:18px">${RACES.human.icon} ${RACES.human.name}</span>
-          <button class="s-btn" onclick="cycleRace(${i},1)">▶</button>
+    card.innerHTML=`
+      <div class="plbl" style="color:${pColor};font-size:20px;letter-spacing:6px">Player ${i+1}</div>
+      <div class="pcard-body">
+
+        <!-- LEFT: sprite + name -->
+        <div class="pcard-left">
+          <div class="sprite-wrap" id="sprWrap${i}" style="width:200px;height:200px;display:flex;align-items:center;justify-content:center"></div>
+          <input class="pname-in" id="pn${i}" type="text" placeholder="Name..." value="Hero ${i+1}" maxlength="14" style="width:100%;font-size:22px;text-align:center">
         </div>
-      </div>
-      <div style="margin-bottom:8px">
-        <div style="font-size:16px;color:var(--dim);text-align:center;margin-bottom:4px">GENDER</div>
-        <div style="display:flex;align-items:center;justify-content:center;gap:4px">
-          <button class="s-btn" onclick="cycleGender(${i},-1)">◀</button>
-          <span id="genderLabel${i}" style="min-width:90px;text-align:center;font-size:18px">${GENDERS.male.icon} ${GENDERS.male.name}</span>
-          <button class="s-btn" onclick="cycleGender(${i},1)">▶</button>
-        </div>
-      </div>
-      <div style="margin-bottom:8px">
-        <div style="font-size:16px;color:var(--dim);text-align:center;margin-bottom:4px">CLASS</div>
-        <div style="display:flex;align-items:center;justify-content:center;gap:4px">
-          <button class="s-btn" onclick="cycleClass(${i},-1)">◀</button>
-          <span id="classLabel${i}" style="min-width:90px;text-align:center;font-size:18px">⚔️ Warrior</span>
-          <button class="s-btn" onclick="cycleClass(${i},1)">▶</button>
-        </div>
-      </div>
-      <div class="stat-sec">
-        <div style="color:var(--gold-dark);font-size:16px;letter-spacing:1px;margin-bottom:3px">STAT POINTS</div>
-        ${['str','int','dex','hp'].map(s=>`<div class="stat-row"><span>${s.toUpperCase()}</span><div style="display:flex;align-items:center;gap:4px"><button class="s-btn" onclick="adj(${i},'${s}',-1)">−</button><span class="s-val" id="sv${i}${s}">0</span><button class="s-btn" onclick="adj(${i},'${s}',1)">+</button></div></div>`).join('')}
-        <div class="pts-left" id="pts${i}">✦ 4 points</div>
-        <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
-          <div style="color:var(--dim);font-size:15px;letter-spacing:1px;margin-bottom:6px;text-align:center" id="baseStatsTitle${i}">BASE STATS (${CLASSES.warrior.name})</div>
-          <div style="display:flex;gap:12px;justify-content:center">
-            <div id="baseStats${i}" style="display:flex;flex-direction:column;gap:2px;font-size:16px">
-              <span style="color:#ff6060">STR: ${CLASSES.warrior.str}</span>
-              <span style="color:#6060ff">INT: ${CLASSES.warrior.int}</span>
-              <span style="color:#60ff60">DEX: ${CLASSES.warrior.dex}</span>
-              <span style="color:#ffff60">HP: ${CLASSES.warrior.hp}</span>
-              <span style="color:#60ffff">MP: ${CLASSES.warrior.mp}</span>
+
+        <!-- RIGHT: selectors + stats -->
+        <div class="pcard-right">
+
+          <!-- Race / Gender / Class in a row -->
+          <div class="pcard-selectors">
+            <div class="pcard-selector-item">
+              <div class="pcard-selector-label">RACE</div>
+              <div class="pcard-selector-row">
+                <button class="s-btn" onclick="cycleRace(${i},-1)">◀</button>
+                <span id="raceLabel${i}" style="min-width:80px;text-align:center;font-size:17px">${RACES.human.icon} ${RACES.human.name}</span>
+                <button class="s-btn" onclick="cycleRace(${i},1)">▶</button>
+              </div>
             </div>
-            <div id="allocStats${i}" style="display:flex;flex-direction:column;gap:2px;font-size:16px;color:var(--gold)">
-              <span>+ STR: 0</span>
-              <span>+ INT: 0</span>
-              <span>+ DEX: 0</span>
-              <span>+ HP: 0</span>
-              <span style="color:transparent">·</span>
+            <div class="pcard-selector-item">
+              <div class="pcard-selector-label">GENDER</div>
+              <div class="pcard-selector-row">
+                <button class="s-btn" onclick="cycleGender(${i},-1)">◀</button>
+                <span id="genderLabel${i}" style="min-width:80px;text-align:center;font-size:17px">${GENDERS.male.icon} ${GENDERS.male.name}</span>
+                <button class="s-btn" onclick="cycleGender(${i},1)">▶</button>
+              </div>
+            </div>
+            <div class="pcard-selector-item">
+              <div class="pcard-selector-label">CLASS</div>
+              <div class="pcard-selector-row">
+                <button class="s-btn" onclick="cycleClass(${i},-1)">◀</button>
+                <span id="classLabel${i}" style="min-width:80px;text-align:center;font-size:17px">⚔️ Warrior</span>
+                <button class="s-btn" onclick="cycleClass(${i},1)">▶</button>
+              </div>
             </div>
           </div>
-        </div>
-      </div>`;
+
+          <!-- Stat allocation — 2 columns -->
+          <div class="stat-sec" style="margin-top:6px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+              <div style="color:var(--gold-dark);font-size:14px;letter-spacing:1px">STAT POINTS</div>
+              <div class="pts-left" id="pts${i}" style="margin:0">✦ 4 points</div>
+            </div>
+            <div class="stat-alloc-grid">
+              ${['str','int','dex','hp'].map(s=>`
+              <div class="stat-row">
+                <span style="min-width:34px">${s.toUpperCase()}</span>
+                <div style="display:flex;align-items:center;gap:4px">
+                  <button class="s-btn" onclick="adj(${i},'${s}',-1)">−</button>
+                  <span class="s-val" id="sv${i}${s}">0</span>
+                  <button class="s-btn" onclick="adj(${i},'${s}',1)">+</button>
+                </div>
+              </div>`).join('')}
+            </div>
+          </div>
+
+          <!-- Base stats -->
+          <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
+            <div style="color:var(--dim);font-size:11px;letter-spacing:2px;margin-bottom:8px" id="baseStatsTitle${i}">BASE STATS — WARRIOR</div>
+            <div style="display:grid;grid-template-columns:auto 1fr 1fr 1fr 1fr 1fr;align-items:center;row-gap:7px;column-gap:12px;font-size:16px">
+              <span style="color:var(--dim);font-size:11px;letter-spacing:1px">BASE</span>
+              <span id="bstr${i}" style="color:var(--gold)">STR: ${CLASSES.warrior.str}</span>
+              <span id="bint${i}" style="color:var(--gold)">INT: ${CLASSES.warrior.int}</span>
+              <span id="bdex${i}" style="color:var(--gold)">DEX: ${CLASSES.warrior.dex}</span>
+              <span id="bhp${i}"  style="color:var(--gold)">HP: ${CLASSES.warrior.hp}</span>
+              <span id="bmp${i}"  style="color:var(--gold)">MP: ${CLASSES.warrior.mp}</span>
+
+              <span style="color:var(--gold-dark);font-size:11px;letter-spacing:1px">+ALLOC</span>
+              <span id="astr${i}" style="color:var(--gold)">+STR: 0</span>
+              <span id="aint${i}" style="color:var(--gold)">+INT: 0</span>
+              <span id="adex${i}" style="color:var(--gold)">+DEX: 0</span>
+              <span id="ahp${i}"  style="color:var(--gold)">+HP: 0</span>
+              <span style="color:transparent">·</span>
+
+              <span style="color:var(--text);font-size:11px;letter-spacing:1px;border-top:1px solid var(--border);padding-top:5px">TOTAL</span>
+              <span id="tstr${i}" style="color:#ff6060;border-top:1px solid var(--border);padding-top:5px">STR: ${CLASSES.warrior.str}</span>
+              <span id="tint${i}" style="color:#6060ff;border-top:1px solid var(--border);padding-top:5px">INT: ${CLASSES.warrior.int}</span>
+              <span id="tdex${i}" style="color:#60ff60;border-top:1px solid var(--border);padding-top:5px">DEX: ${CLASSES.warrior.dex}</span>
+              <span id="thp${i}"  style="color:#ffff60;border-top:1px solid var(--border);padding-top:5px">HP: ${CLASSES.warrior.hp}</span>
+              <span id="tmp${i}"  style="color:#60ffff;border-top:1px solid var(--border);padding-top:5px">MP: ${CLASSES.warrior.mp}</span>
+            </div>
+          </div>
+
+        </div><!-- /pcard-right -->
+      </div><!-- /pcard-body -->`;
     row.appendChild(card);
-    const race = pForms[i].race || 'human';
-    const gender = pForms[i].gender || 'male';
-    card.querySelector(`#sprWrap${i}`).appendChild(renderSprite('warrior', 180, pColor, race, gender));
+    card.querySelector(`#sprWrap${i}`).appendChild(renderSprite('warrior',200,pColor,pForms[i].race||'human',pForms[i].gender||'male'));
   }
 }
 function selCls(pi,cls){
@@ -3120,27 +3339,23 @@ function selCls(pi,cls){
   const wrap=document.getElementById(`sprWrap${pi}`);wrap.innerHTML='';wrap.appendChild(renderSprite(cls, 180, pColor, race, gender));
   document.getElementById(`classLabel${pi}`).innerHTML = `${base.icon} ${base.name}`;
   // Update base stats display
-  const bs = document.getElementById(`baseStats${pi}`);
-  if(bs){
-    bs.innerHTML = `
-      <span style="color:#ff6060">STR: ${base.str}</span>
-      <span style="color:#6060ff">INT: ${base.int}</span>
-      <span style="color:#60ff60">DEX: ${base.dex}</span>
-      <span style="color:#ffff60">HP: ${base.hp}</span>
-      <span style="color:#60ffff">MP: ${base.mp}</span>
-    `;
-    const title = document.getElementById(`baseStatsTitle${pi}`);
-    if(title) title.textContent = `BASE STATS (${base.name})`;
-  }
-  // Reset alloc display when changing class
-  const al = document.getElementById(`allocStats${pi}`);
-  if(al){
-    pForms[pi].alloc = {str:0,int:0,dex:0,hp:0};
-    pForms[pi].pts = 4;
-    al.innerHTML = `<span>+ STR: 0</span><span>+ INT: 0</span><span>+ DEX: 0</span><span>+ HP: 0</span><span style="color:transparent">·</span>`;
-    document.getElementById(`pts${pi}`).textContent = `✦ 4 points`;
-    ['str','int','dex','hp'].forEach(s=>document.getElementById(`sv${pi}${s}`).textContent='0');
-  }
+  const title = document.getElementById(`baseStatsTitle${pi}`);
+  if(title) title.textContent = `BASE STATS — ${base.name.toUpperCase()}`;
+  const setT = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+  setT(`bstr${pi}`,`STR: ${base.str}`); setT(`bint${pi}`,`INT: ${base.int}`);
+  setT(`bdex${pi}`,`DEX: ${base.dex}`); setT(`bhp${pi}`, `HP: ${base.hp}`);
+  setT(`bmp${pi}`, `MP: ${base.mp}`);
+  // Reset alloc
+  pForms[pi].alloc = {str:0,int:0,dex:0,hp:0};
+  pForms[pi].pts = 4;
+  document.getElementById(`pts${pi}`).textContent = `✦ 4 points`;
+  ['str','int','dex','hp'].forEach(s=>document.getElementById(`sv${pi}${s}`).textContent='0');
+  setT(`astr${pi}`,'+STR: 0'); setT(`aint${pi}`,'+INT: 0');
+  setT(`adex${pi}`,'+DEX: 0'); setT(`ahp${pi}`, '+HP: 0');
+  // Reset totals
+  setT(`tstr${pi}`,`STR: ${base.str}`); setT(`tint${pi}`,`INT: ${base.int}`);
+  setT(`tdex${pi}`,`DEX: ${base.dex}`); setT(`thp${pi}`, `HP: ${base.hp}`);
+  setT(`tmp${pi}`, `MP: ${base.mp}`);
 }
 function cycleRace(pi, dir){
   const races = Object.keys(RACES);
@@ -3189,12 +3404,15 @@ function adj(pi,s,d){
   pf.alloc[s]=(cur+d);pf.pts-=d;
   document.getElementById(`sv${pi}${s}`).textContent=pf.alloc[s];
   document.getElementById(`pts${pi}`).textContent=`✦ ${pf.pts} point${pf.pts!==1?'s':''}`;
-  // Update alloc stats display
-  const al = document.getElementById(`allocStats${pi}`);
-  if(al){
-    const str = pf.alloc.str||0, int = pf.alloc.int||0, dex = pf.alloc.dex||0, hp = pf.alloc.hp||0;
-    al.innerHTML = `<span>+ STR: ${str}</span><span>+ INT: ${int}</span><span>+ DEX: ${dex}</span><span>+ HP: ${hp*10}</span><span style="color:transparent">·</span>`;
-  }
+  // Update alloc + total rows
+  const base2 = CLASSES[pf.cls||'warrior'];
+  const str=pf.alloc.str||0, int2=pf.alloc.int||0, dex=pf.alloc.dex||0, hp=pf.alloc.hp||0;
+  const setT2 = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+  setT2(`astr${pi}`,`+STR: ${str}`);  setT2(`aint${pi}`,`+INT: ${int2}`);
+  setT2(`adex${pi}`,`+DEX: ${dex}`);  setT2(`ahp${pi}`, `+HP: ${hp*10}`);
+  setT2(`tstr${pi}`,`STR: ${base2.str+str}`);   setT2(`tint${pi}`,`INT: ${base2.int+int2}`);
+  setT2(`tdex${pi}`,`DEX: ${base2.dex+dex}`);   setT2(`thp${pi}`, `HP: ${base2.hp+hp*10}`);
+  setT2(`tmp${pi}`, `MP: ${base2.mp}`);
 }
 
 // ══════════════════════════════════════════════════════
@@ -3441,20 +3659,9 @@ function startTurn(){
     }
   }
   
-  // Center camera on current player
+  // Center camera on current player via smooth follow (interruptible by drag)
   if(p.tileIdx !== undefined && board.tiles[p.tileIdx]){
-    const t = board.tiles[p.tileIdx];
-    const baseW = 1200, baseH = 896;
-    const scaleX = bCv.width / baseW;
-    const scaleY = bCv.height / baseH;
-    const baseScale = Math.max(scaleX, scaleY);
-    const effectiveScale = baseScale * zoom;
-    const cellW = baseW / 24;
-    const cellH = baseH / 16;
-    const tileScreenX = t.gx * cellW + cellW / 2;
-    const tileScreenY = t.gy * cellH + cellH / 2;
-    panOffsetX = bCv.width / 2 - tileScreenX * effectiveScale;
-    panOffsetY = bCv.height / 2 - tileScreenY * effectiveScale;
+    if(typeof _eb !== 'undefined') _eb.camTarget = board.tiles[p.tileIdx];
   }
   
   // Handle curses at start of turn
@@ -3502,6 +3709,7 @@ function rollDice(){
     de.textContent=finalMove;
     const swiftMsg = p.status && p.status.swiftness ? ` (${roll} x2 swiftness)` : '';
     toast(`${p.name} rolled ${finalMove}!${swiftMsg}`);
+    addLog(`Rolled a <b style="color:var(--gold)">${finalMove}</b>${swiftMsg}`);
     GS.phase='move';
     const reach=getReach(p.tileIdx,finalMove).filter(t=>!(p.clearedBossTiles||[]).includes(t));
     GS.highlightedTiles=reach;
@@ -3547,9 +3755,12 @@ function getReach(from,steps){
 function moveTo(tileIdx){
   const p=cp();
   p.tileIdx=tileIdx;
+  p.tilesWalked=(p.tilesWalked||0)+1;
   GS.highlightedTiles=[];GS.phase='event';
   updPlayers();
+  const _tname = board.tiles[tileIdx]?.name || board.tiles[tileIdx]?.type || '?';
   toast(`${p.name} → ${board.tiles[tileIdx].type}`);
+  addLog(`Landed on <b style="color:var(--text)">${_tname}</b> (${board.tiles[tileIdx].type})`);
   const lf=board.forks.find(f=>f.tile===tileIdx);
   if(lf){showFork(lf);return;}
   setTimeout(()=>triggerEv(tileIdx),300);
@@ -3934,6 +4145,7 @@ function rollEventDice(eventId, optIdx){
 }
 function doVillage(){
   const p=cp();
+  p.lastVillageTile = p.tileIdx; // track for respawn
   const tile=board.tiles[p.tileIdx]||{};
   const vName=tile.name||'Village';
   // Check if any village quests are available for this player
@@ -4087,7 +4299,7 @@ function villageQuestTurnIn_fur_merchant(){
           if(leveledUp && p.statPoints > 0){
             GS._pendingAfterLevelUp = 'drawCard';
             GS._pendingCardStar = 2;
-            showLevelUpStats(p);
+            showLevelUpScreen(p);
           } else {
             drawCardReward(2);
           }
@@ -4099,9 +4311,16 @@ function villageQuestTurnIn_fur_merchant(){
 
 function villageRest(){
   const p=cp();
-  const healed=p.maxHp - p.hp;
-  p.hp=p.maxHp;
-  openModal('🏠 Rested','You feel refreshed. HP fully restored.',[{label:'Continue',fn:closeEndTurn}]);
+  const hasGW = p.debuffs && p.debuffs.grievousWounds;
+  const fullHeal = p.maxHp - p.hp;
+  const healed = hasGW ? Math.floor(fullHeal / 2) : fullHeal;
+  p.hp = Math.min(p.maxHp, p.hp + healed);
+  if(hasGW){
+    p.debuffs.grievousWounds = false;
+    openModal('🏠 Rested (Grievous Wounds)','Your wounds are still serious. The village healer patches you up as best they can.\n\n❤️ Half HP restored.\n🩸 Grievous Wounds cleared.',[{label:'Continue',fn:closeEndTurn}]);
+  } else {
+    openModal('🏠 Rested','You feel refreshed. HP fully restored.',[{label:'Continue',fn:closeEndTurn}]);
+  }
   toast(`${p.name} recovered ${healed} HP!`,'good');
   updPlayers();
 }
@@ -4408,9 +4627,8 @@ function doInn(){
   // Check if visited this inn in last 5 turns
   if(p.innHistory && p.innHistory.includes(currentTile)){
     toast(`${p.name} already rested here recently. The innkeeper waves you through.`, 'neutral');
-    const hpRestored = Math.floor(p.maxHp * 0.15);
     const mpRestored = Math.floor(p.maxMp * 0.15);
-    p.hp = Math.min(p.maxHp, p.hp + hpRestored);
+    const hpRestored = applyHeal(p, Math.floor(p.maxHp * 0.15));
     p.mp = Math.min(p.maxMp, p.mp + mpRestored);
     openModal('🏨 Quick Rest',`You stop briefly at the inn.
     
@@ -4426,9 +4644,8 @@ You can't stay long, but get a quick rest.
   p.innHistory.push(currentTile);
   if(p.innHistory.length > 5) p.innHistory.shift();
   
-  const hpRestored = Math.floor(p.maxHp * 0.5);
   const mpRestored = Math.floor(p.maxMp * 0.5);
-  p.hp = Math.min(p.maxHp, p.hp + hpRestored);
+  const hpRestored = applyHeal(p, Math.floor(p.maxHp * 0.5));
   p.mp = Math.min(p.maxMp, p.mp + mpRestored);
   toast(`${p.name} rests at the inn! +${hpRestored} HP, +${mpRestored} MP`, 'good');
   openModal('🏨 Cozy Inn',`You rest at a warm inn.
@@ -4682,7 +4899,7 @@ function initCombat(enemy){
     const bossMusic = document.getElementById('bossMusic');
     if(bgMusic) bgMusic.pause();
     if(bossMusic){
-      bossMusic.volume = 0.5;
+      bossMusic.volume = _volMusic;
       bossMusic.play().catch(() => {});
     }
   }
@@ -4696,7 +4913,7 @@ function showBossIntro(enemy){
   const bossMusic = document.getElementById('bossMusic');
   if(bgMusic) bgMusic.pause();
   if(bossMusic){
-    bossMusic.volume = 0.5;
+    bossMusic.volume = _volMusic;
     bossMusic.play().catch(() => {});
   }
   
@@ -4760,6 +4977,9 @@ function setBattleBg(url){
 
 function showBattleScreen(){
   console.log('showBattleScreen called');
+  // Clear sprite cache so the first render always rebuilds the enemy image
+  const _es = document.getElementById('battleEnemySprite');
+  if(_es) { _es._spriteKey = null; _es._wKey = null; }
   try {
     const c = GS.combat;
     const enemy = c?.enemy;
@@ -4941,9 +5161,12 @@ function renderBattleScreen(){
   // Render enemy sprite
   const enemySprite = document.getElementById('battleEnemySprite');
   if(enemySprite){
-    enemySprite.innerHTML = '';
     if(e.isWolfPack && c._packWolf1){
       const w1=c._packWolf1, w2=c._packWolf2;
+      const _wKey=`${w1.hp}|${w2.hp}|${w1.dead}|${w2.dead}|${c.targetWolf}|${!!c._pendingSkillName}|${w1._poisonedTurns||0}|${w2._poisonedTurns||0}|${w1._burningTurns||0}|${w2._burningTurns||0}`;
+      if(enemySprite._wKey!==_wKey){
+        enemySprite._wKey=_wKey;
+        enemySprite.innerHTML='';
       const w1pct=Math.max(0,Math.round(w1.hp/w1.maxHp*100));
       const w2pct=Math.max(0,Math.round(w2.hp/w2.maxHp*100));
       const pending=!!c._pendingSkillName;
@@ -4970,31 +5193,43 @@ function renderBattleScreen(){
           ${wolfStatusIcons(w1)}
           ${w1.dead?'':targetLabel}
         </div>`;
+      }
     } else if(e.sprite){
-      const img = document.createElement('img');
-      img.src = 'assets/' + e.sprite + '.png';
-      img.style.width = '100%';
-      img.style.height = '100%';
-      img.style.objectFit = 'contain';
-      if(e.isFinalBoss) img.className = 'boss-idle';
-      if(e.isWolf) img.style.transform = 'scaleX(-1)';
-      enemySprite.appendChild(img);
+      // Only rebuild if sprite changed (avoids multiplying images each turn)
+      if(enemySprite._spriteKey !== e.sprite){
+        enemySprite._spriteKey = e.sprite;
+        enemySprite.innerHTML = '';
+        const img = document.createElement('img');
+        img.src = 'assets/' + e.sprite + '.png';
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'contain';
+        if(e.isFinalBoss) img.className = 'boss-idle';
+        if(e.isWolf) img.style.transform = 'scaleX(-1)';
+        enemySprite.appendChild(img);
+      }
     } else {
-      enemySprite.textContent = e.icon || '❓';
+      if(enemySprite._spriteKey !== '_icon_'){
+        enemySprite._spriteKey = '_icon_';
+        enemySprite.textContent = e.icon || '❓';
+      }
     }
   }
   
-  // Update battle log
+  // Update battle log — append-only to avoid full DOM rebuild every action
   const logEl = document.getElementById('battleLog');
   if(logEl){
-    logEl.innerHTML = c.log.map(l => {
-      let s = '';
-      if(l.includes('CRITICAL')) s = 'color:#ffcc00;font-weight:bold';
-      else if(l.includes('❌') || l.includes('missed')) s = 'color:#777';
-      else if(l.includes('Phoenix Feather') || l.includes('revives')) s = 'color:#cc88ff;font-weight:bold';
-      else if(l.includes('✦') || l.includes('revive')) s = 'color:#cc88ff';
-      return `<div${s?` style="${s}"`:''}>${l}</div>`;
-    }).join('') || '<span style="opacity:0.5">Combat begins...</span>';
+    function _logStyle(l){ if(l.includes('CRITICAL')) return 'color:#ffcc00;font-weight:bold'; if(l.includes('❌')||l.includes('missed')) return 'color:#777'; if(l.includes('Phoenix Feather')||l.includes('revives')) return 'color:#cc88ff;font-weight:bold'; if(l.includes('✦')||l.includes('revive')) return 'color:#cc88ff'; return ''; }
+    const lastCount = logEl._renderedCount || 0;
+    if(c.log.length === 0 || c.log.length < lastCount){
+      logEl.innerHTML = c.log.length === 0 ? '<span style="opacity:0.5">Combat begins...</span>' : c.log.map(l=>{ const s=_logStyle(l); return `<div${s?` style="${s}"`:''}>${l}</div>`; }).join('');
+      logEl._renderedCount = c.log.length;
+    } else if(c.log.length > lastCount){
+      const frag = document.createDocumentFragment();
+      for(let _i=lastCount; _i<c.log.length; _i++){ const div=document.createElement('div'); const s=_logStyle(c.log[_i]); if(s) div.style.cssText=s; div.textContent=c.log[_i]; frag.appendChild(div); }
+      logEl.appendChild(frag);
+      logEl._renderedCount = c.log.length;
+    }
     logEl.scrollTop = logEl.scrollHeight;
   }
   
@@ -5391,12 +5626,14 @@ function _applySavingEffect(skId, p, e, c){
     e._poisonedTurns = (e._poisonedTurns || 0) + turns;
     e._poisonDmg = poisonDmg;
     c.log.push(`☠️ Poisoned! ${poisonDmg}/turn × ${turns} turns${c._savingThrowSaved ? ' (halved)' : ''}`);
-    // Slash sound first, then poison sound + green aura on the enemy sprite
+    // Slash sound first, then poison sound + green aura on the enemy sprite image
     playSlashSound();
-    const enemySideEl = document.getElementById('enemySide');
-    if(enemySideEl){
-      enemySideEl.classList.add('poison-aura');
-      setTimeout(() => { playPoisonSound(); enemySideEl.classList.remove('poison-aura'); }, 400);
+    const _poisonSpriteEl = (c._packWolf1 && c.enemy)
+      ? document.getElementById(c.enemy === c._packWolf1 ? 'packWolf1Sprite' : 'packWolf2Sprite')
+      : document.getElementById('battleEnemySprite');
+    if(_poisonSpriteEl){
+      _poisonSpriteEl.classList.add('poison-aura');
+      setTimeout(() => { playPoisonSound(); _poisonSpriteEl.classList.remove('poison-aura'); }, 1150);
     }
   } else if(skId === 'curse'){
     if(c._savingThrowSaved){
@@ -6119,7 +6356,7 @@ function toggleBattleMusic(){
   } else if(GS.combat && GS.combat.enemy && (GS.combat.enemy.isFinalBoss || FINAL_BOSSES.some(b => b.name === GS.combat.enemy.name))){
     // Boss battle - play boss music
     if(bossMusic){
-      bossMusic.volume = 0.5;
+      bossMusic.volume = _volMusic;
       bossMusic.play().catch(() => {});
       if(btn) btn.textContent = '🎵';
     }
@@ -6552,6 +6789,22 @@ const DICE_MODELS = {
 const DiceRenderer = (function(){
   const _cache = {};   // modelPath → THREE.Group (cloned per use)
   const _loader = (typeof THREE !== 'undefined') ? new THREE.GLTFLoader() : null;
+  const _rendererPool = []; // pooled WebGL renderers — reused across dice rolls
+
+  function _acquireRenderer(w, h, container){
+    const entry = _rendererPool.find(r => !r.inUse && r.w===w && r.h===h);
+    if(entry){ entry.inUse=true; container.appendChild(entry.renderer.domElement); return entry.renderer; }
+    const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
+    renderer.setSize(w, h); renderer.setPixelRatio(1); renderer.setClearColor(0x000000, 0); renderer.shadowMap.enabled=false;
+    _rendererPool.push({ renderer, w, h, inUse: true });
+    container.appendChild(renderer.domElement);
+    return renderer;
+  }
+  function _releaseRenderer(renderer){
+    if(renderer.domElement.parentNode) renderer.domElement.parentNode.removeChild(renderer.domElement);
+    const entry = _rendererPool.find(r => r.renderer===renderer);
+    if(entry) entry.inUse = false;
+  }
 
   function _loadModel(path){
     return new Promise((resolve, reject) => {
@@ -6577,12 +6830,7 @@ const DiceRenderer = (function(){
     camera.position.set(0, 2.2, 4.2);
     camera.lookAt(0, 0, 0);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(w, h);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0x000000, 0);
-    renderer.shadowMap.enabled = true;
-    container.appendChild(renderer.domElement);
+    const renderer = _acquireRenderer(w, h, container);
 
     // Lighting — warm key light from upper-right, cold fill from lower-left
     scene.add(new THREE.AmbientLight(0xffeedd, 0.5));
@@ -6711,9 +6959,7 @@ const DiceRenderer = (function(){
       },
       dispose(){
         if(rafId){ cancelAnimationFrame(rafId); rafId = null; }
-        renderer.dispose();
-        if(renderer.domElement.parentNode)
-          renderer.domElement.parentNode.removeChild(renderer.domElement);
+        _releaseRenderer(renderer);
       }
     };
 
@@ -6751,64 +6997,31 @@ function skillIcon(skillId, playerClass){
   return `<img src="assets/icons/${file}" style="width:20px;height:20px;image-rendering:pixelated;vertical-align:middle;margin-right:3px">`;
 }
 
-function playDiceSound(){
+// ── Audio Pool ──────────────────────────────────────────────────────────────
+const _audioPool = {};
+function _playPooled(src, volume, startTime){
   try{
-    const snd = new Audio('assets/SFX/DiceRoll.wav');
-    snd.volume = 0.7;
+    if(!_audioPool[src]) _audioPool[src] = [];
+    const pool = _audioPool[src];
+    let snd = pool.find(a => a.paused || a.ended);
+    if(!snd){ snd = new Audio(src); pool.push(snd); }
+    snd.volume = volume || 0.7;
+    snd.currentTime = startTime || 0;
     snd.play().catch(()=>{});
   }catch(e){}
 }
-
-function playCoinsSound(){
-  try{
-    const snd = new Audio('assets/SFX/Coins.wav');
-    snd.volume = 0.7;
-    snd.play().catch(()=>{});
-  }catch(e){}
-}
-function playPoisonSound(){
-  try{ const s=new Audio('assets/SFX/Poison.wav'); s.volume=0.7; s.play().catch(()=>{}); }catch(e){}
-}
-function playSlashSound(volume=0.7){
-  try{ const s=new Audio('assets/SFX/Slash.wav'); s.volume=volume; s.play().catch(()=>{}); }catch(e){}
-}
-function playBuffSound(){
-  try{ const s=new Audio('assets/SFX/Buff.wav'); s.volume=0.7; s.play().catch(()=>{}); }catch(e){}
-}
-function playDebuffSound(){
-  try{ const s=new Audio('assets/SFX/Debuff.wav'); s.volume=0.7; s.play().catch(()=>{}); }catch(e){}
-}
-function playHealSound(){
-  try{ const s=new Audio('assets/SFX/Heal.wav'); s.volume=0.7; s.play().catch(()=>{}); }catch(e){}
-}
-function playFireMagicSound(){
-  try{ const s=new Audio('assets/SFX/FireMagic.wav'); s.volume=0.7; s.play().catch(()=>{}); }catch(e){}
-}
-function playThunderMagicSound(){
-  try{ const s=new Audio('assets/SFX/ThunderMagic.wav'); s.volume=0.7; s.play().catch(()=>{}); }catch(e){}
-}
-function playConfirmSound(){
-  try{
-    const snd = new Audio('assets/SFX/Select.wav');
-    snd.volume = 0.7;
-    snd.currentTime = 1;
-    snd.play().catch(()=>{});
-  }catch(e){}
-}
-function playEquipSound(){
-  try{
-    const snd = new Audio('assets/SFX/ItemEquip.wav');
-    snd.volume = 0.7;
-    snd.play().catch(()=>{});
-  }catch(e){}
-}
-function playUnequipSound(){
-  try{
-    const snd = new Audio('assets/SFX/ItemUnequip.wav');
-    snd.volume = 0.7;
-    snd.play().catch(()=>{});
-  }catch(e){}
-}
+function playDiceSound(){ _playPooled('assets/SFX/DiceRoll.wav', 0.7); }
+function playCoinsSound(){ _playPooled('assets/SFX/Coins.wav', 0.7); }
+function playPoisonSound(){ _playPooled('assets/SFX/Poison.wav', 0.7); }
+function playSlashSound(volume=0.7){ _playPooled('assets/SFX/Slash.wav', volume); }
+function playBuffSound(){ _playPooled('assets/SFX/Buff.wav', 0.7); }
+function playDebuffSound(){ _playPooled('assets/SFX/Debuff.wav', 0.7); }
+function playHealSound(){ _playPooled('assets/SFX/Heal.wav', 0.7); }
+function playFireMagicSound(){ _playPooled('assets/SFX/FireMagic.wav', 0.7); }
+function playThunderMagicSound(){ _playPooled('assets/SFX/ThunderMagic.wav', 0.7); }
+function playConfirmSound(){ _playPooled('assets/SFX/Select.wav', 0.7, 1); }
+function playEquipSound(){ _playPooled('assets/SFX/ItemEquip.wav', 0.7); }
+function playUnequipSound(){ _playPooled('assets/SFX/ItemUnequip.wav', 0.7); }
 
 // ── roll3D ────────────────────────────────────────────────────────────────────
 // Mounts a 3-D die in `elementId`, spins it for SPIN_MS, then freezes it for
@@ -8014,6 +8227,7 @@ function combatWin(){
 }
 
 function combatWinContinue(p,e){
+  addLog(`⚔️ Defeated <b style="color:#60ff60">${e.icon||''} ${e.name}</b>`);
   if(e.isMiniBoss){
     if(!p.defeatedMinis) p.defeatedMinis=[];
     if(!p.defeatedMinis.includes(e.name)) p.defeatedMinis.push(e.name);
@@ -8112,11 +8326,11 @@ function combatWinContinue(p,e){
     if(!p.clearedBossTiles.includes(p.tileIdx)) p.clearedBossTiles.push(p.tileIdx);
     p.bossesDefeated++;toast(`${p.name} defeated ${e.name}! (${p.bossesDefeated}/3)`,'imp');
     if(p.bossesDefeated>=3){showVictory(p);return;}
-    openModal('Final Boss Defeated!',`${e.icon} ${e.name} vanquished!\nYou claim: ${e.reward}\nBosses: ${p.bossesDefeated}/3\n+${expGain} EXP · +${goldGain}💰${leveledUp?' (Level '+p.level+')':''}`,[{label:'Press On!',fn:()=>{closeModal();if(leveledUp && p.statPoints > 0){showLevelUpStats(p);}else{closeEndTurn();}}}]);
+    openModal('Final Boss Defeated!',`${e.icon} ${e.name} vanquished!\nYou claim: ${e.reward}\nBosses: ${p.bossesDefeated}/3\n+${expGain} EXP · +${goldGain}💰${leveledUp?' (Level '+p.level+')':''}`,[{label:'Press On!',fn:()=>{closeModal();if(leveledUp && p.statPoints > 0){showLevelUpScreen(p);}else{closeEndTurn();}}}]);
   }else if(e.isMiniBoss){
     toast(`${p.name} defeated ${e.name}! +${expGain} EXP · +${goldGain}💰`,'good');
     const star=Math.random()<.5?3:4;
-    openModal('Mini Boss Defeated!',`${e.icon} ${e.name} falls!\n+${expGain} EXP · +${goldGain}💰${leveledUp?' (Level '+p.level+')':''}\nDraw a ${star}⭐ card!`,[{label:`Draw Card`,fn:()=>{closeModal();if(leveledUp && p.statPoints > 0){GS._pendingAfterLevelUp='drawCard';GS._pendingCardStar=star;showLevelUpStats(p);}else{drawCardReward(star);}}}]);
+    openModal('Mini Boss Defeated!',`${e.icon} ${e.name} falls!\n+${expGain} EXP · +${goldGain}💰${leveledUp?' (Level '+p.level+')':''}\nDraw a ${star}⭐ card!`,[{label:`Draw Card`,fn:()=>{closeModal();if(leveledUp && p.statPoints > 0){GS._pendingAfterLevelUp='drawCard';GS._pendingCardStar=star;showLevelUpScreen(p);}else{drawCardReward(star);}}}]);
   }else{
     toast(`${p.name} defeated ${e.name}! +${expGain} EXP · +${goldGain}💰${leveledUp?' (Level '+p.level+')':''}`,'good');
     openModal('Enemy Defeated!',
@@ -8128,71 +8342,63 @@ function combatWinContinue(p,e){
         <div style="font-size:15px;color:#f0c060;font-weight:bold;margin-bottom:5px">+${goldGain} ${coinImg(20)}</div>
         ${leveledUp ? `<div style="font-size:14px;color:#f0c060;font-weight:bold">🎉 LEVEL UP! Now level ${p.level}!</div>` : ''}
       </div>`,
-      [{label:'Continue', fn:()=>{closeModal();if(leveledUp && p.statPoints > 0){showLevelUpStats(p);}else{closeEndTurn();}}}]
+      [{label:'Continue', fn:()=>{closeModal();if(leveledUp && p.statPoints > 0){showLevelUpScreen(p);}else{closeEndTurn();}}}]
     );
   }
   
   updPlayers();
 }
 
-function showLevelUpStats(p, forceKeepOpen = false){
-  // Don't auto-close - keep modal open until Done is pressed
-  if(!forceKeepOpen && (!p || p.statPoints <= 0)){
-    closeEndTurn();
-    return;
-  }
-  
+function showLevelUpScreen(p){
+  // Full-screen level-up overlay
+  playSound('levelup');
+  addLog(`⬆️ <b style="color:var(--gold)">${p.name} reached level ${p.level}!</b>`);
+  document.getElementById('lvlNumber').textContent = p.level;
+  document.getElementById('lvlName').textContent = p.name + ' · ' + (CLASSES[p.class]?.name || p.class);
+  _renderLvlStatGrid(p);
+  const ov = document.getElementById('levelUpOverlay');
+  ov.classList.add('show');
+}
+function _renderLvlStatGrid(p){
   const s = calcStats(p);
   const hasPoints = p.statPoints > 0;
-  const html = `
-    <div class="panel-title">🎉 LEVEL UP!</div>
-    <div style="text-align:center;margin-bottom:20px;color:var(--gold)">${p.name} is now level ${p.level}!</div>
-    <div style="text-align:center;margin-bottom:15px;color:#4f4">Points to spend: ${p.statPoints}</div>
-    <div style="display:flex;justify-content:center;gap:15px;margin:20px 0">
-      <div style="text-align:center">
-        <div style="font-size:11px;color:var(--dim)">STR</div>
-        <div style="font-size:20px;color:#f44;font-weight:bold">${s.str}</div>
-        <button class="s-btn" onclick="allocateStat('str')" ${!hasPoints ? 'disabled style="opacity:0.3"' : ''}>+</button>
-      </div>
-      <div style="text-align:center">
-        <div style="font-size:11px;color:var(--dim)">INT</div>
-        <div style="font-size:20px;color:#44f;font-weight:bold">${s.int}</div>
-        <button class="s-btn" onclick="allocateStat('int')" ${!hasPoints ? 'disabled style="opacity:0.3"' : ''}>+</button>
-      </div>
-      <div style="text-align:center">
-        <div style="font-size:11px;color:var(--dim)">DEX</div>
-        <div style="font-size:20px;color:#4f4;font-weight:bold">${s.dex}</div>
-        <button class="s-btn" onclick="allocateStat('dex')" ${!hasPoints ? 'disabled style="opacity:0.3"' : ''}>+</button>
-      </div>
-      <div style="text-align:center">
-        <div style="font-size:11px;color:var(--dim)">HP</div>
-        <div style="font-size:20px;color:#f0c060;font-weight:bold">${s.hp}</div>
-        <button class="s-btn" onclick="allocateStat('hp')" ${!hasPoints ? 'disabled style="opacity:0.3"' : ''}>+</button>
-      </div>
-    </div>
-    <div style="text-align:center;margin-top:15px">
-      <button class="menu-btn" onclick="finishLevelUp()">Done</button>
-    </div>
-  `;
-  openModal(null, null, [], html);
+  document.getElementById('lvlPtsLeft').textContent = `✦ ${p.statPoints} point${p.statPoints!==1?'s':''}`;
+  const stats = [
+    {key:'str',label:'STR',color:'#ff6060',val:s.str},
+    {key:'int',label:'INT',color:'#6060ff',val:s.int},
+    {key:'dex',label:'DEX',color:'#60ff60',val:s.dex},
+    {key:'hp', label:'HP', color:'#ffff60',val:s.hp},
+  ];
+  document.getElementById('lvlStatGrid').innerHTML = stats.map(st=>`
+    <div>
+      <div style="font-size:11px;color:var(--dim);letter-spacing:1px">${st.label}</div>
+      <div style="font-size:26px;color:${st.color};font-weight:bold;line-height:1.2">${st.val}</div>
+      <button class="s-btn" onclick="allocateStat('${st.key}')" ${!hasPoints?'disabled style="opacity:0.3"':''}>+</button>
+    </div>`).join('');
+}
+function showLevelUpStats(p, forceKeepOpen = false){
+  // Legacy path — just refresh the overlay grid if open
+  const ov = document.getElementById('levelUpOverlay');
+  if(ov && ov.classList.contains('show')){ _renderLvlStatGrid(p); return; }
+  // Fallback: open overlay
+  showLevelUpScreen(p);
 }
 
 function allocateStat(stat){
   const p = cp();
   if(!p || p.statPoints <= 0) return;
-  
   p.statPoints--;
   if(stat === 'str') p.allocStr = (p.allocStr || 0) + 1;
   else if(stat === 'int') p.allocInt = (p.allocInt || 0) + 1;
   else if(stat === 'dex') p.allocDex = (p.allocDex || 0) + 1;
   else if(stat === 'hp'){ p.allocHp = (p.allocHp || 0) + 1; p.maxHp += 10; p.hp += 10; }
-  
-  // Keep modal open even after spending all points
-  showLevelUpStats(p, true);
+  _renderLvlStatGrid(p);
   updPlayers();
 }
 
 function finishLevelUp(){
+  const ov = document.getElementById('levelUpOverlay');
+  if(ov) ov.classList.remove('show');
   closeModal();
   updPlayers();
   const p = cp();
@@ -8301,7 +8507,15 @@ function combatLose(){
   combatLoseContinue(p,e);
 }
 
+// Apply healing respecting Grievous Wounds debuff (halves all healing)
+function applyHeal(p, amount){
+  if(p.debuffs && p.debuffs.grievousWounds) amount = Math.floor(amount / 2);
+  p.hp = Math.min(p.maxHp, p.hp + amount);
+  return amount;
+}
+
 function combatLoseContinue(p,e){
+  addLog(`💀 Defeated by <b style="color:#ff6060">${e.icon||''} ${e.name}</b> — respawned with Grievous Wounds`);
   // Death penalties
   const lostGold=Math.floor(p.gold/4);
   p.gold=Math.max(0,p.gold-lostGold);
@@ -8313,23 +8527,35 @@ function combatLoseContinue(p,e){
     const [slot,itemId]=equippedSlots[Math.floor(Math.random()*equippedSlots.length)];
     lostItemName=ITEMS[itemId]?.name||itemId;
     p.equipped[slot]=null;
-    // Also remove from inventory
     const invIdx=p.inventory.findIndex(i=>i.id===itemId);
     if(invIdx>=0)p.inventory.splice(invIdx,1);
   }
-  // Move back 14 spaces
-  const prevIdx=p.tileIdx;
-  p.tileIdx=Math.max(board.startTile,p.tileIdx-14);
-  toast(`${p.name} defeated by ${e.name}! Lost ${lostGold} gold, ${lostItemName}, fell back ${prevIdx-p.tileIdx} spaces!`,'bad');
-  // Play death sound once
+  // Respawn at last visited village (or random village if none)
+  const villageTiles = board.tiles.map((t,i)=>({t,i})).filter(({t})=>t.type==='village');
+  let respawnIdx = p.lastVillageTile;
+  if(respawnIdx === undefined || respawnIdx === null){
+    respawnIdx = villageTiles.length
+      ? villageTiles[Math.floor(Math.random()*villageTiles.length)].i
+      : board.startTile;
+  }
+  p.tileIdx = respawnIdx;
+  const respawnName = board.tiles[respawnIdx]?.name || 'a village';
+  // Lose next turn + apply Grievous Wounds debuff
+  p.skipTurns = (p.skipTurns||0) + 1;
+  if(!p.debuffs) p.debuffs = {};
+  p.debuffs.grievousWounds = true;
+  // Play death sound
   const deathAudio=document.getElementById('deathSound');
-  if(deathAudio){deathAudio.volume=0.6;deathAudio.play().catch(()=>{});}
+  if(deathAudio){deathAudio.volume=_volSfx*0.9;deathAudio.play().catch(()=>{});}
+  toast(`${p.name} defeated! Respawned at ${respawnName} with Grievous Wounds!`,'bad');
   openModal('💀 Defeated!',
     `${p.name} was beaten by ${e.icon} ${e.name}!\n\n` +
-    `💰 Lost ${lostGold} gold (half your purse)\n` +
+    `💰 Lost ${lostGold} gold\n` +
     `🗡️ Lost: ${lostItemName}\n` +
-    `❤️ HP restored to 1\n` +
-    `↩️ Moved back ${prevIdx-p.tileIdx} spaces`,
+    `❤️ HP reduced to 1\n` +
+    `🏥 Respawned at ${respawnName}\n` +
+    `⏳ Loses next turn\n` +
+    `🩸 Grievous Wounds — all healing halved until rested`,
     [{label:'↩️ Limp Away...',fn:closeEndTurn}]);
   updPlayers();
 }
@@ -8345,7 +8571,7 @@ function useConsumableInCombat(){
 function useCmbItem(idx){
   const p=cp(),cons=p.inventory.filter(it=>it.type==='consumable'&&!it.used);
   const it=cons[idx];if(!it)return;it.used=true;
-  if(it.healHp){p.hp=Math.min(p.maxHp,p.hp+it.healHp);toast(`+${it.healHp} HP!`,'good');}
+  if(it.healHp){const h=applyHeal(p,it.healHp);toast(`+${h} HP!${p.debuffs?.grievousWounds?' (Grievous Wounds — halved)':''}`, 'good');}
   if(it.healMp){p.mp=Math.min(p.maxMp,p.mp+it.healMp);toast(`+${it.healMp} MP!`,'good');}
   updPlayers();renderCombat();
 }
@@ -8444,18 +8670,24 @@ function pickCard(idx){
     const cont=document.getElementById(`cardCont${i}`);
     if(cont && i !== idx) cont.onclick=null;
   });
-  
-  // Wait a moment then close
+
+  // Add item and show Continue button (no auto-close)
   setTimeout(()=>{
-    p.inventory.push({...c});toast(`${p.name} obtained ${c.name}!`,'good');
+    p.inventory.push({...c});
+    toast(`${p.name} obtained ${c.name}!`,'good');
     spawnPtc(window.innerWidth/4,window.innerHeight/4,c.rarity===4?'#f0c060':c.rarity===3?'#aa6aff':c.rarity===2?'#4080d0':'#aaa',14);
-    closeModal();
-    if(GS._afterReward){
-      const fn=GS._afterReward; GS._afterReward=null; fn();
-    } else {
-      closeEndTurn();
-    }
     updPlayers();
+    // Replace the Skip button with a Continue button
+    const choicesEl = document.querySelector('#modalBox .mo-choices');
+    if(choicesEl){
+      choicesEl.innerHTML = `<button class="act-btn" style="margin-top:10px" onclick="
+        closeModal();
+        (function(){
+          if(GS._afterReward){ var fn=GS._afterReward; GS._afterReward=null; fn(); }
+          else { closeEndTurn(); }
+        })();
+      ">Continue</button>`;
+    }
   },1200);
 }
 
@@ -8765,7 +8997,7 @@ function invItemAction(pi,itemIdx){
   if(!it||it.used)return;
   if(it.type==='consumable'){
     if(!it.healHp&&!it.healMp){toast(`${it.name} can only be sold at a Shop.`,'bad');return;}
-    if(it.healHp){p.hp=Math.min(p.maxHp,p.hp+it.healHp);toast(`${p.name} used ${it.name}! +${it.healHp} HP`,'good');}
+    if(it.healHp){const h=applyHeal(p,it.healHp);toast(`${p.name} used ${it.name}! +${h} HP${p.debuffs?.grievousWounds?' (halved)':''}`,'good');}
     if(it.healMp){p.mp=Math.min(p.maxMp,p.mp+it.healMp);toast(`${p.name} used ${it.name}! +${it.healMp} MP`,'good');}
     it.used=true;
   }else if(it.slot){
@@ -8901,6 +9133,81 @@ window.setRegions=function(defs){
   assignRegions();
   drawBoard();
 }
+// ══════════════════════════════════════════════════════
+//  LOBBY — sequential per-player character setup
+// ══════════════════════════════════════════════════════
+let _lobbyIdx = 0;
+
+function startLobby(){
+  _lobbyIdx = 0;
+  const cols = ['#9a3a3a','#3a5a9a','#3a9a5a','#9a8a3a'];
+  pForms = Array.from({length:playerCount}, (_, i) => ({
+    cls:'warrior', race:'human', gender:'male',
+    alloc:{str:0,int:0,dex:0,hp:0}, pts:4, color:cols[i]
+  }));
+  document.getElementById('lobbyPhase1').style.display = 'none';
+  document.getElementById('lobbyPhase2').style.display = '';
+  document.getElementById('lobbyProgress').innerHTML =
+    Array.from({length:playerCount}, () => '<div class="lobby-dot"></div>').join('');
+  renderForms();
+  showLobbyCard(0);
+}
+
+function showLobbyCard(idx){
+  _lobbyIdx = idx;
+  const cards = document.getElementById('playersRow').children;
+  for(let i = 0; i < cards.length; i++) cards[i].style.display = i === idx ? '' : 'none';
+  document.querySelectorAll('#lobbyProgress .lobby-dot').forEach((d, i) => {
+    d.className = 'lobby-dot' + (i < idx ? ' done' : i === idx ? ' active' : '');
+  });
+  document.getElementById('lobbyPlayerNum').textContent = `PLAYER ${idx+1} OF ${playerCount}`;
+  document.getElementById('lobbyBackBtn').style.visibility = idx === 0 ? 'hidden' : 'visible';
+  document.getElementById('lobbyNextBtn').textContent =
+    idx === playerCount-1 ? 'Begin Journey ⟶' : `Player ${idx+2} →`;
+}
+
+function lobbyNext(){
+  if(_lobbyIdx < playerCount - 1){
+    showLobbyCard(_lobbyIdx + 1);
+  } else {
+    document.getElementById('lobbyPhase2').style.display = 'none';
+    document.getElementById('lobbyPhase1').style.display = '';
+    startGame();
+  }
+}
+
+function lobbyBack(){
+  if(_lobbyIdx > 0){
+    showLobbyCard(_lobbyIdx - 1);
+  } else {
+    document.getElementById('lobbyPhase2').style.display = 'none';
+    document.getElementById('lobbyPhase1').style.display = '';
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  PASS-THE-CONTROLLER BANNER
+// ══════════════════════════════════════════════════════
+function showPassBanner(p, cb){
+  const banner = document.getElementById('passBanner');
+  if(!banner || GS.players.length <= 1){ cb(); return; }
+  const cls = CLASSES[p.class];
+  document.getElementById('passBannerSub').textContent    = `PLAYER ${GS.curP+1}`;
+  document.getElementById('passBannerIcon').textContent   = cls.icon;
+  document.getElementById('passBannerName').textContent   = p.name.toUpperCase();
+  document.getElementById('passBannerClass').textContent  = `${cls.name.toUpperCase()} · TURN ${GS.turn}`;
+  banner.classList.add('show');
+  let done = false;
+  const dismiss = () => {
+    if(done) return; done = true;
+    banner.classList.remove('show');
+    banner.removeEventListener('click', dismiss);
+    setTimeout(cb, 380);
+  };
+  banner.addEventListener('click', dismiss);
+  setTimeout(dismiss, 4000);
+}
+
 function endTurn(){
   // Apply buff/debuff damage at end of turn
   const p = GS.players[GS.curP];
@@ -8938,7 +9245,9 @@ function endTurn(){
   const order=GS.initOrder,pos=order.indexOf(GS.curP);
   GS.curP=order[(pos+1)%order.length];
   if((pos+1)%order.length===0)GS.turn++;
-  updPlayers();renderActs();startTurn();
+  updPlayers();renderActs();
+  if(GS.players.length > 1){ showPassBanner(GS.players[GS.curP], startTurn); }
+  else { startTurn(); }
 }
 
 // ══════════════════════════════════════════════════════
@@ -9119,19 +9428,24 @@ function updPlayers(){
     const mpct=Math.max(0,Math.min(100,p.mp/p.maxMp*100));
     const isCur=i===GS.curP;const cls=CLASSES[p.class];
     const sk=[0,1,2].map(j=>`<span class="skull${j<p.bossesDefeated?' on':''}">💀</span>`).join('');
+    // Debuff badges
     const curs=(p.curses||{});
-    const curseHtml=Object.entries(curs).filter(([k,v])=>v>0).map(([k,v])=>{
-      const icon={suffocate:'💨',blindness:'👁️',paralysis:'⚡'}[k]||'❓';
-      const name=k.charAt(0).toUpperCase()+k.slice(1);
-      return `<span class="curse-badge" title="${name}: ${v} turn(s)">${icon}</span>`;
-    }).join('');
-    // Buffs and Debuffs display
-    const statusHtml = p.status ? Object.entries(p.status).map(([key, st]) => {
-      const isBuff = st.type === 'buff';
-      const color = isBuff ? '#4f4' : '#f44';
-      const icon = st.icon || (isBuff ? '✨' : '💀');
-      return `<span class="curse-badge" style="color:${color}" title="${st.name}: ${st.desc} (${st.turns} turns)">${icon}</span>`;
-    }).join('') : '';
+    const debuffBadges=[
+      ...Object.entries(curs).filter(([k,v])=>v>0).map(([k,v])=>{
+        const icon={suffocate:'💨',blindness:'👁️',paralysis:'⚡'}[k]||'❓';
+        const name=k.charAt(0).toUpperCase()+k.slice(1);
+        return `<span class="curse-badge" title="${name}: ${v} turn(s)">${icon}</span>`;
+      }),
+      ...(p.debuffs?.grievousWounds ? [`<span class="curse-badge" style="color:#ff5050" title="Grievous Wounds — all healing halved until rested at a village">🩸 Grievous Wounds</span>`] : []),
+      ...(p.poison>0 ? [`<span class="curse-badge" style="color:#80ff40" title="Poisoned: ${p.poison} turn(s)">☠️ Poison</span>`] : []),
+      ...(p.skipTurns>0 ? [`<span class="curse-badge" style="color:#ffaa40" title="Loses ${p.skipTurns} turn(s)">⏳ Skip ×${p.skipTurns}</span>`] : []),
+      ...(p.status ? Object.entries(p.status).map(([key,st])=>{
+        const color=st.type==='buff'?'#4f4':'#f44';
+        const icon=st.icon||(st.type==='buff'?'✨':'💀');
+        return `<span class="curse-badge" style="color:${color}" title="${st.name}: ${st.desc} (${st.turns} turns)">${icon} ${st.name}</span>`;
+      }) : []),
+    ];
+    const debuffRow = debuffBadges.length ? `<div style="display:flex;flex-wrap:wrap;gap:4px;margin:3px 0">${debuffBadges.join('')}</div>` : '';
     const expPct=p.level?Math.min(100,(p.exp||0)/(p.level*50)*100):0;
     const rogueStyle = p.class === 'rogue' ? 'background:linear-gradient(135deg,#1a1a1a,#2a2a2a);' : '';
     return `<div class="pi-card${isCur?' cur':''}" style="${rogueStyle}">
@@ -9141,12 +9455,13 @@ function updPlayers(){
         <button class="pi-btn" onclick="event.stopPropagation();openInventory(${i})" title="Inventory">Inventory</button>
         <button class="pi-btn" onclick="event.stopPropagation();openQuests(${i})" title="Quest Tracker">Quest</button>
       </div>
-      <div class="pi-name" onclick="openInventory(${i})">${cls.icon} ${p.name}${isCur?' ◀':''}</div>
-      <div class="pi-cls">${RACES[p.race]?.icon || RACES.human.icon} ${(RACES[p.race]?.name || 'Human')} · ${GENDERS[p.gender]?.icon || GENDERS.male.icon} ${(GENDERS[p.gender]?.name || 'Male')} · ${cls.name} Lv.${p.level||1} · ${p.gold}${coinImg(14)} ${p.statPoints>0?'⭐'+p.statPoints:''} ${curseHtml} ${statusHtml}</div>
+      <div class="pi-name" onclick="openInventory(${i})" style="display:flex;justify-content:space-between;align-items:center">${cls.icon} ${p.name}${isCur?' ◀':''}<span style="color:var(--gold);font-size:15px;font-weight:normal">💰${p.gold}</span></div>
+      <div class="pi-cls">${RACES[p.race]?.icon||RACES.human.icon} ${RACES[p.race]?.name||'Human'} · ${GENDERS[p.gender]?.icon||GENDERS.male.icon} ${GENDERS[p.gender]?.name||'Male'} · ${cls.name} Lv.${p.level||1}${p.statPoints>0?' ⭐'+p.statPoints:''}</div>
+      ${debuffRow}
       <div class="pi-bar"><div class="pi-fill pi-hp-fill" style="width:${pct}%"></div></div>
       <div class="pi-bar"><div class="pi-fill pi-mp-fill" style="width:${mpct}%"></div></div>
       <div class="pi-bar"><div class="pi-fill" style="width:${expPct}%;background:linear-gradient(90deg,#a06000,#d09000)"></div></div>
-      <div class="pi-stats"><span>HP:<span class="pi-sv">${p.hp}/${p.maxHp}</span></span><span>MP:<span class="pi-sv">${p.mp}/${p.maxMp}</span></span><span>AC:<span class="pi-sv">${p.armorClass||12}</span></span><span>EXP:<span class="pi-sv">${p.exp||0}/${p.level*50}</span></div>
+      <div class="pi-stats"><span>HP:<span class="pi-sv">${p.hp}/${p.maxHp}</span></span><span>MP:<span class="pi-sv">${p.mp}/${p.maxMp}</span></span><span>AC:<span class="pi-sv">${p.armorClass||12}</span></span><span>EXP:<span class="pi-sv">${p.exp||0}/${p.level*50}</span></span></div>
       <div class="skulls">${sk}</div>
     </div>`;
   }).join('');
@@ -9178,7 +9493,7 @@ function toggleMusic(){
     if(btn) btn.textContent = '🔇';
     if(btnChar) btnChar.textContent = '🔇';
   }else{
-    audio.volume = 0.4;
+    audio.volume = _volMusic;
     audio.play().then(() => {
       musicPlaying = true;
       if(btn) btn.textContent = '🎵';
@@ -9188,6 +9503,26 @@ function toggleMusic(){
       toast('Music file not found - add bgmusic.mp3 to assets/music/','bad');
     });
   }
+}
+// ── TURN HISTORY LOG ────────────────────────────────────
+if(!window._turnLog) window._turnLog = [];
+function addLog(msg){
+  const p = GS?.players?.[GS?.curP];
+  const prefix = p ? `<span style="color:var(--gold)">T${GS.turn} ${p.name}:</span> ` : `<span style="color:var(--dim)">T${GS?.turn||'?'}:</span> `;
+  window._turnLog.unshift(prefix + msg);
+  if(window._turnLog.length > 40) window._turnLog.pop();
+  const panel = document.getElementById('turnLogPanel');
+  if(panel && panel.parentElement?.style.display !== 'none'){
+    panel.innerHTML = window._turnLog.join('<br>');
+  }
+}
+function toggleTurnLog(){
+  const wrap = document.getElementById('turnLogWrap');
+  const panel = document.getElementById('turnLogPanel');
+  if(!wrap || !panel) return;
+  const open = wrap.style.display !== 'none';
+  wrap.style.display = open ? 'none' : 'block';
+  if(!open){ panel.innerHTML = window._turnLog.join('<br>'); panel.scrollTop = 0; }
 }
 function toast(msg,type=''){
   const el=document.getElementById('gameToast');if(!el)return;
@@ -9345,15 +9680,154 @@ function showNpcDialogue(opts){
 
 function showVictory(p){
   closeModal();
-  const el=document.createElement('div');
-  el.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:999;display:flex;align-items:center;justify-content:center';
-  el.innerHTML=`<div class="victory-wrap"><div class="v-title">✦ VICTORY ✦</div>
-    <div style="font-family:'VT323',monospace;font-size:17px;color:var(--text);margin-bottom:14px">${renderIcon(CLASSES[p.class].icon,CLASSES[p.class].fallback)} ${p.name} has defeated 3 Final Bosses!</div>
-    <div style="font-size:14px;color:var(--dim);margin-bottom:44px;font-family:'VT323',monospace;font-style:italic">The Enchanted Path is conquered. The realm is saved!</div>
-    <div style="font-size:46px;margin-bottom:18px">💀💀💀</div>
-    <button class="start-btn" onclick="location.reload()">⟶ Play Again</button></div>`;
-  document.body.appendChild(el);
-  setInterval(()=>spawnPtc(Math.random()*window.innerWidth,Math.random()*window.innerHeight,'#f0c060',8),450);
+  _winOpen(GS.players || [p]);
+}
+
+function testWinScreen(){
+  _winOpen([
+    {name:'Aldric', class:'warrior',race:'human', gender:'male',  level:5, hp:80, maxHp:120,gold:340,bossesDefeated:2,questsCompleted:1,tilesWalked:42,color:'#9a3a3a',allocStr:2,allocInt:0,allocDex:0,allocHp:1,debuffs:{},curses:{},poison:0,skipTurns:0,inventory:[],equipped:{}},
+    {name:'Lyra',  class:'mage',  race:'elf',   gender:'female', level:4, hp:20, maxHp:80, gold:610,bossesDefeated:1,questsCompleted:2,tilesWalked:38,color:'#3a5a9a',allocStr:0,allocInt:3,allocDex:0,allocHp:0,debuffs:{},curses:{},poison:0,skipTurns:0,inventory:[],equipped:{}},
+    {name:'Drak',  class:'rogue', race:'orc',   gender:'male',   level:6, hp:55, maxHp:90, gold:220,bossesDefeated:3,questsCompleted:0,tilesWalked:55,color:'#3a9a5a',allocStr:1,allocInt:0,allocDex:2,allocHp:0,debuffs:{},curses:{},poison:0,skipTurns:0,inventory:[],equipped:{}},
+    {name:'Seris', class:'monk',  race:'human', gender:'female', level:4, hp:95, maxHp:100,gold:180,bossesDefeated:1,questsCompleted:1,tilesWalked:30,color:'#9a8a3a',allocStr:0,allocInt:1,allocDex:0,allocHp:1,debuffs:{},curses:{},poison:0,skipTurns:0,inventory:[],equipped:{}},
+  ]);
+}
+
+let _winConfettiRAF = null;
+
+function _winClose(){
+  if(_winConfettiRAF){ cancelAnimationFrame(_winConfettiRAF); _winConfettiRAF=null; }
+  document.getElementById('winScreen').style.display='none';
+  showS('menuScreen');
+}
+
+function _winOpen(players){
+  const ws = document.getElementById('winScreen');
+  ws.style.display = 'flex';
+  // Reset
+  document.getElementById('winRays').style.opacity='0';
+  document.getElementById('winTitle').classList.remove('show');
+  document.getElementById('winSubTitle').classList.remove('show');
+  document.getElementById('winActions').classList.remove('show');
+  document.getElementById('winCards').innerHTML='';
+  document.getElementById('winFlashEl').style.opacity='0';
+  document.getElementById('winFlashEl').style.transition='none';
+  const crack=document.getElementById('winCrackLine');
+  crack.style.transition='none'; crack.style.transform='scaleY(0)'; crack.style.opacity='1';
+  if(_winConfettiRAF){ cancelAnimationFrame(_winConfettiRAF); _winConfettiRAF=null; }
+
+  // Phase 1 — crack + thunder + flash
+  setTimeout(()=>{
+    const thunder=new Audio('assets/SFC/Thunder.wav');
+    thunder.volume=typeof _volSfx!=='undefined'?_volSfx:0.7;
+    thunder.play().catch(()=>{});
+    // Crack expands vertically
+    crack.style.transition='transform 0.35s ease-out';
+    crack.style.transform='scaleY(1)';
+    setTimeout(()=>{
+      // Flash white
+      const flash=document.getElementById('winFlashEl');
+      flash.style.transition='opacity 0.12s'; flash.style.opacity='1';
+      setTimeout(()=>{
+        flash.style.transition='opacity 0.55s'; flash.style.opacity='0';
+        crack.style.transition='opacity 0.3s'; crack.style.opacity='0';
+        // Golden rays in
+        document.getElementById('winRays').style.opacity='1';
+        // VICTORY slams in
+        setTimeout(()=>{
+          document.getElementById('winTitle').classList.add('show');
+          playSound('levelup');
+          setTimeout(()=>{
+            document.getElementById('winSubTitle').classList.add('show');
+            // Hero cards
+            setTimeout(()=>_winRevealCards(players), 750);
+          }, 450);
+        }, 350);
+      }, 120);
+    }, 350);
+  }, 300);
+}
+
+function _winScore(p){ return (p.bossesDefeated||0)*500+(p.gold||0)+(p.level||1)*200+Math.round(((p.hp||0)/(p.maxHp||1))*100)+(p.questsCompleted||0)*100; }
+
+function _winTitle(p, players, isMvp){
+  if(isMvp) return '✦ The Champion ✦';
+  const byGold=players.reduce((a,b)=>(a.gold||0)>=(b.gold||0)?a:b);
+  const byBoss=players.reduce((a,b)=>(a.bossesDefeated||0)>=(b.bossesDefeated||0)?a:b);
+  const byLv  =players.reduce((a,b)=>(a.level||1)>=(b.level||1)?a:b);
+  const byWalk=players.reduce((a,b)=>(a.tilesWalked||0)>=(b.tilesWalked||0)?a:b);
+  const hpPcts=players.map(p=>(p.hp||0)/(p.maxHp||1));
+  const minHp =Math.min(...hpPcts); const maxHp=Math.max(...hpPcts);
+  const myHp  =(p.hp||0)/(p.maxHp||1);
+  if(p===byGold  && (p.gold||0)>0)         return 'The Gold Hoarder';
+  if(p===byBoss  && (p.bossesDefeated||0)>0) return 'Bane of Bosses';
+  if(p===byLv)                              return 'The Elder';
+  if(p===byWalk  && (p.tilesWalked||0)>0)  return 'The Wanderer';
+  if(myHp===minHp && players.length>1)     return 'Barely Made It';
+  if(myHp===maxHp && players.length>1)     return 'The Untouchable';
+  return {warrior:'The Brave',mage:'The Arcane',ranger:'The Swift',rogue:'The Shadow',monk:'The Serene'}[p.class]||'The Adventurer';
+}
+
+function _winRevealCards(players){
+  const scores=players.map(p=>_winScore(p));
+  const mvpIdx=scores.indexOf(Math.max(...scores));
+  const cardsEl=document.getElementById('winCards');
+  players.forEach((p,i)=>{
+    const isMvp=i===mvpIdx;
+    const title=_winTitle(p,players,isMvp);
+    const hpPct=Math.round(((p.hp||0)/(p.maxHp||1))*100);
+    const cls=CLASSES[p.class]||{name:p.class||'Hero',icon:'⚔️'};
+    const card=document.createElement('div');
+    card.className='win-card'+(isMvp?' mvp':'');
+    card.innerHTML=`
+      ${isMvp?'<div class="win-card-crown">👑</div>':''}
+      <div id="winSpr${i}" style="width:80px;height:110px;flex-shrink:0"></div>
+      <div class="win-card-name">${p.name}</div>
+      <div class="win-card-class">${cls.icon} ${cls.name} Lv.${p.level||1}</div>
+      <div class="win-card-stats">
+        <div class="win-card-stat"><span>💀 Bosses</span><span>${p.bossesDefeated||0}/3</span></div>
+        <div class="win-card-stat"><span>💰 Gold</span><span>${p.gold||0}</span></div>
+        <div class="win-card-stat"><span>❤️ HP left</span><span>${hpPct}%</span></div>
+        <div class="win-card-stat"><span>🗺️ Tiles</span><span>${p.tilesWalked||0}</span></div>
+      </div>
+      <div class="win-card-title">${title}</div>`;
+    cardsEl.appendChild(card);
+    const sprWrap=card.querySelector(`#winSpr${i}`);
+    try{ sprWrap.appendChild(renderSprite(p.class||'warrior',80,p.color||'#888',p.race||'human',p.gender||'male')); }catch(e){}
+    setTimeout(()=>card.classList.add('show'), i*420+100);
+  });
+  setTimeout(()=>{
+    document.getElementById('winActions').classList.add('show');
+    _winConfetti(players, mvpIdx);
+  }, players.length*420+700);
+}
+
+function _winConfetti(players, mvpIdx){
+  const canvas=document.getElementById('winConfetti');
+  const ctx=canvas.getContext('2d');
+  canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+  const cols=['#f0c060','#fff8c0','#f0a000','#ffffff'];
+  players.forEach(p=>{ if(p.color) cols.push(p.color); });
+  if(players[mvpIdx]?.color) cols.push(players[mvpIdx].color,players[mvpIdx].color);
+  const pts=Array.from({length:130},()=>({
+    x:Math.random()*canvas.width, y:-10-Math.random()*canvas.height*0.6,
+    w:5+Math.random()*8, h:8+Math.random()*7,
+    color:cols[Math.floor(Math.random()*cols.length)],
+    speed:1.5+Math.random()*3, angle:Math.random()*Math.PI*2,
+    spin:(Math.random()-0.5)*0.14, drift:(Math.random()-0.5)*1.5,
+  }));
+  function loop(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pts.forEach(p=>{
+      p.y+=p.speed; p.x+=p.drift; p.angle+=p.spin;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.angle);
+      ctx.fillStyle=p.color; ctx.globalAlpha=0.85;
+      ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      ctx.restore();
+      if(p.y>canvas.height+20){ p.y=-10; p.x=Math.random()*canvas.width; }
+    });
+    _winConfettiRAF=requestAnimationFrame(loop);
+  }
+  loop();
 }
 function spawnDmgFloat(x, y, text, color){
   const el = document.createElement('div');
@@ -9367,7 +9841,7 @@ function spawnPtc(cx,cy,color,n){
 }
 
 window.addEventListener('resize',()=>{initBg();if(board.tiles.length){resizeBoard();requestDraw();}});
-initBg();drawBg();renderForms();
+initBg();drawBg();
 document.getElementById('loadGameBtn').addEventListener('click',()=>{playConfirmSound();loadGame();});
 
 // ── SKILL TOOLTIPS ──
@@ -9611,5 +10085,47 @@ moveTo = function(tileIdx){
 
 } // end ENHANCED_BOARD block
 </script>
+
+<!-- WIN SCREEN -->
+<div id="winScreen">
+  <canvas id="winConfetti"></canvas>
+  <div id="winRays"></div>
+  <div id="winFlashEl"></div>
+  <div id="winCrackEl"><div id="winCrackLine"></div></div>
+  <div id="winContent">
+    <div id="winTitle">VICTORY</div>
+    <div id="winSubTitle">THE ENCHANTED PATH HAS BEEN CONQUERED</div>
+    <div id="winCards"></div>
+    <div id="winActions">
+      <button class="menu-btn" onclick="_winClose();location.reload()">Play Again</button>
+      <button class="menu-btn" onclick="_winClose()">Main Menu</button>
+    </div>
+  </div>
+</div>
+
+<!-- LEVEL UP OVERLAY -->
+<div id="levelUpOverlay">
+  <div id="lvlBurst"></div>
+  <div id="lvlLabel">LEVEL UP!</div>
+  <div id="lvlNumber">1</div>
+  <div id="lvlName"></div>
+  <div id="lvlStats">
+    <div style="color:var(--gold);font-size:13px;text-align:center;margin-bottom:14px">ALLOCATE STAT POINTS</div>
+    <div style="color:#4f4;font-size:13px;text-align:center;margin-bottom:12px" id="lvlPtsLeft">✦ 2 points</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px 28px;text-align:center" id="lvlStatGrid"></div>
+    <div style="text-align:center;margin-top:18px">
+      <button class="menu-btn" onclick="finishLevelUp()">Confirm →</button>
+    </div>
+  </div>
+</div>
+
+<!-- PASS-THE-CONTROLLER BANNER -->
+<div id="passBanner">
+  <div id="passBannerSub">PLAYER 1</div>
+  <div id="passBannerIcon">⚔️</div>
+  <div id="passBannerName">HERO</div>
+  <div id="passBannerClass">WARRIOR · TURN 1</div>
+  <div id="passBannerTap">Tap anywhere to start your turn</div>
+</div>
 </body>
 </html>
