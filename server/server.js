@@ -140,5 +140,7 @@ io.on('connection', (socket) => {
   });
 });
 
+app.get('/health', (req, res) => res.send('OK'));
+
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => console.log(`Chronicles server running on port ${PORT}`));
