@@ -58,19 +58,13 @@ io.on('connection', (socket) => {
     io.to(code).emit('lobbyUpdate', room.players.map(cleanPlayer));
   });
 
-  // ── Character set (sent when player hits Ready) ────────────────────────────
-  socket.on('setCharacter', (characterData) => {
-    const room = rooms[currentRoom];
-    if (!room) return;
-    room.players[playerIdx].character = characterData;
-  });
-
-  // ── Ready toggle ───────────────────────────────────────────────────────────
-  socket.on('setReady', (ready) => {
+  // ── Ready toggle (character is bundled with ready state) ──────────────────
+  socket.on('setReady', ({ ready, character }) => {
     const room = rooms[currentRoom];
     if (!room) return;
     room.players[playerIdx].ready = ready;
-    if (!ready) room.players[playerIdx].character = null; // un-ready clears character
+    if (ready && character) room.players[playerIdx].character = character;
+    if (!ready) room.players[playerIdx].character = null;
     io.to(currentRoom).emit('lobbyUpdate', room.players.map(cleanPlayer));
   });
 
