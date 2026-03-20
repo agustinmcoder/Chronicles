@@ -485,7 +485,27 @@ img{image-rendering:pixelated;image-rendering:crisp-edges}
 .body-slot.hands,.body-slot.shield,.body-slot.accessory{width:32px;height:40px}
 .body-slot.chest{width:55px;height:45px}
 .boss-tracker{text-align:center;margin-top:auto;padding-top:10px;border-top:1px solid var(--border);width:100%}
+/* ── Online screens ─────────────────────────────────────── */
+#onlineScreen,#onlineLobbyScreen{background:linear-gradient(rgba(4,6,4,0.75),rgba(4,6,4,0.75)),url('assets/fondo/fondo.gif');background-size:cover;background-position:center}
+#onlineLobbyScreen{flex-direction:row;align-items:stretch;justify-content:center;padding:20px;gap:16px;overflow-y:auto}
+.online-input{background:rgba(0,0,0,0.6);border:1px solid var(--border);color:var(--text);padding:8px 12px;font-family:'VT323',monospace;font-size:20px;width:100%;outline:none}
+.online-input:focus{border-color:var(--gold)}
+.online-col{display:flex;flex-direction:column;gap:10px}
+/* ── Game chat panel ────────────────────────────────────── */
+#gameChatPanel{position:absolute;right:0;top:0;bottom:0;width:240px;background:rgba(8,14,8,0.93);border-left:3px solid var(--border);display:none;flex-direction:column;z-index:20;padding:8px}
+#gameChatPanel.visible{display:flex}
+#gameChatMessages{flex:1;overflow-y:auto;font-size:13px;color:var(--dim);display:flex;flex-direction:column;gap:3px;scrollbar-width:thin;scrollbar-color:#333 transparent}
+.chat-msg{padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.05);word-break:break-word}
+.chat-msg .chat-name{color:var(--gold)}
+/* ── Battle chat ─────────────────────────────────────────── */
+#battleChatTab{position:fixed;right:0;top:50%;transform:translateY(-50%);background:rgba(8,14,8,0.93);border:2px solid var(--border);border-right:none;padding:10px 5px;cursor:pointer;z-index:210;display:none;writing-mode:vertical-rl;font-size:14px;color:var(--gold);user-select:none}
+#battleChatPanel{position:fixed;right:-260px;top:50%;transform:translateY(-50%);width:252px;height:400px;background:rgba(8,14,8,0.96);border:2px solid var(--border);z-index:210;display:none;flex-direction:column;padding:8px;transition:right 0.25s}
+#battleChatPanel.open{right:0}
+#battleChatMessages{flex:1;overflow-y:auto;font-size:13px;color:var(--dim);display:flex;flex-direction:column;gap:3px;scrollbar-width:thin;scrollbar-color:#333 transparent}
+#battleChatBadge{color:var(--red-l);display:none}
 </style>
+<!-- Socket.io client -->
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <!-- Three.js + GLTFLoader (r128) -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
@@ -530,6 +550,8 @@ document.addEventListener('click', function() {
   <div class="subtitle">~ An Adventure Board Game ~</div>
   <button class="menu-btn" onclick="playConfirmSound();showS('charCreation')">New Game</button>
   <div class="menu-sep"></div>
+  <button class="menu-btn" onclick="showOnlineScreen()">Online Game</button>
+  <div class="menu-sep"></div>
   <button class="menu-btn" id="loadGameBtn">Load Game</button>
   <div class="menu-sep"></div>
   <button class="menu-btn" onclick="playConfirmSound();showS('testHubScreen')">Test Lab</button>
@@ -537,6 +559,56 @@ document.addEventListener('click', function() {
   <button class="menu-btn" onclick="playConfirmSound();showS('rulesScreen')">Rules</button>
   <div class="menu-sep"></div>
   <button class="menu-btn" onclick="playConfirmSound();showS('creditsScreen')">Credits</button>
+</div>
+
+<!-- ONLINE SCREEN -->
+<div id="onlineScreen" class="screen">
+  <div class="panel" style="max-width:420px;width:90%;text-align:center">
+    <div class="panel-title">Online Game</div>
+    <input id="onlineName" class="online-input" type="text" placeholder="Your name..." maxlength="16" style="margin-bottom:16px" />
+    <button class="act-btn pri" onclick="createOnlineRoom()" style="width:100%;font-size:18px;margin-bottom:12px">✦ Create Room</button>
+    <div style="color:var(--dim);font-size:13px;margin-bottom:12px">── or join an existing room ──</div>
+    <div style="display:flex;gap:8px">
+      <input id="onlineCode" class="online-input" type="text" placeholder="Room code..." maxlength="8" style="letter-spacing:4px;text-transform:uppercase" />
+      <button class="act-btn" onclick="joinOnlineRoom()" style="white-space:nowrap">Join →</button>
+    </div>
+    <button class="act-btn" onclick="showS('menuScreen')" style="width:100%;margin-top:16px">← Back</button>
+  </div>
+</div>
+
+<!-- ONLINE LOBBY -->
+<div id="onlineLobbyScreen" class="screen">
+  <!-- Left column: room + players -->
+  <div class="online-col" style="width:260px;flex-shrink:0">
+    <div class="panel" style="flex:1">
+      <div style="font-family:'Press Start 2P';font-size:9px;color:var(--gold);margin-bottom:8px">ROOM CODE</div>
+      <div id="lobbyRoomCode" style="font-family:'Press Start 2P';font-size:22px;color:var(--gold-light);letter-spacing:6px;text-align:center;padding:10px;background:rgba(0,0,0,0.4);border:1px solid var(--border)">------</div>
+      <button class="act-btn" onclick="navigator.clipboard.writeText(document.getElementById('lobbyRoomCode').textContent).then(()=>toast('Copied!','good'))" style="width:100%;margin-top:6px;font-size:12px">📋 Copy Code</button>
+      <div style="font-family:'Press Start 2P';font-size:9px;color:var(--gold);margin:14px 0 8px">PLAYERS</div>
+      <div id="onlineLobbyPlayerList" style="display:flex;flex-direction:column;gap:4px;font-size:15px"></div>
+    </div>
+    <button id="onlineLaunchBtn" class="act-btn pri" onclick="launchOnlineGame()" style="display:none;width:100%;font-size:18px">▶ Launch Game</button>
+    <button class="act-btn" onclick="showS('menuScreen')" style="width:100%">← Leave</button>
+  </div>
+
+  <!-- Right column: character + chat -->
+  <div class="online-col" style="flex:1;min-width:0">
+    <div class="panel" style="flex:1">
+      <div style="font-family:'Press Start 2P';font-size:9px;color:var(--gold);margin-bottom:12px">YOUR CHARACTER</div>
+      <div id="onlineLobbyCharStatus" style="color:var(--dim);font-size:15px;margin-bottom:12px">No character created yet.</div>
+      <button id="onlineCreateCharBtn" class="act-btn" onclick="openOnlineCharCreation()" style="width:220px;margin-bottom:8px">⚔️ Create / Edit Character</button>
+      <button id="onlineReadyBtn" class="act-btn pri" onclick="toggleOnlineReady()" style="display:none;width:220px">✓ Ready</button>
+    </div>
+    <!-- Lobby chat -->
+    <div class="panel" style="height:200px;display:flex;flex-direction:column">
+      <div style="font-family:'Press Start 2P';font-size:8px;color:var(--gold);margin-bottom:8px">💬 CHAT</div>
+      <div id="lobbyChatMessages" style="flex:1;overflow-y:auto;font-size:13px;color:var(--dim);display:flex;flex-direction:column;gap:3px;scrollbar-width:thin"></div>
+      <div style="display:flex;gap:6px;margin-top:6px;border-top:1px solid var(--border);padding-top:6px">
+        <input id="lobbyChatInput" class="online-input" type="text" placeholder="Message..." maxlength="120" style="flex:1;padding:4px 8px;font-size:16px" onkeydown="if(event.key==='Enter')_sendChatFrom('lobbyChatInput')" />
+        <button class="act-btn" onclick="_sendChatFrom('lobbyChatInput')" style="padding:4px 10px">→</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- CHARACTER CREATION -->
@@ -574,6 +646,15 @@ document.addEventListener('click', function() {
   <div id="turnBanner">Loading...</div>
   <div id="boardContainer" style="flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:0;z-index:1">
     <canvas id="boardCanvas" style="width:100%;height:100%"></canvas>
+    <!-- Online chat panel (right side of board) -->
+    <div id="gameChatPanel">
+      <div style="font-family:'Press Start 2P';font-size:8px;color:var(--gold);margin-bottom:6px;flex-shrink:0">💬 CHAT</div>
+      <div id="gameChatMessages"></div>
+      <div style="display:flex;gap:5px;margin-top:6px;border-top:1px solid var(--border);padding-top:6px;flex-shrink:0">
+        <input id="gameChatInput" class="online-input" type="text" placeholder="Message..." maxlength="120" style="flex:1;padding:3px 6px;font-size:15px" onkeydown="if(event.key==='Enter')_sendChatFrom('gameChatInput')" />
+        <button class="act-btn" onclick="_sendChatFrom('gameChatInput')" style="padding:3px 8px">→</button>
+      </div>
+    </div>
   </div>
   <div id="eventBg" style="position:absolute;inset:0;background-size:cover;background-position:center;z-index:50;display:none"></div>
   <div id="bottomHud">
@@ -679,6 +760,17 @@ document.addEventListener('click', function() {
     <p>🗡️ Rogue: Basic Attack, Backstab, Poison Blade, Smoke Bomb, Evasion, Sneak Attack, Shadow Cloak, Run</p>
     <h3>Shop</h3><p>3 equipment items for your class, plus a 50% chance each for HP and Mana Potions.</p>
     <h3>Cards</h3><p>Common · Rare · Epic · Legendary. Hover any card to see full stats. Click player in HUD to open inventory.</p>
+  </div>
+</div>
+
+<!-- BATTLE CHAT (shown only in online mode, overlays battle screen) -->
+<div id="battleChatTab" onclick="toggleBattleChat()">💬<span id="battleChatBadge">•</span></div>
+<div id="battleChatPanel">
+  <div style="font-family:'Press Start 2P';font-size:8px;color:var(--gold);margin-bottom:6px;flex-shrink:0">💬 CHAT</div>
+  <div id="battleChatMessages"></div>
+  <div style="display:flex;gap:5px;margin-top:6px;border-top:1px solid var(--border);padding-top:6px;flex-shrink:0">
+    <input id="battleChatInput" class="online-input" type="text" placeholder="Message..." maxlength="120" style="flex:1;padding:3px 6px;font-size:15px" onkeydown="if(event.key==='Enter')_sendChatFrom('battleChatInput')" />
+    <button class="act-btn" onclick="_sendChatFrom('battleChatInput')" style="padding:3px 8px">→</button>
   </div>
 </div>
 
@@ -3685,6 +3777,7 @@ function startTurn(){
 
 function rollDice(){
   if(GS.phase!=='roll')return;
+  if(!isMyTurn()){toast("It's not your turn!",'bad');return;}
   const p=cp();
   const base=Math.floor(Math.random()*6)+1;
   let moveMod=(p.rollBonus||0)+(p.moveBonus||0);
@@ -3714,6 +3807,7 @@ function rollDice(){
     const reach=getReach(p.tileIdx,finalMove).filter(t=>!(p.clearedBossTiles||[]).includes(t));
     GS.highlightedTiles=reach;
     if(reach.length===0){toast(`No valid tiles to move to. Skipped.`,'bad');endTurn();return;}
+    syncGS();
     renderActs();
     de.onclick=rollDice;
   });
@@ -3753,10 +3847,12 @@ function getReach(from,steps){
 }
 
 function moveTo(tileIdx){
+  if(!isMyTurn()){toast("It's not your turn!",'bad');return;}
   const p=cp();
   p.tileIdx=tileIdx;
   p.tilesWalked=(p.tilesWalked||0)+1;
   GS.highlightedTiles=[];GS.phase='event';
+  syncGS();
   updPlayers();
   const _tname = board.tiles[tileIdx]?.name || board.tiles[tileIdx]?.type || '?';
   toast(`${p.name} → ${board.tiles[tileIdx].type}`);
@@ -9174,9 +9270,13 @@ function lobbyNext(){
   if(_lobbyIdx < playerCount - 1){
     showLobbyCard(_lobbyIdx + 1);
   } else {
-    document.getElementById('lobbyPhase2').style.display = 'none';
-    document.getElementById('lobbyPhase1').style.display = '';
-    startGame();
+    if(onlineMode){
+      onlineCharacterConfirmed();
+    } else {
+      document.getElementById('lobbyPhase2').style.display = 'none';
+      document.getElementById('lobbyPhase1').style.display = '';
+      startGame();
+    }
   }
 }
 
@@ -9249,17 +9349,36 @@ function endTurn(){
   const order=GS.initOrder,pos=order.indexOf(GS.curP);
   GS.curP=order[(pos+1)%order.length];
   if((pos+1)%order.length===0)GS.turn++;
+  syncGS();
   updPlayers();renderActs();
-  if(GS.players.length > 1){ showPassBanner(GS.players[GS.curP], startTurn); }
-  else { startTurn(); }
+  if(isOnline){
+    // In online mode: no pass banner, each player sees their own device
+    const nextP = GS.players[GS.curP];
+    if(nextP._onlineIdx === myPlayerIdx){
+      setBanner(`Your turn! (Turn ${GS.turn})`);
+      toast('Your turn!', 'good');
+      startTurn();
+    } else {
+      setBanner(`${nextP.name}'s turn...`);
+    }
+  } else if(GS.players.length > 1){
+    showPassBanner(GS.players[GS.curP], startTurn);
+  } else {
+    startTurn();
+  }
 }
 
 // ══════════════════════════════════════════════════════
 //  TRADING SYSTEM
 // ══════════════════════════════════════════════════════
 function startTrade(){
-  const p = cp();
-  const otherPlayers = GS.players.filter((_, i) => i !== GS.curP);
+  if(isOnline && GS.phase === 'combat' && GS.players[GS.curP]._onlineIdx === myPlayerIdx){
+    toast("Can't trade while in battle!",'bad');
+    return;
+  }
+  const p = isOnline ? GS.players[myPlayerIdx] : cp();
+  const myIdx = isOnline ? myPlayerIdx : GS.curP;
+  const otherPlayers = GS.players.filter((_, i) => i !== myIdx);
   if(otherPlayers.length === 0){
     toast('No other players to trade with!','bad');
     return;
@@ -9411,6 +9530,7 @@ function finalizeTrade(){
   toast(`Trade completed!`, 'good');
   closeModal();
   updPlayers();
+  syncGS();
   GS._trade = null;
 }
 
@@ -10131,6 +10251,258 @@ moveTo = function(tileIdx){
   <div id="passBannerClass">WARRIOR · TURN 1</div>
   <div id="passBannerTap">Tap anywhere to start your turn</div>
 </div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════════════
+//  ONLINE MULTIPLAYER
+// ══════════════════════════════════════════════════════════════════════════════
+
+// UPDATE THIS URL AFTER DEPLOYING TO RENDER:
+const ONLINE_SERVER_URL = 'https://YOUR-APP.onrender.com';
+
+let socket     = null;
+let isOnline   = false;
+let myPlayerIdx = 0;
+let isHost     = false;
+let roomCode   = '';
+let onlineMode = false;
+
+function connectOnline(){
+  if(socket && socket.connected) return;
+  socket = io(ONLINE_SERVER_URL, { transports: ['websocket'] });
+  socket.on('connect', () => { toast('Connected to server', 'good'); });
+  socket.on('connect_error', () => { toast('Cannot reach server. Try again.', 'bad'); });
+  socket.on('roomCreated', ({ code, playerIdx }) => {
+    roomCode = code; myPlayerIdx = playerIdx; isHost = true;
+    showS('onlineLobbyScreen');
+    document.getElementById('lobbyRoomCode').textContent = code;
+  });
+  socket.on('joinedRoom', ({ code, playerIdx }) => {
+    roomCode = code; myPlayerIdx = playerIdx; isHost = false;
+    showS('onlineLobbyScreen');
+    document.getElementById('lobbyRoomCode').textContent = code;
+  });
+  socket.on('joinError', msg => toast(msg, 'bad'));
+  socket.on('lobbyUpdate', players => renderOnlineLobbyPlayers(players));
+  socket.on('gameStarted', ({ characters }) => startOnlineGame(characters));
+  socket.on('gameStateUpdate', ({ gs, board: nb }) => {
+    GS.curP  = gs.curP;  GS.turn  = gs.turn;
+    GS.phase = gs.phase; GS.initOrder = gs.initOrder || GS.initOrder;
+    GS.highlightedTiles = gs.highlightedTiles || [];
+    GS.diceVal = gs.diceVal; GS.combat = gs.combat;
+    GS.players = gs.players;
+    if(nb && nb.tiles){ board.tiles = nb.tiles; board.connections = nb.connections; board.tileW = nb.tileW; board.tileH = nb.tileH; if(nb.startTiles) board.startTiles = nb.startTiles; }
+    updPlayers(); renderActs(); markBoardDirty();
+    const next = GS.players[GS.curP];
+    if(next && next._onlineIdx === myPlayerIdx){
+      setBanner(`Your turn! (Turn ${GS.turn})`);
+      if(GS.phase === 'roll') toast('Your turn — roll the dice!', 'good');
+    } else if(next){
+      setBanner(`${next.name}'s turn... (Turn ${GS.turn})`);
+    }
+  });
+  socket.on('tradeOffer',  offer => handleOnlineTradeOffer(offer));
+  socket.on('tradeResponse', resp => handleOnlineTradeResponse(resp));
+  socket.on('chatMessage', ({ name, text }) => appendChat(name, text));
+  socket.on('playerDisconnected', ({ name }) => {
+    toast(`${name} disconnected.`, 'bad');
+    appendChat('⚠ System', `${name} has disconnected.`);
+  });
+}
+
+function showOnlineScreen(){
+  playConfirmSound();
+  connectOnline();
+  showS('onlineScreen');
+}
+
+function createOnlineRoom(){
+  const name = document.getElementById('onlineName').value.trim();
+  if(!name){ toast('Enter your name!', 'bad'); return; }
+  socket.emit('createRoom', { name });
+}
+
+function joinOnlineRoom(){
+  const name = document.getElementById('onlineName').value.trim();
+  const code = document.getElementById('onlineCode').value.trim().toUpperCase();
+  if(!name){ toast('Enter your name!', 'bad'); return; }
+  if(!code){ toast('Enter a room code!', 'bad'); return; }
+  socket.emit('joinRoom', { code, name });
+}
+
+function renderOnlineLobbyPlayers(players){
+  const list = document.getElementById('onlineLobbyPlayerList');
+  if(!list) return;
+  list.innerHTML = players.map(p => `
+    <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border)">
+      <span style="color:${p.isHost ? 'var(--gold)' : 'var(--dim)'}">${p.isHost ? '👑' : '·'}</span>
+      <span style="flex:1">${p.name}</span>
+      <span style="font-size:12px">${p.hasCharacter ? '⚔️' : '···'}</span>
+      <span style="font-size:13px;color:${p.ready ? '#60ff60' : 'var(--dim)'}">${p.ready ? '✓' : '○'}</span>
+    </div>`).join('');
+  const launchBtn = document.getElementById('onlineLaunchBtn');
+  if(launchBtn){
+    const allReady = players.length > 1 && players.every(p => p.ready && p.hasCharacter);
+    launchBtn.style.display = (isHost && allReady) ? '' : 'none';
+  }
+}
+
+let _onlineCharacterSet = false;
+let _onlineReady        = false;
+
+function openOnlineCharCreation(){
+  onlineMode = true;
+  playerCount = 1;
+  startLobby();
+  showS('charCreation');
+}
+
+function onlineCharacterConfirmed(){
+  const pf  = pForms[0];
+  const nm  = (document.getElementById('pn0')?.value || '').trim() || 'Hero';
+  const cls = pf.cls || 'warrior';
+  const base = CLASSES[cls];
+  const character = {
+    name: nm, class: cls, race: pf.race || 'human', gender: pf.gender || 'male',
+    color: pf.color,
+    armorClass: {warrior:14, monk:13, ranger:11, mage:10, rogue:13}[cls] || 12,
+    allocStr: pf.alloc.str || 0, allocInt: pf.alloc.int || 0, allocDex: pf.alloc.dex || 0,
+    level:1, exp:0, statPoints:0,
+    maxHp: base.hp + (pf.alloc.hp || 0) * 10, hp: base.hp + (pf.alloc.hp || 0) * 10,
+    maxMp: base.mp, mp: base.mp, gold: 80, inventory: [],
+    equipped: {weapon:null, head:null, body:null, feet:null, shield:null, accessory:null},
+    bossesDefeated:0, tileIdx:0, skipTurns:0, moveBonus:0, rollBonus:0,
+    visitHistory:[], clearedBossTiles:[], poison:0, curses:{suffocate:0, blindness:0, paralysis:0}
+  };
+  socket.emit('setCharacter', character);
+  _onlineCharacterSet = true;
+  onlineMode = false;
+  const statusEl = document.getElementById('onlineLobbyCharStatus');
+  if(statusEl) statusEl.innerHTML = `<span style="color:var(--gold)">⚔️ ${cls.charAt(0).toUpperCase()+cls.slice(1)} · ${character.race} · ${nm}</span>`;
+  const readyBtn = document.getElementById('onlineReadyBtn');
+  if(readyBtn) readyBtn.style.display = '';
+  showS('onlineLobbyScreen');
+}
+
+function toggleOnlineReady(){
+  if(!_onlineCharacterSet){ toast('Create your character first!', 'bad'); return; }
+  _onlineReady = !_onlineReady;
+  socket.emit('setReady', _onlineReady);
+  const btn = document.getElementById('onlineReadyBtn');
+  if(btn){
+    btn.textContent = _onlineReady ? '✓ Ready  (click to un-ready)' : '✓ Ready';
+    btn.style.background = _onlineReady ? 'rgba(60,160,60,0.3)' : '';
+  }
+}
+
+function launchOnlineGame(){ socket.emit('launchGame'); }
+
+function startOnlineGame(characters){
+  isOnline = true;
+  GS.players = characters.map((c, i) => ({ ...c, _onlineIdx: i }));
+  document.getElementById('gameChatPanel').classList.add('visible');
+  document.getElementById('battleChatTab').style.display = '';
+  document.getElementById('battleChatPanel').style.display = 'flex';
+  showS('gameScreen');
+  setTimeout(() => {
+    if(isHost){
+      genBoard();
+      zoom = 1; panOffsetX = 0; panOffsetY = 0;
+      const shuffledStarts = [...board.startTiles].sort(() => Math.random() - 0.5);
+      GS.players.forEach((p, i) => { p.tileIdx = shuffledStarts[i % shuffledStarts.length]; });
+      GS.phase = 'initiative';
+      drawBoard();
+      rollInit();
+      setTimeout(syncGS, 600);
+    } else {
+      drawBoard();
+      setBanner('Waiting for host to start...');
+    }
+  }, 140);
+}
+
+function syncGS(){
+  if(!isOnline || !socket) return;
+  if(GS.players.length === 0) return;
+  const curr = GS.players[GS.curP];
+  if(curr && curr._onlineIdx !== myPlayerIdx && !isHost) return;
+  const gsData = {
+    curP: GS.curP, turn: GS.turn, phase: GS.phase,
+    initOrder: GS.initOrder, highlightedTiles: GS.highlightedTiles,
+    diceVal: GS.diceVal, combat: GS.combat, players: GS.players
+  };
+  const boardData = {
+    tiles: board.tiles, connections: board.connections,
+    tileW: board.tileW, tileH: board.tileH, startTiles: board.startTiles
+  };
+  socket.emit('syncGameState', { gs: gsData, board: boardData });
+}
+
+function isMyTurn(){
+  if(!isOnline) return true;
+  if(GS.players.length === 0) return true;
+  return GS.players[GS.curP]?._onlineIdx === myPlayerIdx;
+}
+
+function _sendChatFrom(inputId){
+  if(!socket) return;
+  const input = document.getElementById(inputId);
+  if(!input || !input.value.trim()) return;
+  socket.emit('chatMessage', { text: input.value.trim() });
+  input.value = '';
+}
+
+function appendChat(name, text){
+  const safe = String(text).replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  ['lobbyChatMessages','gameChatMessages','battleChatMessages'].forEach(id => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    const div = document.createElement('div');
+    div.className = 'chat-msg';
+    div.innerHTML = `<span class="chat-name">${name}:</span> ${safe}`;
+    el.appendChild(div);
+    el.scrollTop = el.scrollHeight;
+  });
+  const panel = document.getElementById('battleChatPanel');
+  if(panel && !panel.classList.contains('open')){
+    const badge = document.getElementById('battleChatBadge');
+    if(badge) badge.style.display = 'inline';
+  }
+}
+
+function toggleBattleChat(){
+  const panel = document.getElementById('battleChatPanel');
+  if(!panel) return;
+  panel.classList.toggle('open');
+  const badge = document.getElementById('battleChatBadge');
+  if(badge) badge.style.display = 'none';
+}
+
+function handleOnlineTradeOffer(offer){
+  if(offer.toIdx !== myPlayerIdx) return;
+  GS._trade = offer;
+  const fromP = GS.players[offer.fromIdx];
+  const offerItems = (offer.offering || []).map(it => `${it.icon} ${it.name}`).join(', ') || 'Nothing';
+  const reqItems   = (offer.requesting || []).map(it => `${it.icon} ${it.name}`).join(', ') || 'Nothing';
+  const html = `<div class="mo-title">🤝 Trade from ${fromP.name}</div>
+    <div style="margin:8px 0;font-size:15px"><b>They offer:</b> ${offerItems}${offer.offeringGold > 0 ? ` + ${offer.offeringGold}g` : ''}</div>
+    <div style="margin:8px 0;font-size:15px"><b>They want:</b> ${reqItems}${offer.requestingGold > 0 ? ` + ${offer.requestingGold}g` : ''}</div>
+    <button class="act-btn pri" onclick="respondOnlineTrade(true)">✅ Accept</button>
+    <button class="act-btn" onclick="respondOnlineTrade(false)">❌ Decline</button>`;
+  openModal(null, null, [], html);
+}
+
+function respondOnlineTrade(accepted){
+  closeModal();
+  socket.emit('tradeResponse', { accepted, trade: GS._trade });
+}
+
+function handleOnlineTradeResponse(resp){
+  if(!GS._trade) return;
+  if(resp.accepted) finalizeTrade();
+  else { toast('Trade declined.', 'bad'); GS._trade = null; }
+}
+</script>
 
 <script>
 // Preload character images first, then dice models once images are done
