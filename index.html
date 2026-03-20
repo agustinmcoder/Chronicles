@@ -10431,7 +10431,8 @@ function connectOnline(){
     olInitChar();
     showS('onlineLobbyScreen');
   });
-  socket.on('joinError', msg => toast(msg, 'bad'));
+  socket.on('joinError',   msg => toast(msg, 'bad'));
+  socket.on('launchError', msg => toast(msg, 'bad'));
   socket.on('lobbyUpdate', players => renderOnlineLobbyPlayers(players));
   socket.on('gameStarted', ({ characters }) => startOnlineGame(characters));
   socket.on('gameStateUpdate', ({ gs, board: nb }) => {

@@ -71,14 +71,14 @@ io.on('connection', (socket) => {
   // ── Launch game (host only, all must be ready) ─────────────────────────────
   socket.on('launchGame', () => {
     const room = rooms[currentRoom];
-    if (!room) return;
-    if (!room.players[playerIdx].isHost) return;
-    if (!room.players.every(p => p.ready)) return;
+    if (!room)                              { socket.emit('launchError', 'Room not found.');         return; }
+    if (!room.players[playerIdx]?.isHost)   { socket.emit('launchError', 'Only the host can launch.'); return; }
+    const notReady = room.players.filter(p => !p.ready).map(p => p.name);
+    if (notReady.length > 0)               { socket.emit('launchError', `Not ready: ${notReady.join(', ')}`); return; }
 
     room.started = true;
-    // Send each player the full character list so the game can be initialized
     io.to(currentRoom).emit('gameStarted', {
-      characters: room.players.map(p => p.character),
+      characters: room.players.map(p => p.character || { name: p.name }),
       hostIdx: 0
     });
   });
