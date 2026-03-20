@@ -6966,7 +6966,11 @@ const DiceRenderer = (function(){
     return ctrl;
   }
 
-  return { mount };
+  function preload(){
+    Object.values(DICE_MODELS).forEach(path => _loadModel(path).catch(()=>{}));
+  }
+
+  return { mount, preload };
 })();
 // ── Dice sound ───────────────────────────────────────────────────────────────
 // ── Icon helpers ─────────────────────────────────────────────────────────────
@@ -10127,5 +10131,29 @@ moveTo = function(tileIdx){
   <div id="passBannerClass">WARRIOR · TURN 1</div>
   <div id="passBannerTap">Tap anywhere to start your turn</div>
 </div>
+
+<script>
+// Preload character images first, then dice models once images are done
+setTimeout(function preloadAssets(){
+  const races   = ['human','dwarf','elf','orc'];
+  const genders = ['male','female'];
+  const classes = ['warrior','mage','ranger','monk','rogue'];
+  const paths   = [];
+  races.forEach(r => genders.forEach(g => classes.forEach(c => {
+    paths.push(`assets/characters/${r}_${g}_${c}.png`);
+  })));
+
+  let loaded = 0;
+  paths.forEach(src => {
+    const img = new Image();
+    img.onload = img.onerror = function(){
+      if(++loaded === paths.length && typeof DiceRenderer !== 'undefined'){
+        DiceRenderer.preload();
+      }
+    };
+    img.src = src;
+  });
+}, 500);
+</script>
 </body>
 </html>
