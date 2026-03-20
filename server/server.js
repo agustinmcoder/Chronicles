@@ -77,10 +77,26 @@ io.on('connection', (socket) => {
     if (notReady.length > 0)               { socket.emit('launchError', `Not ready: ${notReady.join(', ')}`); return; }
 
     room.started = true;
+    room.initRolls = {};
     io.to(currentRoom).emit('gameStarted', {
       characters: room.players.map(p => p.character || { name: p.name }),
       hostIdx: 0
     });
+  });
+
+  // ── Initiative (each player rolls their own die) ────────────────────────────
+  socket.on('submitInit', ({ roll, dex }) => {
+    const room = rooms[currentRoom];
+    if (!room) return;
+    if (!room.initRolls) room.initRolls = {};
+    room.initRolls[playerIdx] = { roll, dex, score: roll + dex, playerIdx };
+
+    if (Object.keys(room.initRolls).length === room.players.length) {
+      const sorted = Object.values(room.initRolls).sort((a, b) => b.score - a.score);
+      const initOrder = sorted.map(r => r.playerIdx);
+      io.to(currentRoom).emit('initOrderResult', { initOrder, rolls: sorted });
+      room.initRolls = {};
+    }
   });
 
   // ── Game state sync (active player broadcasts after each action) ───────────

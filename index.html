@@ -608,6 +608,10 @@ document.addEventListener('click', function() {
 
     <!-- Right: inline character creation -->
     <div class="ol-chararea">
+
+      <!-- Other players' mystery cards -->
+      <div id="ol_otherPlayers" style="display:none;flex-direction:row;gap:14px;flex-wrap:wrap;padding-bottom:12px;border-bottom:1px solid var(--border);margin-bottom:4px"></div>
+
       <div style="font-family:'Press Start 2P';font-size:9px;color:var(--gold)">YOUR CHARACTER</div>
 
       <!-- Name -->
@@ -673,8 +677,7 @@ document.addEventListener('click', function() {
   <div class="ol-chat">
     <div id="lobbyChatMessages" style="flex:1;overflow-y:auto;font-size:14px;color:var(--dim);display:flex;flex-direction:column;gap:3px;scrollbar-width:thin"></div>
     <div style="display:flex;gap:8px;flex-shrink:0;align-items:center">
-      <input id="lobbyChatInput" class="online-input" type="text" placeholder="💬  Message..." maxlength="200" style="flex:1;padding:10px 14px;font-size:22px" onkeydown="if(event.key==='Enter')_sendChatFrom('lobbyChatInput')" />
-      <button class="act-btn" onclick="_sendChatFrom('lobbyChatInput')" style="padding:8px 12px;font-size:16px;flex-shrink:0">→</button>
+      <input id="lobbyChatInput" class="online-input" type="text" placeholder="💬  Message... (Enter to send)" maxlength="200" style="flex:1;padding:10px 14px;font-size:22px" onkeydown="if(event.key==='Enter')_sendChatFrom('lobbyChatInput')" />
     </div>
   </div>
 
@@ -720,8 +723,7 @@ document.addEventListener('click', function() {
       <div style="font-family:'Press Start 2P';font-size:8px;color:var(--gold);margin-bottom:6px;flex-shrink:0">💬 CHAT</div>
       <div id="gameChatMessages"></div>
       <div style="display:flex;gap:5px;margin-top:6px;border-top:1px solid var(--border);padding-top:6px;flex-shrink:0">
-        <input id="gameChatInput" class="online-input" type="text" placeholder="Message..." maxlength="120" style="flex:1;padding:3px 6px;font-size:15px" onkeydown="if(event.key==='Enter')_sendChatFrom('gameChatInput')" />
-        <button class="act-btn" onclick="_sendChatFrom('gameChatInput')" style="padding:3px 8px">→</button>
+        <input id="gameChatInput" class="online-input" type="text" placeholder="Message... (Enter)" maxlength="120" style="flex:1;padding:3px 6px;font-size:15px" onkeydown="if(event.key==='Enter')_sendChatFrom('gameChatInput')" />
       </div>
     </div>
   </div>
@@ -838,8 +840,7 @@ document.addEventListener('click', function() {
   <div style="font-family:'Press Start 2P';font-size:8px;color:var(--gold);margin-bottom:6px;flex-shrink:0">💬 CHAT</div>
   <div id="battleChatMessages"></div>
   <div style="display:flex;gap:5px;margin-top:6px;border-top:1px solid var(--border);padding-top:6px;flex-shrink:0">
-    <input id="battleChatInput" class="online-input" type="text" placeholder="Message..." maxlength="120" style="flex:1;padding:3px 6px;font-size:15px" onkeydown="if(event.key==='Enter')_sendChatFrom('battleChatInput')" />
-    <button class="act-btn" onclick="_sendChatFrom('battleChatInput')" style="padding:3px 8px">→</button>
+    <input id="battleChatInput" class="online-input" type="text" placeholder="Message... (Enter)" maxlength="120" style="flex:1;padding:3px 6px;font-size:15px" onkeydown="if(event.key==='Enter')_sendChatFrom('battleChatInput')" />
   </div>
 </div>
 
@@ -10324,11 +10325,12 @@ moveTo = function(tileIdx){
 
 const ONLINE_SERVER_URL = 'https://chronicles-server.onrender.com';
 
-let socket      = null;
-let isOnline    = false;
-let myPlayerIdx = 0;
-let isHost      = false;
-let roomCode    = '';
+let socket           = null;
+let isOnline         = false;
+let myPlayerIdx      = 0;
+let isHost           = false;
+let roomCode         = '';
+let _pendingOnlineInit = false;
 let _onlineReady = false;
 
 // ── Inline lobby character state (uses pForms[0]) ─────────────────────────────
@@ -10435,6 +10437,40 @@ function connectOnline(){
   socket.on('launchError', msg => toast(msg, 'bad'));
   socket.on('lobbyUpdate', players => renderOnlineLobbyPlayers(players));
   socket.on('gameStarted', ({ characters }) => startOnlineGame(characters));
+  socket.on('initOrderResult', ({ initOrder, rolls }) => {
+    GS.initOrder = initOrder;
+    GS.curP      = initOrder[0];
+    const sorted = rolls.map(r => ({ p: GS.players[r.playerIdx], ...r }));
+    const mbx = document.getElementById('modalBox');
+    if(mbx){
+      mbx.innerHTML=`
+        <div class="mo-title">Initiative Roll</div>
+        <div style="font-size:8px;letter-spacing:4px;color:var(--dim);
+                    text-align:center;margin-bottom:6px">TURN ORDER</div>
+        <ul class="init-list">
+          ${sorted.map((r,k)=>`
+            <li style="animation-delay:${k*.1}s">
+              <span>${k+1}. ${renderIcon(CLASSES[r.p.class].icon,CLASSES[r.p.class].fallback)} ${r.p.name}</span>
+              <span class="i-score" style="color:${k===0?'var(--gold)':'var(--text)'}">
+                ${r.roll}+${r.dex}=${r.score}
+              </span>
+            </li>`).join('')}
+        </ul>`;
+      const d=document.createElement('div');
+      d.className='mo-choices'; d.style.marginTop='14px';
+      const b=document.createElement('button');
+      b.className='act-btn pri';
+      const first=GS.players[GS.curP];
+      if(isMyTurn()){
+        b.textContent=`▶ Begin — ${renderIcon(CLASSES[first.class].icon,CLASSES[first.class].fallback)} ${first.name} goes first`;
+        b.onclick=()=>{ closeModal(); startTurn(); syncGS(); };
+      } else {
+        b.textContent=`✓ ${first.name} goes first`;
+        b.onclick=()=>{ closeModal(); setBanner(`${first.name}'s turn... (Turn ${GS.turn})`); };
+      }
+      d.appendChild(b); mbx.appendChild(d);
+    }
+  });
   socket.on('gameStateUpdate', ({ gs, board: nb }) => {
     GS.curP=gs.curP; GS.turn=gs.turn; GS.phase=gs.phase;
     GS.initOrder=gs.initOrder||GS.initOrder;
@@ -10442,6 +10478,13 @@ function connectOnline(){
     GS.diceVal=gs.diceVal; GS.combat=gs.combat; GS.players=gs.players;
     if(nb&&nb.tiles){ board.tiles=nb.tiles; board.connections=nb.connections; board.tileW=nb.tileW; board.tileH=nb.tileH; if(nb.startTiles) board.startTiles=nb.startTiles; }
     updPlayers(); renderActs(); markBoardDirty();
+    if(_pendingOnlineInit && gs.phase==='initiative'){
+      _pendingOnlineInit = false;
+      drawBoard();
+      setTimeout(submitOnlineInit, 200);
+      return;
+    }
+    if(gs.phase==='initiative') return;
     const next = GS.players[GS.curP];
     if(next&&next._onlineIdx===myPlayerIdx){
       setBanner(`Your turn! (Turn ${GS.turn})`);
@@ -10481,13 +10524,41 @@ function joinOnlineRoom(){
 // ── Lobby player list ─────────────────────────────────────────────────────────
 function renderOnlineLobbyPlayers(players){
   const list = document.getElementById('onlineLobbyPlayerList');
-  if(!list) return;
-  list.innerHTML = players.map(p => `
-    <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)">
-      <span style="color:${p.isHost?'var(--gold)':'var(--dim)'}">${p.isHost?'👑':'·'}</span>
-      <span style="flex:1;font-size:16px">${p.name}</span>
-      <span style="font-size:14px;color:${p.ready?'#60ff60':'var(--dim)'}">${p.ready?'✓ Ready':'○'}</span>
-    </div>`).join('');
+  if(list){
+    list.innerHTML = players.map(p => `
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)">
+        <span style="color:${p.isHost?'var(--gold)':'var(--dim)'}">${p.isHost?'👑':'·'}</span>
+        <span style="flex:1;font-size:16px">${p.name}</span>
+        <span style="font-size:14px;color:${p.ready?'#60ff60':'var(--dim)'}">${p.ready?'✓ Ready':'○'}</span>
+      </div>`).join('');
+  }
+
+  // Other players' mystery cards
+  const othersDiv = document.getElementById('ol_otherPlayers');
+  if(othersDiv){
+    const others = players.filter((_, i) => i !== myPlayerIdx);
+    if(others.length > 0){
+      othersDiv.style.display = 'flex';
+      othersDiv.innerHTML = others.map(p => `
+        <div style="display:flex;flex-direction:column;align-items:center;gap:7px;padding:10px 14px;
+                    background:rgba(0,0,0,0.35);border:1px solid ${p.ready?'rgba(60,160,60,0.45)':'var(--border)'};
+                    border-radius:2px;min-width:90px">
+          <div style="width:72px;height:100px;display:flex;align-items:center;justify-content:center;
+                      background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.07);
+                      font-size:36px;color:rgba(255,255,255,0.12);user-select:none">?</div>
+          <div style="font-size:13px;color:var(--text);text-align:center;max-width:100px;
+                      overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+            ${p.isHost?'👑 ':''}${p.name}
+          </div>
+          <div style="font-size:11px;color:${p.ready?'#60ff60':'var(--dim)'}">
+            ${p.ready?'✓ Ready':'○ Waiting...'}
+          </div>
+        </div>`).join('');
+    } else {
+      othersDiv.style.display = 'none';
+    }
+  }
+
   const launchBtn = document.getElementById('onlineLaunchBtn');
   if(launchBtn){
     const allReady = players.length >= 2 && players.every(p => p.ready);
@@ -10525,20 +10596,72 @@ function startOnlineGame(characters){
       GS.players.forEach((p,i) => { p.tileIdx=shuffledStarts[i%shuffledStarts.length]; });
       GS.phase='initiative';
       drawBoard();
-      rollInit();
-      setTimeout(syncGS, 600);
+      syncGS();
+      setTimeout(submitOnlineInit, 400);
     } else {
       drawBoard();
-      setBanner('Waiting for host to start...');
+      setBanner('Waiting for host to set up the board...');
+      _pendingOnlineInit = true;
     }
   }, 140);
+}
+
+// ── Per-player initiative roll ────────────────────────────────────────────────
+function submitOnlineInit(){
+  const me = GS.players.find(p => p._onlineIdx === myPlayerIdx);
+  if(!me) return;
+  const dex = calcStats(me).dex;
+  const r   = Math.floor(Math.random()*20)+1;
+  let revealed = false;
+
+  const html=`
+    <div class="mo-title">Initiative Roll</div>
+    <div class="mo-text" style="font-size:10px;margin-bottom:16px">
+      Click your D20 to roll! &nbsp;•&nbsp; Roll + DEX
+    </div>
+    <div style="display:flex;gap:40px;justify-content:center;flex-wrap:wrap;margin-bottom:16px">
+      <div style="text-align:center;min-width:80px">
+        <div style="font-size:11px;color:${me.color||'var(--gold)'};margin-bottom:6px;
+                    font-family:'VT323',monospace;white-space:nowrap">
+          ${renderIcon(CLASSES[me.class].icon,CLASSES[me.class].fallback)} ${me.name}
+        </div>
+        <div id="myInitDie" class="dice"
+             style="width:58px;height:58px;font-size:44px;margin:0 auto;border-radius:6px;
+                    cursor:pointer;display:flex;align-items:center;justify-content:center;
+                    transition:transform .1s,box-shadow .1s;letter-spacing:0"
+             onclick="window._rollMyInitDie()"
+             onmousedown="this.style.transform='scale(.94)'"
+             onmouseup="this.style.transform='scale(1)'"
+             title="Click to roll!">
+          <span style="opacity:.55;font-size:9px;line-height:1.4;text-align:center">D20<br>CLICK</span>
+        </div>
+        <div id="myInitBonus" style="font-size:8px;color:var(--dim);margin-top:4px;min-height:14px"></div>
+      </div>
+    </div>
+    <div id="myInitStatus" style="text-align:center;font-size:10px;color:var(--dim);min-height:16px"></div>`;
+
+  openModal(null,null,[],html);
+
+  window._rollMyInitDie=()=>{
+    if(revealed) return;
+    revealed=true;
+    const die=document.getElementById('myInitDie');
+    const bonus=document.getElementById('myInitBonus');
+    const status=document.getElementById('myInitStatus');
+    if(!die) return;
+    roll3D('myInitDie','d20',r,()=>{
+      if(r>=15) die.style.borderColor='var(--gold)';
+      else if(r<=4) die.style.borderColor='var(--red)';
+      if(bonus) bonus.textContent=`${r} + ${dex} DEX = ${r+dex}`;
+      if(status) status.textContent='Waiting for other players...';
+      socket.emit('submitInit',{roll:r,dex});
+    },0.9);
+  };
 }
 
 // ── State sync ────────────────────────────────────────────────────────────────
 function syncGS(){
   if(!isOnline||!socket||GS.players.length===0) return;
-  const curr = GS.players[GS.curP];
-  if(curr && curr._onlineIdx!==myPlayerIdx && !isHost) return;
   socket.emit('syncGameState', {
     gs:{ curP:GS.curP, turn:GS.turn, phase:GS.phase, initOrder:GS.initOrder,
          highlightedTiles:GS.highlightedTiles, diceVal:GS.diceVal, combat:GS.combat, players:GS.players },
