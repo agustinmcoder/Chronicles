@@ -492,7 +492,7 @@ img{image-rendering:pixelated;image-rendering:crisp-edges}
 .ol-main{display:flex;flex:1;min-height:0;gap:0}
 .ol-players{width:210px;flex-shrink:0;border-right:3px solid var(--border);padding:12px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;background:rgba(3,5,3,0.6)}
 .ol-chararea{flex:1;padding:14px;display:flex;flex-direction:column;gap:10px;overflow-y:auto}
-.ol-chat{height:170px;flex-shrink:0;border-top:3px solid var(--border);display:flex;flex-direction:column;padding:8px 14px;gap:6px;background:rgba(3,5,3,0.85)}
+.ol-chat{height:130px;flex-shrink:0;border-top:3px solid var(--border);display:flex;flex-direction:column;padding:8px 14px;gap:6px;background:rgba(3,5,3,0.85)}
 .ol-selector{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,0.4);border:1px solid var(--border);padding:4px 8px}
 .ol-selector span{flex:1;text-align:center;font-size:17px}
 .ol-stat-row{display:flex;align-items:center;gap:6px;font-size:16px}
@@ -595,9 +595,6 @@ document.addEventListener('click', function() {
     <div style="font-family:'Press Start 2P';font-size:9px;color:var(--dim)">ROOM</div>
     <div id="lobbyRoomCode" style="font-family:'Press Start 2P';font-size:16px;color:var(--gold-light);letter-spacing:5px;padding:4px 10px;background:rgba(0,0,0,0.5);border:1px solid var(--border)">------</div>
     <button class="act-btn" onclick="navigator.clipboard.writeText(document.getElementById('lobbyRoomCode').textContent).then(()=>toast('Copied!','good'))" style="font-size:13px;padding:4px 8px">📋 Copy</button>
-    <div style="flex:1"></div>
-    <button id="onlineLaunchBtn" class="act-btn pri" onclick="launchOnlineGame()" style="display:none;font-size:16px;padding:6px 18px">▶ Launch Game</button>
-    <button class="act-btn" onclick="showS('menuScreen')" style="font-size:13px;padding:4px 10px">← Leave</button>
   </div>
 
   <!-- Main area -->
@@ -620,10 +617,10 @@ document.addEventListener('click', function() {
       <div style="display:flex;gap:18px;align-items:flex-start">
 
         <!-- Sprite -->
-        <div id="ol_sprWrap" style="width:110px;height:165px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);border:1px solid var(--border)"></div>
+        <div id="ol_sprWrap" style="width:150px;height:220px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);border:1px solid var(--border)"></div>
 
         <!-- Selectors -->
-        <div style="display:flex;flex-direction:column;gap:8px;flex:1;max-width:280px">
+        <div style="display:flex;flex-direction:column;gap:10px;flex:1;max-width:320px">
           <div style="font-size:11px;color:var(--dim);letter-spacing:2px">CLASS</div>
           <div class="ol-selector">
             <button class="cnt-btn" style="width:28px;height:28px;font-size:14px" onclick="olCycleClass(-1)">◀</button>
@@ -665,12 +662,19 @@ document.addEventListener('click', function() {
     </div>
   </div>
 
+  <!-- Action buttons row -->
+  <div style="display:flex;gap:12px;padding:10px 14px;background:rgba(3,5,3,0.9);border-top:2px solid var(--border);flex-shrink:0">
+    <button class="menu-btn" onclick="showS('menuScreen')" style="font-size:22px;letter-spacing:2px">← Leave Room</button>
+    <div style="flex:1"></div>
+    <button id="onlineLaunchBtn" class="menu-btn" onclick="launchOnlineGame()" style="display:none;font-size:22px;letter-spacing:2px;color:var(--gold)">▶ Start Journey</button>
+  </div>
+
   <!-- Bottom: chat -->
   <div class="ol-chat">
     <div id="lobbyChatMessages" style="flex:1;overflow-y:auto;font-size:14px;color:var(--dim);display:flex;flex-direction:column;gap:3px;scrollbar-width:thin"></div>
-    <div style="display:flex;gap:8px;flex-shrink:0">
-      <input id="lobbyChatInput" class="online-input" type="text" placeholder="💬  Chat with other players..." maxlength="200" style="flex:1;padding:6px 10px;font-size:18px" onkeydown="if(event.key==='Enter')_sendChatFrom('lobbyChatInput')" />
-      <button class="act-btn" onclick="_sendChatFrom('lobbyChatInput')" style="padding:6px 14px;font-size:18px">→</button>
+    <div style="display:flex;gap:8px;flex-shrink:0;align-items:center">
+      <input id="lobbyChatInput" class="online-input" type="text" placeholder="💬  Message..." maxlength="200" style="flex:1;padding:10px 14px;font-size:22px" onkeydown="if(event.key==='Enter')_sendChatFrom('lobbyChatInput')" />
+      <button class="act-btn" onclick="_sendChatFrom('lobbyChatInput')" style="padding:8px 12px;font-size:16px;flex-shrink:0">→</button>
     </div>
   </div>
 
@@ -10342,7 +10346,7 @@ function olUpdateUI(){
   const base = CLASSES[cls];
   // Sprite
   const wrap = document.getElementById('ol_sprWrap');
-  if(wrap){ wrap.innerHTML = ''; wrap.appendChild(renderSprite(cls, 150, pf.color, race, gender)); }
+  if(wrap){ wrap.innerHTML = ''; wrap.appendChild(renderSprite(cls, 200, pf.color, race, gender)); }
   // Labels
   const setT = (id,v) => { const el=document.getElementById(id); if(el) el.innerHTML=v; };
   setT('ol_cls_label',  `${base.icon} ${base.name}`);

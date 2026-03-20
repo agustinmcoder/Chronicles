@@ -73,7 +73,7 @@ io.on('connection', (socket) => {
     const room = rooms[currentRoom];
     if (!room) return;
     if (!room.players[playerIdx].isHost) return;
-    if (!room.players.every(p => p.ready && p.character)) return;
+    if (!room.players.every(p => p.ready)) return;
 
     room.started = true;
     // Send each player the full character list so the game can be initialized
